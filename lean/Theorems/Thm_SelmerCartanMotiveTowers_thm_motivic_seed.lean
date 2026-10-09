@@ -1,4 +1,5 @@
 import Definitions.Def_motivic_background
+import Solutions.Sol_thm_motivic_seed
 
 namespace SelmerCartanMotiveTowers
 
@@ -29,11 +30,22 @@ elaborated against an *arbitrary unrelated* instance — making the statement
 actually FALSE (countermodel: transport the group structure along `x ↦ x-1`
 so that `0 = 1`; then `bg.d b = 0` is unsatisfiable since `bg.d` is constantly
 the structure's zero). With the binder removed, `•`/`0` use the background
-package's own instance, as intended. -/
+package's own instance, as intended.
+
+REVISION NOTE 3 (2026-10-09, verifier P0-2): the conclusion now also asserts
+`addOrderOf (bg.classOf b) = bg.N` — the paper's `ord[b_mot] = N` at
+cohomology level (Totaro's `CH^*(Bμ_N)` computation). The cochain-level
+`N • b = 0` + exactness did NOT rule out `b` being a boundary: a boundary
+has class `0`, and `addOrderOf 0 = 1`. The new field `hb_class_order`
+excludes this model — a boundary would force `1 = N`, contradicting
+`3 ≤ N`. `isGenuine` is now characterized by `isGenuine_iff` (nonzero
+`N`-torsion class satisfying the Moore relation), not an arbitrary label. -/
 theorem thm_motivic_seed (bg : MotivicBackground) :
     ∃ (b c : bg.Cochain),
       bg.d b = 0 ∧ bg.d c = bg.N • b ∧
       bg.N • b = 0 ∧ (∀ k : Nat, 0 < k → k < bg.N → k • b ≠ 0) ∧
-      bg.isGenuine c := by sorry
+      addOrderOf (bg.classOf b) = bg.N ∧
+      bg.isGenuine c :=
+  SelmerCartanMotiveTowers.sol_thm_motivic_seed bg
 
 end SelmerCartanMotiveTowers

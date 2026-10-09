@@ -1,5 +1,6 @@
 import Definitions.Def_adic_witness
 import Definitions.Def_witness_background
+import Solutions.Sol_thm_gerbe_provenance
 
 namespace SelmerCartanMotiveTowers
 
@@ -24,6 +25,7 @@ to hold (countermodel: both constantly `False`). This revision takes the
 paper's specific gerbe data (from the 31-adic arithmetic + Dwyer) as an
 explicit hypothesis. -/
 theorem thm_gerbe_provenance (W : adic_witness) (bg : WitnessBackground) :
-    ∃ G : bg.Gerbe, bg.isMu31Gerbe G ∧ bg.provenanceFor G W := by sorry
+    ∃ G : bg.Gerbe, bg.isMu31Gerbe G ∧ bg.provenanceFor G W :=
+  SelmerCartanMotiveTowers.sol_thm_gerbe_provenance W bg
 
 end SelmerCartanMotiveTowers

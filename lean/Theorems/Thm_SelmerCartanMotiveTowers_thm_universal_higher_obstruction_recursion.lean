@@ -1,4 +1,5 @@
 import Definitions.Def_formal_background
+import Solutions.Sol_thm_universal_higher_obstruction_recursion
 
 namespace SelmerCartanMotiveTowers
 
@@ -25,6 +26,7 @@ theorem thm_universal_higher_obstruction_recursion (bg : FormalBackground) :
     (∀ X : bg.Jet, bg.lifts X ↔ bg.vanishes (bg.obstruction X)) ∧
     (∀ X Y : bg.Jet, bg.gaugeRelated X Y → bg.obstruction X = bg.obstruction Y) ∧
     (∀ (op : bg.Op) (X : bg.Jet),
-      bg.obstruction (bg.actJet op X) = bg.actObs op (bg.obstruction X)) := by sorry
+      bg.obstruction (bg.actJet op X) = bg.actObs op (bg.obstruction X)) :=
+  SelmerCartanMotiveTowers.sol_thm_universal_higher_obstruction_recursion bg
 
 end SelmerCartanMotiveTowers

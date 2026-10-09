@@ -1,6 +1,7 @@
 import Definitions.Def_finite_ordered_support
 import Definitions.Def_typed_coordinates
 import Definitions.Def_witness_background
+import Solutions.Sol_thm_prime_power_comparison
 
 namespace SelmerCartanMotiveTowers
 
@@ -30,6 +31,7 @@ theorem thm_prime_power_comparison
     (S : finite_ordered_support) (ν : coefficient_exponent)
     (bg : WitnessBackground) :
     ∃ (L : bg.CRTLine) (ρ : bg.DgRealization),
-      bg.crtHasMoorePresentation L ∧ bg.crtIsSupportFunctorialDg ρ := by sorry
+      bg.crtHasMoorePresentation L ∧ bg.crtIsSupportFunctorialDg ρ :=
+  SelmerCartanMotiveTowers.sol_thm_prime_power_comparison S ν bg
 
 end SelmerCartanMotiveTowers

@@ -1,5 +1,6 @@
 import Definitions.Def_adic_witness
 import Definitions.Def_witness_background
+import Solutions.Sol_thm_31adic_witness
 
 namespace SelmerCartanMotiveTowers
 
@@ -23,12 +24,18 @@ stage 30 with no global extension. The contract is encoded in the
 inhabitation is the explicit arithmetic local–global witness for the
 terminal source obstruction (non-vacuity).
 
-REVISION NOTE (2026-10-09): The statement `Nonempty adic_witness` was
-already true (via a degenerate construction); this revision makes the
-dependence on the 31-adic arithmetic inputs EXPLICIT by taking
-`WitnessBackground` as a hypothesis, per the user's Strategy A decision
-("numerical computations are hypotheses; concrete arithmetic inputs may be
-added later"). The background fields are labeled with their paper sources. -/
-theorem thm_31adic_witness (bg : WitnessBackground) : Nonempty adic_witness := by sorry
+REVISION NOTE (P0-1, 2026-10-09, external-verifier todo.md): `Nonempty
+adic_witness` is now a SUBSTANTIVE statement. The witness structure no longer
+stores bare `Prop` labels for (W4); it carries an explicit arithmetic target
+(`branchZero`, `branchStar`), a terminal obstruction group with a
+distinguished class and a localization map, trivialization DATA witnessing
+local vanishing, and the real predicate `terminalClass ≠ 0`. A degenerate
+"both Props False" model is impossible — inhabiting the witness requires
+exhibiting real data satisfying real equations. The background's
+`kappa_ne_zero` is the specific Poitou–Tate nonvanishing fact about the
+concrete Kummer class (labeled source), routed into (W4b) by explicit
+identification; it is not a restatement of the goal. -/
+theorem thm_31adic_witness (bg : WitnessBackground) : Nonempty adic_witness :=
+  SelmerCartanMotiveTowers.sol_thm_31adic_witness bg
 
 end SelmerCartanMotiveTowers

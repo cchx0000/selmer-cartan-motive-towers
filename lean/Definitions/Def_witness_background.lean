@@ -97,7 +97,14 @@ structure WitnessBackground where
   crtIsSupportFunctorialDg : DgRealization → Prop
   crtRealization : DgRealization
   crtRealizationIs : crtIsSupportFunctorialDg crtRealization
-  /- §3. 31-adic witness data (Theorem 37.1 inputs). -/
+  /- §3. 31-adic witness data (Theorem 37.1 inputs).
+     P0-1 REVISION (2026-10-09, external-verifier todo.md): the bare Props
+     `kappaRootNonzero` and `localExtension` are replaced by structured data
+     — an explicit obstruction group with a distinguished class and a real
+     nonvanishing equation, plus local data with a localization map and
+     trivialization data. The deep arithmetic stays as explicitly labeled
+     background hypotheses, now in "there exists data with property P" form
+     where P is a real mathematical property. -/
   /-- `K₀ = Q(√-331)`: exact-`λ₃₁ = 2` (Knospe CITED + paper computes). -/
   lambda31_exact2 : Prop
   /-- Qi Kummer element `(α) = P₀³` (paper verifies). -/
@@ -106,16 +113,38 @@ structure WitnessBackground where
   carryNormalized : Prop
   /-- `K* = Q(√-15391)`: class number 93 (paper computes). -/
   classNum93 : Prop
-  /-- `κ₅^root ≠ 0` in `Sha²` (via Poitou–Tate pairing, CITED). -/
-  kappaRootNonzero : Prop
+  /-- `K₀ = Q(√-331)` carrier type (explicit arithmetic target). -/
+  BranchZero : Type
+  /-- `K* = Q(√-15391)` carrier type (explicit arithmetic target). -/
+  BranchStar : Type
   /-- Kummer class equals `κ₅^root` (paper proves). -/
   kummerEqKappa : Prop
   /-- LLSWW 4.3.1: proper 31-fold Massey = `κ₅^root` (CITED). -/
   llsWW : Prop
   /-- Global non-extension (paper proves from the above). -/
   globalNonExtension : Prop
-  /-- Local extension at the 31-adic places (paper proves). -/
-  localExtension : Prop
+  /-- The global obstruction group (Sha²-like) carrying the Kummer class. -/
+  ObstructionGroup : Type
+  [obstructionAddComm : AddCommGroup ObstructionGroup]
+  /-- The distinguished Kummer class `κ₅^root`. -/
+  kappa : ObstructionGroup
+  /-- `κ ≠ 0`: Poitou–Tate pairing nonvanishing (CITED [NSW]) + the Kummer
+      identification `κ_Kum = κ₅^root` (paper proves). This is the SPECIFIC
+      arithmetic nonvanishing fact about the CONCRETE class — an allowed
+      background input with labeled source, NOT a restatement of the witness
+      goal. The witness routes it into its (W4b) slot via the explicit
+      identification `terminalClass := kappa`. -/
+  kappa_ne_zero : kappa ≠ 0
+  /-- Local obstruction data at the places above 31. -/
+  LocalObstructionGroup : Type
+  [localObstructionAddComm : AddCommGroup LocalObstructionGroup]
+  /-- Localization map. -/
+  localizeObstruction : ObstructionGroup → LocalObstructionGroup
+  /-- Trivialization data for the local vanishing (local extension at the
+      31-adic places, paper proves); each datum certifies the real equation. -/
+  TrivDatum : Type
+  trivNonempty : Nonempty TrivDatum
+  trivVanishes : TrivDatum → (localizeObstruction kappa = 0)
   /- §4. Gerbe provenance (Theorem 38.1 inputs). -/
   Gerbe : Type
   nonempty_Gerbe : Nonempty Gerbe
@@ -137,5 +166,15 @@ structure WitnessBackground where
   hLsrc : isOrder31 Lsrc
   hLMot : isOrder31 LMot
   hSpan : carrierSpan Lar Lsrc LMot
+
+/-- The background's own obstruction-group structures, registered as instances
+(P0-1; MotivicBackground pattern). -/
+instance WitnessBackground.instAddCommGroupObstruction (bg : WitnessBackground) :
+    AddCommGroup bg.ObstructionGroup :=
+  bg.obstructionAddComm
+instance WitnessBackground.instAddCommGroupLocalObstruction
+    (bg : WitnessBackground) :
+    AddCommGroup bg.LocalObstructionGroup :=
+  bg.localObstructionAddComm
 
 end SelmerCartanMotiveTowers

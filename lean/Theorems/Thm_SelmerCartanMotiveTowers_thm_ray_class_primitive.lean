@@ -1,4 +1,5 @@
 import Definitions.Def_classfield_background
+import Solutions.Sol_thm_ray_class_primitive
 
 namespace SelmerCartanMotiveTowers
 
@@ -31,6 +32,7 @@ theorem thm_ray_class_primitive (bg : ClassFieldBackground) :
       (∀ (i : Fin 3) (w : bg.Place), bg.ramSupp (χ i) w ↔ w = v i) ∧
       (∀ i j : Fin 3, i ≠ j → bg.cupVanishes (χ i) (χ j)) ∧
       bg.heisLift (χ 0) (χ 1) ∧
-      bg.masseyOrderN (χ 0) (χ 1) (χ 2) := by sorry
+      bg.masseyOrderN (χ 0) (χ 1) (χ 2) :=
+  SelmerCartanMotiveTowers.sol_thm_ray_class_primitive bg
 
 end SelmerCartanMotiveTowers

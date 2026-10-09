@@ -1,5 +1,6 @@
 import Definitions.Def_formal_background
 import Mathlib.Logic.Function.Basic
+import Solutions.Sol_thm_marked_morita_independence
 
 namespace SelmerCartanMotiveTowers
 
@@ -32,6 +33,7 @@ theorem thm_marked_morita_independence (bg : FormalBackground) :
       Function.Bijective eRec ∧ Function.Bijective eFull ∧
       (∀ x, bg.C'.projRec (eFull x) = eRec (bg.C.projRec x)) ∧
       (∀ x, bg.C'.realizFull (eFull x) = bg.C.realizFull x) ∧
-      (∀ y, bg.C'.realizOne (eRec y) = bg.C.realizOne y) := by sorry
+      (∀ y, bg.C'.realizOne (eRec y) = bg.C.realizOne y) :=
+  SelmerCartanMotiveTowers.sol_thm_marked_morita_independence bg
 
 end SelmerCartanMotiveTowers

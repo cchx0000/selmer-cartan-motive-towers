@@ -1,3 +1,4 @@
+import Solutions.Sol_thm_successor_stage_functor
 namespace SelmerCartanMotiveTowers
 
 /-- Successor-stage lifting functor (Theorem 26.7,
@@ -36,6 +37,7 @@ theorem thm_successor_stage_functor
       isCartanMotivic n X → isCartanMotivic (n + 1) (mooreLift n X o))
     : ∃ S : ∀ n, Stage n → Stage (n + 1),
         ∀ (n : Nat) (X : Stage n), isCartanMotivic n X →
-          isCartanMotivic (n + 1) (S n X) := by sorry
+          isCartanMotivic (n + 1) (S n X) :=
+  SelmerCartanMotiveTowers.sol_thm_successor_stage_functor Stage isCartanMotivic Obstr nextObstruction mooreLift hMooreClosure
 
 end SelmerCartanMotiveTowers

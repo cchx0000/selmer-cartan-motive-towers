@@ -1,4 +1,5 @@
 import Definitions.Def_formal_background
+import Solutions.Sol_thm_classical_low_sector_comparison
 
 namespace SelmerCartanMotiveTowers
 
@@ -25,6 +26,7 @@ explicit hypothesis. The proof consumes no deep arithmetic. -/
 theorem thm_classical_low_sector_comparison (bg : FormalBackground) :
     ∃ shadow : bg.FramedSector → bg.Classical,
       (∀ X, bg.ZeroMotive X → ∃ A, bg.ArtinObj A ∧ shadow X = A) ∧
-      (∀ X, bg.MooreSeed X → ∃ B, bg.MultNPresentation B ∧ shadow X = B) := by sorry
+      (∀ X, bg.MooreSeed X → ∃ B, bg.MultNPresentation B ∧ shadow X = B) :=
+  SelmerCartanMotiveTowers.sol_thm_classical_low_sector_comparison bg
 
 end SelmerCartanMotiveTowers

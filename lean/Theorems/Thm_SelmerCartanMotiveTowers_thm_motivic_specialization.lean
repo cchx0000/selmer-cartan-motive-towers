@@ -1,6 +1,7 @@
 import Definitions.Def_adic_witness
 import Definitions.Def_motivic_moore_reedy
 import Definitions.Def_witness_background
+import Solutions.Sol_thm_motivic_specialization
 
 namespace SelmerCartanMotiveTowers
 
@@ -29,6 +30,7 @@ theorem thm_motivic_specialization
     (W : adic_witness) (M : motivic_moore_reedy) (bg : WitnessBackground) :
     ∃ (Lar : bg.CarrierLine) (Lsrc : bg.CarrierLine) (LMot : bg.CarrierLine),
       bg.isOrder31 Lar ∧ bg.isOrder31 Lsrc ∧ bg.isOrder31 LMot ∧
-      bg.carrierSpan Lar Lsrc LMot := by sorry
+      bg.carrierSpan Lar Lsrc LMot :=
+  SelmerCartanMotiveTowers.sol_thm_motivic_specialization W M bg
 
 end SelmerCartanMotiveTowers

@@ -1,6 +1,7 @@
 import Mathlib.Algebra.Group.Nat.Defs
 import Mathlib.Data.Fintype.Card
 import Mathlib.GroupTheory.SpecificGroups.Cyclic
+import Solutions.Sol_thm_formal_filtered_alignment
 
 namespace SelmerCartanMotiveTowers
 
@@ -18,6 +19,7 @@ theorem thm_formal_filtered_alignment
     (hcardC : Fintype.card ConfLine = p * q ^ 2)
     (b : MooreLine) (hb : ∀ x : MooreLine, ∃ k : Nat, x = k • b)
     (c : ConfLine) (hc : ∀ y : ConfLine, ∃ k : Nat, y = k • c)
-    : ∃! Φ : MooreLine →+ ConfLine, Φ b = c := by sorry
+    : ∃! Φ : MooreLine →+ ConfLine, Φ b = c :=
+  SelmerCartanMotiveTowers.sol_thm_formal_filtered_alignment p q hp hq MooreLine ConfLine hcardM hcardC b hb c hc
 
 end SelmerCartanMotiveTowers

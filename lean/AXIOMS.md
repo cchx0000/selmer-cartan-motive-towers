@@ -1,13 +1,15 @@
 # Axiom Audit — `#print axioms` per declaration (P0-3)
 
-Date: 2026-10-09. Environment: Lean v4.33.1, Mathlib `0df444a360eaa60ab8c11dca51a86af692955474`
-(prebuilt). Method: temporary file `~/prove2me_workspace/AuditAxioms.lean`
+Date: 2026-10-09 (refreshed after P0-1/P0-2/P1-2 statement revisions).
+Environment: Lean v4.33.1, Mathlib `0df444a360eaa60ab8c11dca51a86af692955474`
+(prebuilt). Method: temporary file `~/prove2me_workspace/AuditAxioms2.lean`
 (not committed to the repo) importing all relevant modules, run with
 `lake env lean`; outputs below are verbatim. No inference about elaboration
 beyond what Lean reports.
 
-**Coverage: 22 declarations** — 4 explicit axioms, 2 bodyless opaques,
-16 solution theorems (`SelmerCartanMotiveTowers.sol_<name>`).
+**Coverage: 28 declarations** — 4 explicit axioms, 2 bodyless opaques,
+6 package instance declarations (new in this revision), 16 solution
+theorems (`SelmerCartanMotiveTowers.sol_<name>`).
 
 **Headline: no `sorryAx` appears in any declaration.** All solutions are
 sorry-free; the only axioms in play are Lean's base axioms and the project's
@@ -64,17 +66,68 @@ the other three).
 ```
 'SelmerCartanMotiveTowers.full_mot' does not depend on any axioms
 ```
-Classification: none (bare opaque, no body, no axiom dependencies).
+Classification: no axioms (opaque type, no body).
 
 ### `SelmerCartanMotiveTowers.rec_one_mot` (`Def_rec_one_mot.lean`)
 ```
 'SelmerCartanMotiveTowers.rec_one_mot' does not depend on any axioms
 ```
-Classification: none (bare opaque, no body, no axiom dependencies).
+Classification: no axioms (opaque type, no body).
 
----
+## §3 — Package instance declarations (new in this revision)
 
-## §3 — Solution theorems
+The P0-1/P0-2 revisions register each background package's own
+`AddCommGroup` structure as an instance so that notation (`0`, `•`,
+`addOrderOf`) in statements resolves to the package's own group structure
+rather than an arbitrary unrelated instance. Each instance is a projection
+of a structure field; Lean reports the standard base-axiom triple for
+their elaboration.
+
+### `SelmerCartanMotiveTowers.MotivicBackground.instAddCommGroup`
+```
+'SelmerCartanMotiveTowers.MotivicBackground.instAddCommGroup' depends on axioms: [propext, Classical.choice, Quot.sound]
+```
+Classification: Lean base axioms.
+
+### `SelmerCartanMotiveTowers.MotivicBackground.instAddCommGroupCohomology` (P0-2)
+```
+'SelmerCartanMotiveTowers.MotivicBackground.instAddCommGroupCohomology' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+```
+Classification: Lean base axioms.
+
+### `SelmerCartanMotiveTowers.AdicWitness.instAddCommGroupTerminal` (P0-1)
+```
+'SelmerCartanMotiveTowers.AdicWitness.instAddCommGroupTerminal' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+```
+Classification: Lean base axioms.
+
+### `SelmerCartanMotiveTowers.AdicWitness.instAddCommGroupLocal` (P0-1)
+```
+'SelmerCartanMotiveTowers.AdicWitness.instAddCommGroupLocal' depends on axioms: [propext, Classical.choice, Quot.sound]
+```
+Classification: Lean base axioms.
+
+### `SelmerCartanMotiveTowers.WitnessBackground.instAddCommGroupObstruction` (P0-1)
+```
+'SelmerCartanMotiveTowers.WitnessBackground.instAddCommGroupObstruction' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+```
+Classification: Lean base axioms.
+
+### `SelmerCartanMotiveTowers.WitnessBackground.instAddCommGroupLocalObstruction` (P0-1)
+```
+'SelmerCartanMotiveTowers.WitnessBackground.instAddCommGroupLocalObstruction' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+```
+Classification: Lean base axioms.
+
+## §4 — Solution theorems
 
 ### `SelmerCartanMotiveTowers.sol_thm_ray_class_primitive` (M1)
 ```
@@ -86,32 +139,33 @@ Classification: Lean base axioms. Background hypotheses: `ClassFieldBackground`.
 ```
 'SelmerCartanMotiveTowers.sol_thm_universal_higher_obstruction_recursion' depends on axioms: [SelmerCartanMotiveTowers.tau_one]
 ```
-Classification: project axiom `tau_one` (only). Background hypotheses:
-`FormalBackground`. Note: the `tau_one` dependency is inherited through the
-structure chain — `FormalBackground` imports `selmer_cartan_tower`, whose
-field types (`square_comm`, pullback universal property) mention `tau_one`;
-verified by `#print axioms` on `FormalBackground.stackIsDerived` and on
-`selmer_cartan_tower` itself, both reporting `[tau_one]`. The proof is a pure
-field projection otherwise (no `propext`/`choice` needed).
+Classification: project axiom `tau_one`, inherited via the
+`FormalBackground` → `selmer_cartan_tower` → `tau_one` structure-field type
+chain (verified separately on `FormalBackground.stackIsDerived` and
+`selmer_cartan_tower`). The proof itself is a pure projection.
+Background hypotheses: `FormalBackground`.
 
 ### `SelmerCartanMotiveTowers.sol_thm_formal_filtered_alignment` (M3)
 ```
 'SelmerCartanMotiveTowers.sol_thm_formal_filtered_alignment' depends on axioms: [propext, Classical.choice, Quot.sound]
 ```
-Classification: Lean base axioms. No background package.
+Classification: Lean base axioms.
 
 ### `SelmerCartanMotiveTowers.sol_thm_finite_confluent_interface` (M4)
 ```
 'SelmerCartanMotiveTowers.sol_thm_finite_confluent_interface' depends on axioms: [propext, Classical.choice, Quot.sound]
 ```
-Classification: Lean base axioms. No background package.
+Classification: Lean base axioms.
 
 ### `SelmerCartanMotiveTowers.sol_thm_motivic_seed` (M5)
 ```
-'SelmerCartanMotiveTowers.sol_thm_motivic_seed' depends on axioms: [propext]
+'SelmerCartanMotiveTowers.sol_thm_motivic_seed' depends on axioms: [propext, Classical.choice, Quot.sound]
 ```
-Classification: Lean base axiom `propext` only. Background hypotheses:
-`MotivicBackground`.
+Classification: Lean base axioms. Background hypotheses: `MotivicBackground`.
+**Change from previous audit:** was `[propext]` only; now the full triple —
+the P0-2 revision added the cohomology layer (`Cohomology`, `classOf`,
+`hb_class_order`), whose instance projections elaborate with the standard
+base axioms.
 
 ### `SelmerCartanMotiveTowers.sol_thm_channel_complete_realization` (M6)
 ```
@@ -119,13 +173,18 @@ Classification: Lean base axiom `propext` only. Background hypotheses:
  Classical.choice,
  Quot.sound]
 ```
-Classification: Lean base axioms. No background package.
+Classification: Lean base axioms.
 
 ### `SelmerCartanMotiveTowers.sol_thm_role_separated_objectification` (M7)
 ```
-'SelmerCartanMotiveTowers.sol_thm_role_separated_objectification' does not depend on any axioms
+'SelmerCartanMotiveTowers.sol_thm_role_separated_objectification' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
 ```
-Classification: none (vacuous empty-model proof). No background package.
+Classification: Lean base axioms.
+**Change from previous audit:** was axiom-free (vacuous empty model); the
+P1-2 strengthening (nontrivial model with `channel_index`, at least one
+edge with legal support) now requires the standard base-axiom triple.
 
 ### `SelmerCartanMotiveTowers.sol_thm_finite_motivic_recursion_closure` (M8)
 ```
@@ -133,14 +192,13 @@ Classification: none (vacuous empty-model proof). No background package.
  Classical.choice,
  Quot.sound]
 ```
-Classification: Lean base axioms. No background package.
+Classification: Lean base axioms.
 
 ### `SelmerCartanMotiveTowers.sol_thm_successor_stage_functor` (M9)
 ```
 'SelmerCartanMotiveTowers.sol_thm_successor_stage_functor' does not depend on any axioms
 ```
-Classification: none. Background hypotheses: `Obstr`, `nextObstruction`,
-`mooreLift`, `hMooreClosure`.
+Classification: no axioms (pure construction from hypotheses).
 
 ### `SelmerCartanMotiveTowers.sol_thm_prime_power_comparison` (M10)
 ```
@@ -152,25 +210,24 @@ Classification: Lean base axioms. Background hypotheses: `WitnessBackground`.
 ```
 'SelmerCartanMotiveTowers.sol_thm_classical_low_sector_comparison' depends on axioms: [SelmerCartanMotiveTowers.tau_one]
 ```
-Classification: project axiom `tau_one` (only); same structure-chain
-inheritance as M2 (see note there). Background hypotheses:
-`FormalBackground`.
+Classification: project axiom `tau_one` (same inheritance chain as M2).
+Background hypotheses: `FormalBackground`.
 
 ### `SelmerCartanMotiveTowers.sol_prop_stack_globalization` (M12)
 ```
 'SelmerCartanMotiveTowers.sol_prop_stack_globalization' depends on axioms: [SelmerCartanMotiveTowers.tau_one]
 ```
-Classification: project axiom `tau_one` (only); same structure-chain
-inheritance as M2. Background hypotheses: `FormalBackground`.
+Classification: project axiom `tau_one` (same inheritance chain as M2).
+Background hypotheses: `FormalBackground`.
 
 ### `SelmerCartanMotiveTowers.sol_thm_marked_morita_independence` (M13)
 ```
 'SelmerCartanMotiveTowers.sol_thm_marked_morita_independence' depends on axioms: [SelmerCartanMotiveTowers.tau_one]
 ```
-Classification: project axiom `tau_one` (only); same structure-chain
-inheritance as M2. Background hypotheses: `FormalBackground`.
+Classification: project axiom `tau_one` (same inheritance chain as M2).
+Background hypotheses: `FormalBackground`.
 
-### `SelmerCartanMotiveTowers.sol_thm_31adic_witness` (M14 / main goal)
+### `SelmerCartanMotiveTowers.sol_thm_31adic_witness` (M14, main goal)
 ```
 'SelmerCartanMotiveTowers.sol_thm_31adic_witness' depends on axioms: [propext, Classical.choice, Quot.sound]
 ```
@@ -180,51 +237,38 @@ Classification: Lean base axioms. Background hypotheses: `WitnessBackground`.
 ```
 'SelmerCartanMotiveTowers.sol_thm_gerbe_provenance' depends on axioms: [propext, Classical.choice, Quot.sound]
 ```
-Classification: Lean base axioms. Background hypotheses: `adic_witness`,
-`WitnessBackground`.
+Classification: Lean base axioms. Background hypotheses: `WitnessBackground`.
 
 ### `SelmerCartanMotiveTowers.sol_thm_motivic_specialization` (M16)
 ```
 'SelmerCartanMotiveTowers.sol_thm_motivic_specialization' depends on axioms: [propext, Classical.choice, Quot.sound]
 ```
-Classification: Lean base axioms. Background hypotheses: `adic_witness`,
-`motivic_moore_reedy`, `WitnessBackground`.
+Classification: Lean base axioms. Background hypotheses: `WitnessBackground`.
 
 ---
 
 ## Summary table
 
-| Declaration | sorryAx | Lean base axioms | Project axioms |
-|---|---|---|---|
-| `tau_one` | — | — | self |
-| `depth_of_full` | — | — | self |
-| `depth_of_rec` | — | — | self |
-| `tau_one_depth_fiber` | — | — | all four |
-| `full_mot` (opaque) | — | — | — |
-| `rec_one_mot` (opaque) | — | — | — |
-| M1 `sol_thm_ray_class_primitive` | — | propext, choice, Quot.sound | — |
-| M2 `sol_thm_universal_higher_obstruction_recursion` | — | — | `tau_one` |
-| M3 `sol_thm_formal_filtered_alignment` | — | propext, choice, Quot.sound | — |
-| M4 `sol_thm_finite_confluent_interface` | — | propext, choice, Quot.sound | — |
-| M5 `sol_thm_motivic_seed` | — | propext | — |
-| M6 `sol_thm_channel_complete_realization` | — | propext, choice, Quot.sound | — |
-| M7 `sol_thm_role_separated_objectification` | — | — | — |
-| M8 `sol_thm_finite_motivic_recursion_closure` | — | propext, choice, Quot.sound | — |
-| M9 `sol_thm_successor_stage_functor` | — | — | — |
-| M10 `sol_thm_prime_power_comparison` | — | propext, choice, Quot.sound | — |
-| M11 `sol_thm_classical_low_sector_comparison` | — | — | `tau_one` |
-| M12 `sol_prop_stack_globalization` | — | — | `tau_one` |
-| M13 `sol_thm_marked_morita_independence` | — | — | `tau_one` |
-| M14 `sol_thm_31adic_witness` (goal) | — | propext, choice, Quot.sound | — |
-| M15 `sol_thm_gerbe_provenance` | — | propext, choice, Quot.sound | — |
-| M16 `sol_thm_motivic_specialization` | — | propext, choice, Quot.sound | — |
+| Declaration | Axioms |
+|---|---|
+| `tau_one` | [tau_one] (self) |
+| `depth_of_full` | [depth_of_full] (self) |
+| `depth_of_rec` | [depth_of_rec] (self) |
+| `tau_one_depth_fiber` | all four project axioms |
+| `full_mot`, `rec_one_mot` (opaques) | none |
+| 6 package instances (§3) | [propext, Classical.choice, Quot.sound] |
+| M1, M3, M4, M6, M8, M10, M14, M15, M16 | [propext, Classical.choice, Quot.sound] |
+| M5 | [propext, Classical.choice, Quot.sound] (was [propext]) |
+| M7 | [propext, Classical.choice, Quot.sound] (was none) |
+| M9 | none |
+| M2, M11, M12, M13 | [tau_one] via FormalBackground chain |
 
-**Per-solution dependency profile:**
-- 9 solutions: `[propext, Classical.choice, Quot.sound]` (standard Lean base axioms only).
-- 1 solution (M5): `[propext]` only.
-- 2 solutions (M7, M9): no axioms at all.
-- 4 solutions (M2, M11, M12, M13 — exactly the `FormalBackground` ones):
-  `[SelmerCartanMotiveTowers.tau_one]` only, inherited via the
-  `FormalBackground` → `selmer_cartan_tower` → `tau_one` structure chain
-  (field types mention `tau_one`); their proofs are otherwise pure projections.
-- 0 solutions depend on `sorryAx`.
+## Differences from the previous audit (2026-10-09, pre-P0-1/P0-2/P1-2)
+
+1. **Coverage 22 → 28 declarations**: the 6 new package instance
+   declarations (§3) are audited — all depend only on Lean base axioms.
+2. **M5** (`sol_thm_motivic_seed`): `[propext]` → full triple, due to the
+   P0-2 cohomology layer.
+3. **M7** (`sol_thm_role_separated_objectification`): no axioms → full
+   triple, due to the P1-2 nontrivial-model strengthening.
+4. Everything else unchanged. **Still 0 `sorryAx` across all declarations.**

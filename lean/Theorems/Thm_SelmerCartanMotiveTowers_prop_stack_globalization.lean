@@ -1,4 +1,5 @@
 import Definitions.Def_formal_background
+import Solutions.Sol_prop_stack_globalization
 
 namespace SelmerCartanMotiveTowers
 
@@ -18,6 +19,7 @@ while the conclusion required `∃ D : moduliStack G, isDerivedStack G D`
 paper (it is essentially definitional, about the fixed presentation); this
 revision takes that specific setup as an explicit hypothesis. -/
 theorem prop_stack_globalization (bg : FormalBackground) :
-    ∀ G : bg.DGCategory, ∃ D : bg.moduliStack G, bg.isDerivedStack G D := by sorry
+    ∀ G : bg.DGCategory, ∃ D : bg.moduliStack G, bg.isDerivedStack G D :=
+  SelmerCartanMotiveTowers.sol_prop_stack_globalization bg
 
 end SelmerCartanMotiveTowers

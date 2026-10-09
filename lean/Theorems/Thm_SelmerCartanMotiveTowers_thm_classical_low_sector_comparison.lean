@@ -8,14 +8,20 @@ namespace SelmerCartanMotiveTowers
 
 Assuming the formal background (`FormalBackground` §2: the paper's specific
 classical shadow functor from the framed Cartan-generated root/Moore sector
-to classical `ℓ`-adic objects), there exists a classical shadow functor
-sending the rooted arithmetic zero-motive to the corresponding Artin
-degree-zero object and the primitive motivic Moore seed (with its genuine
-root-stack antecedent) to the standard multiplication-by-`N` Moore
-presentation. The paper further shows it is well defined up to canonical
-isomorphism after forgetting the frame, sends successor components to the
-corresponding classical objects, and respects support deletion, frame unit
-change, and all finite typed composites.
+to classical Moore cones), there exists a classical shadow functor sending
+the rooted arithmetic zero-motive to the cone of zero (the Artin object,
+`H⁰ = ℤ`) and the primitive motivic Moore seed (with its genuine root-stack
+antecedent) to a nontrivial Moore cone `Q_d` (the standard
+multiplication-by-`d` presentation, `H⁰ = ZMod d`).
+
+P1-3 REVISION (2026-10-09): The target is now CONCRETE
+(`ClassicalMooreCone`, the paper's `Q_d = Cone(d : T → T)[-1]` as explicit
+2-term data).  `IsArtin`/`IsMoorePresentation` are concrete predicates
+(`d = 0` / `d > 0`), not opaque.  The source sector and the shadow functor
+itself remain background inputs (the paper's marked dg sector is not
+formalizable in Mathlib); target-side cone computations (order-reduction
+maps `q_{d,d'}`, transitivity, `H⁰ = ZMod d`) are PROVED in
+`Def_classical_shadow_cone`, not assumed.
 
 REVISION NOTE (2026-10-09): The first draft was FALSE — it universally
 quantified over arbitrary `FramedSector`/`Classical` types and unconstrained
@@ -24,9 +30,9 @@ be inhabited (countermodel: `ZeroMotive` true but `ArtinObj` constantly
 `False`). This revision takes the paper's specific shadow setup as an
 explicit hypothesis. The proof consumes no deep arithmetic. -/
 theorem thm_classical_low_sector_comparison (bg : FormalBackground) :
-    ∃ shadow : bg.FramedSector → bg.Classical,
-      (∀ X, bg.ZeroMotive X → ∃ A, bg.ArtinObj A ∧ shadow X = A) ∧
-      (∀ X, bg.MooreSeed X → ∃ B, bg.MultNPresentation B ∧ shadow X = B) :=
+    ∃ shadow : bg.FramedSector → ClassicalMooreCone,
+      (∀ X, bg.ZeroMotive X → IsArtin (shadow X)) ∧
+      (∀ X, bg.MooreSeed X → IsMoorePresentation (shadow X)) :=
   SelmerCartanMotiveTowers.sol_thm_classical_low_sector_comparison bg
 
 end SelmerCartanMotiveTowers

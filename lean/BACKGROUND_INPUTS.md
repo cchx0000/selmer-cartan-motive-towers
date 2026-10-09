@@ -104,8 +104,10 @@ predicates); this package supplies the paper's specific setups.
 |---|---|---|
 | §1 `Jet`, `ObsClass`, `obstruction`, `vanishes`, `isCocycle`, `lifts`, `gaugeRelated`, `Op`, `actJet`, `actObs` | DEF | Obstruction-recursion setup |
 | §1 `obsCocycle`, `liftIff`, `gaugeInv`, `natural` | LEM | Paper's dg-algebra proof (Bianchi + PD degrees); recorded as given — **conditional assembly**, not a substitute for the construction |
-| §2 `FramedSector`, `Classical`, `ZeroMotive`, `MooreSeed`, `ArtinObj`, `MultNPresentation`, `shadow` | DEF | Shadow functor setup |
-| §2 `shadowZero`, `shadowMoore` | LEM | Paper constructs the shadow functor; defining properties recorded |
+| §2 `FramedSector`, `ZeroMotive`, `MooreSeed` | DEF | Source sector (paper-private; P1-3 keeps as background) |
+| §2 `shadow` | LEM | The shadow functor itself (paper constructs; recorded as input) |
+| §2 `shadowZero`, `shadowMoore` | LEM | CONCRETE (P1-3): `IsArtin` (`d = 0`) / `IsMoorePresentation` (`d > 0`) about `ClassicalMooreCone`; falsifiable, not arbitrary |
+| `ClassicalMooreCone`, `reduce`, `reduce_refl`, `reduce_trans`, `line_order` | DEF/THM | PROVED (P1-3): `Q_d = Cone(d : T → T)[-1]` as explicit 2-term data; order-reduction `q_{d,d'}` with transitivity; `H⁰ = ZMod d` |
 | §3 `DGCategory`, `moduliStack`, `isDerivedStack`, `stackIsDerived` | DEF | Moduli of pseudo-perfect modules; the proposition has no proof in the paper (essentially definitional) |
 | §4 `C`, `C'`, `eRec`, `eFull`, `eRecBijective`, `eFullBijective`, `eIntertwineProj`, `eIntertwineFull`, `eIntertwineOne` | EXT | Toën derived Morita theory (cited); representing data + consequences |
 

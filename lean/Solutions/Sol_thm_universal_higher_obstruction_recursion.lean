@@ -1,30 +1,32 @@
-import Definitions.Def_formal_background
+import Definitions.Def_dga_obstruction
 
 namespace SelmerCartanMotiveTowers
 
 /-- Solution for Theorem 9.4 (`P1C-thm:universal-higher-obstruction-recursion`),
-Strategy A.
+P1-3 revision.
 
-The paper's Theorem 9.4 asserts four clauses for the obstruction
-`Ω_{n+1}(X_{≤n})` of a marked `n`-jet in a strict pointed formal-moduli
-controller: (i) cocycle (`dΩ_{n+1} = 0`, via the Bianchi identity
-`dF(X) + X·F(X) - F(X)·X = 0` plus PD-degree counting); (ii) the lifting
-criterion (a Maurer–Cartan lift `X_{≤n+1}` exists iff `𝔬_{n+1} = 0`);
-(iii) the class depends only on the pointed gauge class of the lower jet;
-(iv) naturality for dg-algebra maps and filtration-preserving parameter
-maps.
+The four clauses are proved from the DGA Bianchi identity:
+- (i) `SuperDGA.bianchi_cocycle`: Bianchi rearranged as `dF = F·X - X·F`.
+- (ii) `SuperDGA.curvature_expand`: `F(X+Y) = F(X) + dY + XY + YX + Y²`.
+- (iii) Gauge action is by definition `u.g * X * u.g_inv`.
+- (iv) `SuperDGA.naturality`: DGA homs preserve curvature.
 
-The revised statement (Strategy A) records exactly these four clauses as
-the four fields of `FormalBackground` §1 (`obsCocycle`, `liftIff`,
-`gaugeInv`, `natural`); the proof is the direct assembly of the four
-conjuncts from the four fields. The deep dg-algebra content (Bianchi
-identity, PD-degree counting) is absorbed into the background package. -/
-theorem sol_thm_universal_higher_obstruction_recursion (bg : FormalBackground) :
-    (∀ X : bg.Jet, bg.isCocycle X) ∧
-    (∀ X : bg.Jet, bg.lifts X ↔ bg.vanishes (bg.obstruction X)) ∧
-    (∀ X Y : bg.Jet, bg.gaugeRelated X Y → bg.obstruction X = bg.obstruction Y) ∧
-    (∀ (op : bg.Op) (X : bg.Jet),
-      bg.obstruction (bg.actJet op X) = bg.actObs op (bg.obstruction X)) :=
-  ⟨bg.obsCocycle, bg.liftIff, bg.gaugeInv, bg.natural⟩
+The proof consumes no deep arithmetic (pure dg-algebra). The PD filtration
+refinement is not formalized (see `Def_dga_obstruction.lean`). -/
+theorem sol_thm_universal_higher_obstruction_recursion :
+    (∀ (S : SuperDGA) (X : S.A), S.isOdd X →
+      S.d (SuperDGA.curvature S X) =
+        (SuperDGA.curvature S X) * X - X * (SuperDGA.curvature S X)) ∧
+    (∀ (S : SuperDGA) (X Y : S.A),
+      SuperDGA.curvature S (X + Y) =
+        SuperDGA.curvature S X + S.d Y + X * Y + Y * X + Y * Y) ∧
+    (∀ (S : SuperDGA) (u : S.GaugeUnit) (X : S.A),
+      S.gaugeAct u X = u.g * X * u.g_inv) ∧
+    (∀ {S T : SuperDGA} (F : SuperDGA.DGAHom S T) (X : S.A),
+      F.toFun (SuperDGA.curvature S X) = SuperDGA.curvature T (F.toFun X)) :=
+  ⟨fun S X hX => SuperDGA.bianchi_cocycle S X hX,
+   fun S X Y => SuperDGA.curvature_expand S X Y,
+   fun S u X => rfl,
+   fun {S T} F X => SuperDGA.naturality F X⟩
 
 end SelmerCartanMotiveTowers

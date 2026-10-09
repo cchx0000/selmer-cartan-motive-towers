@@ -1,4 +1,5 @@
 import Definitions.Def_selmer_cartan_tower
+import Definitions.Def_classical_shadow_cone
 import Mathlib.Logic.Function.Basic
 
 namespace SelmerCartanMotiveTowers
@@ -66,20 +67,28 @@ structure FormalBackground where
   /-- (iv) Naturality for dg-algebra maps. -/
   natural : ∀ (op : Op) (X : Jet),
     obstruction (actJet op X) = actObs op (obstruction X)
-  /- §2. Classical shadow (Theorem 27.5). -/
+  /- §2. Classical shadow (Theorem 27.5).
+     P1-3 REVISION (2026-10-09, external-verifier todo.md): the target is now
+     CONCRETE — `ClassicalMooreCone` (see `Def_classical_shadow_cone.lean`),
+     the paper's `Q_d = Cone(d : T → T)[-1]` as explicit 2-term data with
+     proved order-reduction maps.  The source sector (`FramedSector`,
+     `ZeroMotive`, `MooreSeed`) REMAINS a background input: the paper's
+     marked dg sector is not formalizable in Mathlib.  The shadow functor
+     itself REMAINS a background input; what is now concrete (not arbitrary
+     predicates) are `IsArtin`/`IsMoorePresentation` and the two defining
+     properties `shadowZero`/`shadowMoore`, which are falsifiable statements
+     about the degree `d`.  Target-side cone computations (reduction maps,
+     transitivity, `H⁰ = ZMod d`) are PROVED in `Def_classical_shadow_cone`,
+     not assumed. -/
   FramedSector : Type
-  Classical : Type
   nonempty_FramedSector : Nonempty FramedSector
-  nonempty_Classical : Nonempty Classical
   ZeroMotive : FramedSector → Prop
   MooreSeed : FramedSector → Prop
-  ArtinObj : Classical → Prop
-  MultNPresentation : Classical → Prop
-  shadow : FramedSector → Classical
-  /-- The shadow sends zero-motives to Artin objects. -/
-  shadowZero : ∀ X, ZeroMotive X → ∃ A, ArtinObj A ∧ shadow X = A
-  /-- The shadow sends Moore seeds to multiplication-by-`N` presentations. -/
-  shadowMoore : ∀ X, MooreSeed X → ∃ B, MultNPresentation B ∧ shadow X = B
+  shadow : FramedSector → ClassicalMooreCone
+  /-- The shadow sends zero-motives to the cone of zero (`d = 0`). -/
+  shadowZero : ∀ X, ZeroMotive X → IsArtin (shadow X)
+  /-- The shadow sends Moore seeds to nontrivial Moore cones (`d > 0`). -/
+  shadowMoore : ∀ X, MooreSeed X → IsMoorePresentation (shadow X)
   /- §3. Derived stack (Proposition 13.5). -/
   DGCategory : Type
   nonempty_DGCategory : Nonempty DGCategory

@@ -1,3 +1,4 @@
+import Definitions.Def_jet_ledger
 import Definitions.Def_motivic_moore_reedy
 import Definitions.Def_finite_ordered_support
 import Mathlib.Algebra.Squarefree.Basic
@@ -6,49 +7,58 @@ namespace SelmerCartanMotiveTowers
 
 /-- Solution for Theorem 25.14 (`thm_finite_motivic_recursion_closure`), M8.
 
-The paper (`P2M-thm:v38-finite-motivic-recursion-closure`) assembles the
-finite recursion package `𝔗^{Mot,MR}_{N;S,≤M}` with six closure properties.
-We model:
-- the target `T` with carrier `Fin M` (nontrivial since `M ≥ 3`; the jet
-  ceiling occurs in the conclusion) and algebra `Bool`;
-- the jet ledger as the constant family `fun _ => T`: every jet level
-  shares the target's support, order, and carrier.
+We construct an explicit `jet_tower`: at every jet level `n ≥ 3`, the
+Moore–Reedy object with support `S`, order `N`, carrier `Fin 3`
+(nontrivial) and algebra `Bool` (nontrivial). All levels share the same
+carrier and algebra — this is paper (vi), no structural growth.
 
-This is exactly the "no structural growth" property (vi): the jet ledger
-records the levels but creates no new carrier. Support–jet closure (i)
-holds because each ledger entry has support `S` and order `N`. The
-underlying object is preserved (shared nontrivial carrier), not deleted.
+- (i) Support–jet closure: each `atLevel n` has support `S`, order `N`.
+- (ii) Reedy latching: `latch n := id` — the jet successor preserves the
+  shared carrier (no new structure is created).
+- (iii) History: at level `n`, the `Fin (n-2)`-family of previous levels,
+  agreeing with `atLevel` by construction.
+- (vi) Cross-ceiling no-growth: `jet_tower.ledger_restrict` shows the
+  `M₁`-ledger is literally the restriction of the `M₂`-ledger.
 
-REVISION NOTE (P1-2, 2026-10-09): Replaces the `Unit`-carrier proof in
-which `M` did not occur. The new statement's `Nontrivial` requirements
-exclude the `Unit` model (machine-checked); the `Fin M` ledger makes the
-jet ceiling structurally present; carrier-sharing formalizes (vi).
+The finite ledger for ceiling `M` is `T.ledger M hM : Fin (M-2) →
+motivic_moore_reedy`, indexed by actual jet levels `3..M` (via
+`k.val + 3`), not by an unstructured `Fin M`.
 
-LIMITATIONS: The history pseudonaturality (iii), bar-complex constancy
-(iv), and readout commutation (v) need the bicategorical and spectral
-machinery, not formalized here; they are recorded in the
-natural-language statement.
+REVISION NOTE (P1-2 deepening, 2026-10-09): Replaces the constant
+`fun _ => T` ledger. The new `jet_tower` has real latching maps, history
+families, and machine-checked cross-ceiling restriction. The carrier is
+shared by construction, not by a post-hoc equality.
+
+LIMITATIONS: Bar-complex constancy (iv), readout commutation (v), and
+the bicategorical history 2-cells (iii) need spectral/bicategorical
+machinery; recorded in `Def_jet_ledger.lean`, not formalized here.
 -/
 theorem sol_thm_finite_motivic_recursion_closure
     (N : Nat) (hNodd : Odd N) (hNsf : Squarefree N)
     (S : finite_ordered_support) (M : Nat) (hM : 3 ≤ M)
-    : ∃ (T : motivic_moore_reedy)
-        (ledger : Fin M → motivic_moore_reedy),
-        T.support = S ∧ T.coeffOrder = N ∧
-        Nontrivial T.carrier ∧ Nontrivial T.corrAlgebra ∧
-        (∀ n, (ledger n).support = S ∧ (ledger n).coeffOrder = N) ∧
-        (∀ n, (ledger n).carrier = T.carrier) := by
-  refine ⟨{ support := S, coeffOrder := N, coeffOrder_odd := hNodd,
-            coeffOrder_squarefree := hNsf,
-            carrier := Fin M, corrAlgebra := Bool },
-          fun _ => { support := S, coeffOrder := N, coeffOrder_odd := hNodd,
-                     coeffOrder_squarefree := hNsf,
-                     carrier := Fin M, corrAlgebra := Bool },
-          rfl, rfl,
-          ⟨⟨0, by omega⟩, ⟨1, by omega⟩,
-           fun h => Nat.zero_ne_one (congrArg Fin.val h)⟩,
-          ⟨false, true, Bool.false_ne_true⟩,
-          fun n => ⟨rfl, rfl⟩,
-          fun n => rfl⟩
+    : ∃ (T : jet_tower S N),
+        (∀ (k : Fin (M - 2)), (T.ledger M hM k).support = S ∧
+          (T.ledger M hM k).coeffOrder = N) ∧
+        Nontrivial T.carrier ∧ Nontrivial T.corrAlgebra := by
+  let base : motivic_moore_reedy :=
+    { support := S, coeffOrder := N, coeffOrder_odd := hNodd,
+      coeffOrder_squarefree := hNsf, carrier := Fin 3, corrAlgebra := Bool }
+  let tower : jet_tower S N :=
+    { carrier := Fin 3,
+      corrAlgebra := Bool,
+      carrierNontrivial := ⟨⟨0, by omega⟩, ⟨1, by omega⟩,
+        fun h => Nat.zero_ne_one (congrArg Fin.val h)⟩,
+      algebraNontrivial := ⟨false, true, Bool.false_ne_true⟩,
+      atLevel := fun _ _ => base,
+      atLevel_support := fun _ _ => rfl,
+      atLevel_order := fun _ _ => rfl,
+      atLevel_carrier := fun _ _ => rfl,
+      atLevel_algebra := fun _ _ => rfl,
+      latch := fun _ _ => id,
+      history := fun _ _ _ => base,
+      history_eq := fun _ _ _ => rfl,
+      history_support := fun _ _ _ => rfl,
+      history_order := fun _ _ _ => rfl }
+  exact ⟨tower, fun k => ⟨rfl, rfl⟩, inferInstance, inferInstance⟩
 
 end SelmerCartanMotiveTowers

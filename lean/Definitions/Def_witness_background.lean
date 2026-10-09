@@ -1,5 +1,6 @@
 import Definitions.Def_adic_witness
 import Definitions.Def_finite_ordered_support
+import Definitions.Def_pointed_cyclic_carrier
 
 namespace SelmerCartanMotiveTowers
 
@@ -154,18 +155,23 @@ structure WitnessBackground where
   provenanceFor : Gerbe → adic_witness → Prop
   /-- The gerbe has provenance for every witness (Dwyer CITED + §3 data). -/
   gerbeProvenance : ∀ W : adic_witness, provenanceFor gerbe W
-  /- §5. Carrier span (Theorem 38.5 inputs). -/
-  CarrierLine : Type
-  nonempty_CarrierLine : Nonempty CarrierLine
-  isOrder31 : CarrierLine → Prop
-  carrierSpan : CarrierLine → CarrierLine → CarrierLine → Prop
-  Lar : CarrierLine
-  Lsrc : CarrierLine
-  LMot : CarrierLine
-  hLar : isOrder31 Lar
-  hLsrc : isOrder31 Lsrc
-  hLMot : isOrder31 LMot
-  hSpan : carrierSpan Lar Lsrc LMot
+  /- §5. Carrier span (Theorem 38.5 inputs).
+
+  The three pointed cyclic order-31 carrier lines: the arithmetic line
+  `L_*^{ar}` (from the `K*` branch's `κ₅^root` identification), the marked
+  source line `L_*^{src}`, and the motivic Moore line `L_*^{Mot}` (the
+  fixed Moore carrier in the `I_*`-block). Their specific
+  arithmetic/motivic identity is background; the pointed span
+  `L_*^{ar} ← L_*^{src} → L_*^{Mot}` is *proved* (Theorem 38.5) via the
+  canonical generator-preserving isomorphisms
+  (`pointed_cyclic_carrier.canonicalIso`), not assumed.
+
+  CARRIER-LEVEL ONLY. The independent operation-level provenance
+  (unipotent central extension, obstruction gerbe) is Theorem 38.1
+  (`thm_gerbe_provenance`), not here. -/
+  Lar : pointed_cyclic_carrier
+  Lsrc : pointed_cyclic_carrier
+  LMot : pointed_cyclic_carrier
 
 /-- The background's own obstruction-group structures, registered as instances
 (P0-1; MotivicBackground pattern). -/

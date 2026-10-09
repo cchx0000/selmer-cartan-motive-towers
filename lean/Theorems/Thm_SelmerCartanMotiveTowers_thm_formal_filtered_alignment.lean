@@ -1,25 +1,21 @@
-import Mathlib.Algebra.Group.Nat.Defs
-import Mathlib.Data.Fintype.Card
-import Mathlib.GroupTheory.SpecificGroups.Cyclic
+import Definitions.Def_moore_cohomology_line
 import Solutions.Sol_thm_formal_filtered_alignment
 
 namespace SelmerCartanMotiveTowers
 
 /-- Formal/filtered alignment at depth two (Theorem 8.21,
-`P1C-thm:formal-filtered-alignment`): the universal exact-order Moore line
-and the primitive filtered confluence line — both cyclic of exact order
-`p·q²` with fixed primitive generators — admit a unique pointed
-isomorphism sending generator to generator. Under `q`-primary reduction it
-sends the universal Moore generator to the residual secondary generator. -/
+`P1C-thm:formal-filtered-alignment`), strengthened per external-verifier
+P1-4: the universal exact-order Moore line and the primitive filtered
+confluence line — now concrete (`ZMod (p*q^2)` and `ZMod p × ZMod (q^2)`,
+see `Def_moore_cohomology_line.lean`) — admit a unique pointed `AddEquiv`
+sending `[B_{2,1}]` to `(b_p, κ̃ mod q²)`. Under q-primary reduction it
+sends the universal Moore generator to the residual secondary generator
+`κ̄` (paper L2235–2260). -/
 theorem thm_formal_filtered_alignment
-    (p q : Nat) (hp : p.Prime) (hq : q.Prime)
-    (MooreLine ConfLine : Type) [AddCommGroup MooreLine] [AddCommGroup ConfLine]
-    [Fintype MooreLine] [Fintype ConfLine]
-    (hcardM : Fintype.card MooreLine = p * q ^ 2)
-    (hcardC : Fintype.card ConfLine = p * q ^ 2)
-    (b : MooreLine) (hb : ∀ x : MooreLine, ∃ k : Nat, x = k • b)
-    (c : ConfLine) (hc : ∀ y : ConfLine, ∃ k : Nat, y = k • c)
-    : ∃! Φ : MooreLine →+ ConfLine, Φ b = c :=
-  SelmerCartanMotiveTowers.sol_thm_formal_filtered_alignment p q hp hq MooreLine ConfLine hcardM hcardC b hb c hc
+    (p q : ℕ) (hp : p.Prime) (hq : q.Prime) (hpq : p ≠ q) :
+    ∃! e : moore_line p q ≃+ conf_line p q,
+      e (mooreGen p q) = confGen p q ∧
+      qPrimaryRed p q (e (mooreGen p q)) = residualGen q :=
+  SelmerCartanMotiveTowers.sol_thm_formal_filtered_alignment p q hp hq hpq
 
 end SelmerCartanMotiveTowers

@@ -28,8 +28,12 @@ paper):
 
 FIELDS:
 - `b_mot`, `c_mot`: the root Moore pair, with `d(b_mot) = 0`,
-  `d(c_mot) = N • b_mot`, `b_mot` of EXACT additive order `N` as a cochain
-  (conclusion of `P2M-prop:appendix-root-moore-complex`).
+  `d(c_mot) = N • b_mot` (conclusion of `P2M-prop:appendix-root-moore-complex`).
+  NOTE: `b_mot` is NOT `N`-torsion as a cochain — the integral Moore model
+  has differential `×N`, so `d(c_mot) = N • b_mot` is the genuine (nonzero)
+  value of the differential. The `N`-torsion lives at cohomology level:
+  `hb_class_order` records the paper's `ord[b_mot] = N` for the CLASS
+  `[b_mot]` (Totaro's `CH^*(Bμ_N) = Z[ξ]/(Nξ)` computation).
 - `Cohomology`, `classOf`: the cohomology layer (cycles modulo boundaries);
   `hb_class_order` records the paper's `ord[b_mot] = N` at the level of
   cohomology classes (Totaro's computation), not just cochains.
@@ -55,11 +59,17 @@ structure MotivicBackground where
   /-- The canonical projection; its kernel is exactly the boundaries. -/
   classOf : Cochain →+ Cohomology
   classOf_ker : ∀ x, classOf x = 0 ↔ ∃ y, x = d y
-  /-- The root Moore class: closed, of exact additive order `N` as a cochain. -/
+  /-- The root Moore class: a cycle. NOTE (P0-2 fix, 2026-10-09): `b_mot`
+  is NOT `N`-torsion as a cochain. The paper's integral two-term Moore model
+  has differential `×N` (paper L5422–5426), so `d(c_mot) = N • b_mot` is the
+  genuine nonzero value of the differential — the old cochain-level fields
+  `hb_order : N • b_mot = 0` and `hb_exact` FORCED `d c_mot = 0`, collapsing
+  the model. They are deleted. The `N`-torsion is a cohomological phenomenon:
+  `N • [b_mot] = [d c_mot] = 0` (since `d c_mot` is a boundary), and
+  `hb_class_order` records the EXACT order `N` of the class `[b_mot]`
+  (Totaro's `CH^*(Bμ_N)` computation). -/
   b_mot : Cochain
   hb_closed : d b_mot = 0
-  hb_order : N • b_mot = 0
-  hb_exact : ∀ k : Nat, 0 < k → k < N → k • b_mot ≠ 0
   /-- The paper's `ord[b_mot] = N`, at cohomology level (Totaro's
   `CH^*(Bμ_N) = Z[ξ]/(Nξ)` computation). This rules out the "b is a
   boundary" model: a boundary has class `0`, whose `addOrderOf` is `1 ≠ N`

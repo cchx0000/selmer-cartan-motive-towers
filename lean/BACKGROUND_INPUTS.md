@@ -66,11 +66,15 @@ Consumed by: M10 (`thm_prime_power_comparison`) — `crtLine`, `crtLineHas`, `cr
 | `carryNormalized` | LEM | Hensel certificates; paper computes |
 | `classNum93` | NUM | `K* = Q(√-15391)` class number 93; paper computes |
 | `BranchZero`, `BranchStar` | DEF | Explicit arithmetic targets `K₀`, `K*` (P0-1) |
-| `kummerEqKappa` | LEM | `κ_Kum = κ₅^root`; paper proves |
+| `kummerClass` | DEF | The Kummer class `κ_Kum` from the Qi Kummer element |
+| `kummerEqKappa` | LEM | `kummerClass = kappa` as a real equation (paper proves) |
 | `llsWW` | EXT | LLSWW Thm 4.3.1 (proper 31-fold Massey); cited |
 | `globalNonExtension` | LEM | Paper proves from the above |
 | `ObstructionGroup`, `AddCommGroup`, `kappa` | DEF | Global obstruction group (Sha²-like) + distinguished class |
-| `kappa_ne_zero` | EXT | `κ ≠ 0` via Poitou–Tate pairing (cited [NSW]) + Kummer identification (paper proves). **Not GOAL!**: this is the specific arithmetic nonvanishing fact about the concrete class `κ₅^root`; the witness routes it via the explicit identification `terminalClass := kappa`. See P0-1 anti-circularity note in the file. |
+| `poitouTatePairing` | EXT | Poitou–Tate pairing (cited [NSW]); the pairing itself is background |
+| `pairingDetectsNonzero` | EXT | Pairing nondegeneracy: nontrivial pairing ⟹ nonzero class (cited [NSW]) |
+| `kummerPairingNonzero` | NUM/EXT | The specific nonzero pairing value for the Kummer class |
+| `WitnessBackground.kappa_ne_zero` (theorem, not a field) | PROVED | `κ ≠ 0` DERIVED from the above three inputs + `kummerEqKappa`. **Anti-circularity fix**: previously a bare field; now the derivation is a proof. |
 | `LocalObstructionGroup`, `AddCommGroup`, `localizeObstruction` | DEF | Local data + localization map (P0-1) |
 | `TrivDatum`, `trivNonempty`, `trivVanishes` | LEM | Local extension at 31-adic places; paper proves; each datum certifies the real equation |
 
@@ -86,14 +90,16 @@ Consumed by: M14/goal (`thm_31adic_witness`) — routes §3 data into `adic_witn
 
 Consumed by: M15 (`thm_gerbe_provenance`).
 
-### §5 — Carrier span (M16)
+### §5 — Carrier span (M16; P1-4 rewritten)
 
 | Field | Label | Source |
 |---|---|---|
-| `CarrierLine`, `nonempty_CarrierLine`, `isOrder31`, `carrierSpan` | DEF | Order-31 carrier line setup |
-| `Lar`, `Lsrc`, `LMot`, `hLar`, `hLsrc`, `hLMot`, `hSpan` | LEM | Paper's §38 construction (arithmetic carriers from §3, motivic from Moore seed) |
+| `Lar`, `Lsrc`, `LMot` | DEF | Three concrete `pointed_cyclic_carrier`s (P1-4): the paper's arithmetic/source/motivic order-31 carriers, now as real pointed cyclic groups rather than opaque types + predicates. The span isomorphisms are **constructed** by M16's proof (`canonicalIso`), not assumed. |
+| (removed) | — | Old `CarrierLine` type + `isOrder31`/`carrierSpan`/`hLar`/`hLsrc`/`hLMot`/`hSpan` predicates deleted in P1-4. |
 
-Consumed by: M16 (`thm_motivic_specialization`).
+Consumed by: M16 (`thm_motivic_specialization`) — constructs `Lsrc ≃+ Lar` and `Lsrc ≃+ LMot`.
+
+**Note on M14's §3 usage**: M14 (`thm_31adic_witness`) routes `QAdicLine`, `qiKummer`, `carryNormalized`, `ObstructionGroup`/`kappa`/`kappa_ne_zero`, `TrivDatum` into the witness. The fields `lambda31_exact2`, `classNum93`, `kummerEqKappa`, `llsWW`, `globalNonExtension` are recorded background labels not projected into the current proof term — they document the paper's arithmetic context.
 
 ## FormalBackground (M2, M11, M12, M13)
 
@@ -104,11 +110,11 @@ predicates); this package supplies the paper's specific setups.
 |---|---|---|
 | §1 `Jet`, `ObsClass`, `obstruction`, `vanishes`, `isCocycle`, `lifts`, `gaugeRelated`, `Op`, `actJet`, `actObs` | DEF | Obstruction-recursion setup |
 | §1 `obsCocycle`, `liftIff`, `gaugeInv`, `natural` | LEM | Paper's dg-algebra proof (Bianchi + PD degrees); recorded as given — **conditional assembly**, not a substitute for the construction |
-| §2 `FramedSector`, `ZeroMotive`, `MooreSeed` | DEF | Source sector (paper-private; P1-3 keeps as background) |
+| §2 `FramedSector`, `nonempty_FramedSector`, `ZeroMotive`, `MooreSeed` | DEF | Source sector (paper-private; P1-3 keeps as background) |
 | §2 `shadow` | LEM | The shadow functor itself (paper constructs; recorded as input) |
 | §2 `shadowZero`, `shadowMoore` | LEM | CONCRETE (P1-3): `IsArtin` (`d = 0`) / `IsMoorePresentation` (`d > 0`) about `ClassicalMooreCone`; falsifiable, not arbitrary |
 | `ClassicalMooreCone`, `reduce`, `reduce_refl`, `reduce_trans`, `line_order` | DEF/THM | PROVED (P1-3): `Q_d = Cone(d : T → T)[-1]` as explicit 2-term data; order-reduction `q_{d,d'}` with transitivity; `H⁰ = ZMod d` |
-| §3 `DGCategory`, `moduliStack`, `isDerivedStack`, `stackIsDerived` | DEF | Moduli of pseudo-perfect modules; the proposition has no proof in the paper (essentially definitional) |
+| §3 `DGCategory`, `nonempty_DGCategory`, `moduliStack`, `isDerivedStack`, `stackIsDerived` | DEF | Moduli of pseudo-perfect modules; the proposition has no proof in the paper (essentially definitional) |
 | §4 `C`, `C'`, `eRec`, `eFull`, `eRecBijective`, `eFullBijective`, `eIntertwineProj`, `eIntertwineFull`, `eIntertwineOne` | EXT | Toën derived Morita theory (cited); representing data + consequences |
 
 Consumed by: M2 (§1 fields), M11 (`shadow`, `shadowZero`, `shadowMoore`),

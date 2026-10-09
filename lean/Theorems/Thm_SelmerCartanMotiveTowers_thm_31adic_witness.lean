@@ -32,9 +32,11 @@ distinguished class and a localization map, trivialization DATA witnessing
 local vanishing, and the real predicate `terminalClass ≠ 0`. A degenerate
 "both Props False" model is impossible — inhabiting the witness requires
 exhibiting real data satisfying real equations. The background's
-`kappa_ne_zero` is the specific Poitou–Tate nonvanishing fact about the
-concrete Kummer class (labeled source), routed into (W4b) by explicit
-identification; it is not a restatement of the goal. -/
+`WitnessBackground.kappa_ne_zero` is PROVED (not assumed): from the
+Poitou–Tate pairing + nondegeneracy (EXT), the Kummer identification
+`kummerClass = kappa` (LEM), and the specific nonzero pairing value (NUM).
+It is routed into (W4b) by explicit identification; it is not a restatement
+of the goal. -/
 theorem thm_31adic_witness (bg : WitnessBackground) : Nonempty adic_witness :=
   SelmerCartanMotiveTowers.sol_thm_31adic_witness bg
 

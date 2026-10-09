@@ -15,12 +15,13 @@ every finite coefficient depth; (W3) the explicit arithmetic target
 distinguished Kummer class `κ₅^root`, and the localization map);
 (W4a) local triviality via the background's trivialization DATA
 (`trivNonempty`, each datum certifying the real local-vanishing equation);
-(W4b) global nonvanishing via the background's SPECIFIC arithmetic fact
-`kappa_ne_zero : κ ≠ 0` (Poitou–Tate CITED + Kummer identification proved
-in the paper), routed by the explicit identification
-`terminalClass := kappa`. This is not circular: the background field is a
-concrete fact about a concrete class with labeled source; the witness
-exhibits how it discharges the real predicate `terminalClass ≠ 0`.
+(W4b) global nonvanishing via the PROVED lemma `WitnessBackground.kappa_ne_zero`:
+the background supplies the Poitou–Tate pairing + nondegeneracy (EXT),
+the Kummer identification `kummerClass = kappa` (LEM, paper proves), and the
+specific nonzero pairing value (NUM) — and `κ ≠ 0` is DERIVED from these,
+not imported. The witness routes it via the explicit identification
+`terminalClass := kappa`. This closes the verifier's non-circularity gap:
+the step "nonzero pairing ⟹ class nonzero" is a proof.
 The three 31 roles are the example's numerical coincidence (recorded as
 hypotheses); the base-field discriminant is `K₀ = Q(√-331)`. -/
 theorem sol_thm_31adic_witness (bg : WitnessBackground) : Nonempty adic_witness :=

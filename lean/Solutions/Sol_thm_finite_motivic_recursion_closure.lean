@@ -11,7 +11,7 @@ the opaque carriers to be `Unit` and supply the hypotheses `hNodd`, `hNsf`
 as the structure's `coeffOrder_odd` / `coeffOrder_squarefree` fields. The
 projections `support` / `coeffOrder` reduce definitionally on the inline
 instance, so the equations close by `rfl`. -/
-theorem solution
+theorem sol_thm_finite_motivic_recursion_closure
     (N : Nat) (hNodd : Odd N) (hNsf : Squarefree N)
     (S : finite_ordered_support) (M : Nat) (hM : 3 ≤ M)
     : ∃ T : motivic_moore_reedy, T.support = S ∧ T.coeffOrder = N :=

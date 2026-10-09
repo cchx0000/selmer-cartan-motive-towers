@@ -11,7 +11,7 @@ Proof assembly (mirrors the paper's §6 proof structure):
 - `bg.masseyExact` gives the exact-order-`N` Massey cocycle (local Tate duality + reciprocity).
 - The witnesses `v : Fin 3 → Place`, `χ : Fin 3 → KChar` are assembled from the three
   pairs; each conjunct is discharged by `fin_cases` + the corresponding input. -/
-theorem solution (bg : ClassFieldBackground) :
+theorem sol_thm_ray_class_primitive (bg : ClassFieldBackground) :
     ∃ (v : Fin 3 → bg.Place) (χ : Fin 3 → bg.KChar),
       Function.Injective v ∧
       (∀ i, ¬ bg.aboveN (v i)) ∧

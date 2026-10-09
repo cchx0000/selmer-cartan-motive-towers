@@ -11,7 +11,7 @@ CRT product line with its Moore presentation (`crtLine`, `crtLineHas`) and
 the dg realization (`crtRealization`, `crtRealizationIs`) as structure
 fields — these record the paper's construction from the imported branch
 inputs (I1)–(I4). The proof is direct assembly. -/
-theorem solution
+theorem sol_thm_prime_power_comparison
     (S : finite_ordered_support) (ν : coefficient_exponent)
     (bg : WitnessBackground) :
     ∃ (L : bg.CRTLine) (ρ : bg.DgRealization),

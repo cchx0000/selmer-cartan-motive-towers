@@ -13,7 +13,7 @@ data the conclusion asks for — the three order-31 cyclic carrier lines
 Moore–Reedy package) are unused binders retained from the draft statement;
 the span data is recorded in the background package, which is where the
 paper's §38 carrier-span construction is axiomatized. -/
-theorem solution
+theorem sol_thm_motivic_specialization
     (W : adic_witness) (M : motivic_moore_reedy) (bg : WitnessBackground) :
     ∃ (Lar : bg.CarrierLine) (Lsrc : bg.CarrierLine) (LMot : bg.CarrierLine),
       bg.isOrder31 Lar ∧ bg.isOrder31 Lsrc ∧ bg.isOrder31 LMot ∧

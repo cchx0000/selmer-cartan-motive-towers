@@ -16,7 +16,7 @@ realization) remain distinct by construction of the structure.
 
 The proof is the direct assembly: given `S`, `m`, `ν`, take the package
 with those parameters and `Empty` as the seven opaque carriers. -/
-theorem solution
+theorem sol_thm_finite_confluent_interface
     (S : finite_ordered_support) (m : confluence_multiplicity)
     (ν : coefficient_exponent) :
     ∃ P : source_package,

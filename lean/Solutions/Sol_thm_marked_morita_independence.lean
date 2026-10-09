@@ -7,7 +7,7 @@ namespace SelmerCartanMotiveTowers
 The conclusion is verbatim the §4 fields of `FormalBackground`: the
 representing exact-equivalence data and its induced tower bijections
 (Toën derived Morita, CITED). Direct assembly. -/
-theorem solution (bg : FormalBackground) :
+theorem sol_thm_marked_morita_independence (bg : FormalBackground) :
     ∃ (eRec : bg.C.recTier → bg.C'.recTier) (eFull : bg.C.fullTier → bg.C'.fullTier),
       Function.Bijective eRec ∧ Function.Bijective eFull ∧
       (∀ x, bg.C'.projRec (eFull x) = eRec (bg.C.projRec x)) ∧

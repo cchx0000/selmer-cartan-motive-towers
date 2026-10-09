@@ -13,7 +13,7 @@ terminal obstruction; (W4) local triviality (`localExtension`) versus
 global nonvanishing (`kappaRootNonzero`, via the Poitou–Tate pairing).
 The three 31 roles are the example's numerical coincidence (recorded as
 hypotheses); the base-field discriminant is `K₀ = Q(√-331)`. -/
-theorem solution (bg : WitnessBackground) : Nonempty adic_witness :=
+theorem sol_thm_31adic_witness (bg : WitnessBackground) : Nonempty adic_witness :=
   ⟨{ cubicLine := bg.QAdicLine, cubicLine_input_ok := fun _ => bg.qiKummer ∧ bg.carryNormalized, carryNormalization := fun _ => bg.QAdicLine, terminalTarget := bg.DgRealization, terminal_locally_trivial := bg.localExtension, terminal_globally_nonzero := bg.kappaRootNonzero, arithPrime := 31, supportLabel := 31, coeffDepthPrime := 31, baseFieldDisc := -331, h_arithPrime := rfl, h_supportLabel := rfl, h_coeffDepthPrime := rfl }⟩
 
 end SelmerCartanMotiveTowers

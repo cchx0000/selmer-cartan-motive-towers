@@ -6,7 +6,7 @@ Strategy A assembly: the successor functor is the paper's construction
 `S n X = mooreLift n X (nextObstruction n X)` (obstruction ledger followed by
 the root-stack Moore lift, i.e. `𝔖_Mot^{(n+1)}`), and it preserves
 Cartan-motivicness by the motivic-closure hypothesis on the Moore lift. -/
-theorem solution
+theorem sol_thm_successor_stage_functor
     (Stage : Nat → Type) [∀ n, Nonempty (Stage n)]
     (isCartanMotivic : ∀ n, Stage n → Prop)
     (Obstr : Type)

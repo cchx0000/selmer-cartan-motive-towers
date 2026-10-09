@@ -19,7 +19,7 @@ the four fields of `FormalBackground` §1 (`obsCocycle`, `liftIff`,
 `gaugeInv`, `natural`); the proof is the direct assembly of the four
 conjuncts from the four fields. The deep dg-algebra content (Bianchi
 identity, PD-degree counting) is absorbed into the background package. -/
-theorem solution (bg : FormalBackground) :
+theorem sol_thm_universal_higher_obstruction_recursion (bg : FormalBackground) :
     (∀ X : bg.Jet, bg.isCocycle X) ∧
     (∀ X : bg.Jet, bg.lifts X ↔ bg.vanishes (bg.obstruction X)) ∧
     (∀ X Y : bg.Jet, bg.gaugeRelated X Y → bg.obstruction X = bg.obstruction Y) ∧

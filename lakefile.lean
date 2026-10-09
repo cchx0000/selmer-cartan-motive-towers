@@ -1,0 +1,29 @@
+import Lake
+open Lake DSL
+
+/-- Reproducible build entry for the selmer-cartan-motive-towers Lean
+    formalization (addresses external-verifier todo.md P0-3).
+
+    Mirrors the local build environment used for the Strategy A completion:
+    Lean v4.33.1 + Mathlib pinned at 0df444a360eaa60ab8c11dca51a86af692955474
+    (see ~/prove2me_workspace/lake-manifest.json).
+
+    Layout: repo root is the package; Lean sources live under `lean/`
+    (`Definitions/`, `Theorems/`, `Solutions/`), matching the existing tree.
+
+    Note: `Solutions/` modules do not import `Theorems/` (independent
+    per-module evaluation, the current Prove2Me mode). The 16 substantive
+    solution modules declare uniquely-named theorems
+    `SelmerCartanMotiveTowers.sol_<name>` (one per milestone, M1–M16),
+    so they can also be jointly imported without collision — see BUILD.md. -/
+package «selmer-cartan-motive-towers» where
+  srcDir := "lean"
+  leanOptions := #[⟨`autoImplicit, false⟩]
+
+require mathlib from git
+  "https://github.com/leanprover-community/mathlib4.git" @
+  "0df444a360eaa60ab8c11dca51a86af692955474"
+
+lean_lib Definitions where
+lean_lib Theorems where
+@[default_target] lean_lib Solutions where

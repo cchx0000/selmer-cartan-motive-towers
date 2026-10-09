@@ -19,7 +19,7 @@ in the definition, so the witness is direct: `Source := Unit`,
         coeffOrder_squarefree := hNsf, carrier := Unit, corrAlgebra := Unit }`,
 `ρ := fun _ => ()`. The two equalities close by `rfl` (definitional projection
 reduction on the inline structure instance); `Nonempty Unit` is `⟨()⟩`. -/
-theorem solution
+theorem sol_thm_channel_complete_realization
     (S : finite_ordered_support) (N : Nat) (hNodd : Odd N) (hNsf : Squarefree N)
     : ∃ (Source : Type) (M : motivic_moore_reedy) (ρ : Source → M.carrier),
         M.support = S ∧ M.coeffOrder = N ∧ Nonempty Source :=

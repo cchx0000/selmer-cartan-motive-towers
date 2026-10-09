@@ -18,7 +18,7 @@ required, and the predicates/embed are freely chosen, so the empty model
 This is the Strategy-A reading of the paper's §19 assembly: the statement
 records only the shape of the objectification, and the empty witness is a
 legitimate inhabitant of that shape. -/
-theorem solution
+theorem sol_thm_role_separated_objectification
     (M : motivic_moore_reedy)
     : ∃ (n : Nat) (Role : Type) (d e : Fin n → Role)
         (isSeparated : Role → Prop)

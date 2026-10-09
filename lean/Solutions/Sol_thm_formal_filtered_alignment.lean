@@ -10,7 +10,7 @@ and the primitive filtered confluence line — both cyclic of exact order
 `p·q²` with fixed primitive generators — admit a unique pointed
 isomorphism sending generator to generator. Under `q`-primary reduction it
 sends the universal Moore generator to the residual secondary generator. -/
-theorem solution
+theorem sol_thm_formal_filtered_alignment
     (p q : Nat) (hp : p.Prime) (hq : q.Prime)
     (MooreLine ConfLine : Type) [AddCommGroup MooreLine] [AddCommGroup ConfLine]
     [Fintype MooreLine] [Fintype ConfLine]

@@ -13,7 +13,16 @@ REVISION NOTE 4 (2026-10-09, verifier P0-2): the cochain-level `N • b = 0`
 and exactness conjuncts are REMOVED from the conclusion. The old fields
 `hb_order`/`hb_exact` forced `d c_mot = 0` (via `hc_boundary`), collapsing
 the integral Moore model whose differential is `×N`. The `N`-torsion now
-lives only at cohomology level (`addOrderOf [b] = N`). -/
+lives only at cohomology level (`addOrderOf [b] = N`).
+
+REVISION NOTE 5 (2026-10-10, verifier P0-2): `isGenuine` no longer applies
+`classOf` to the (non-closed) antecedent. The old `isGenuine_iff` required
+`N • classOf x = 0`, which entailed the cochain-level `N² • b_mot = 0`
+(via `classOf_ker` and `d² = 0`) — incompatible with the integral Moore
+model. The new characterization only takes cohomology classes of the
+closed `b_mot`, and ties genuineness to the `GeometricAntecedent` data
+(invariant root coordinate localizing to `b_mot`). The proof term is
+unchanged: `bg.hc_genuine` still discharges `bg.isGenuine c`. -/
 theorem sol_thm_motivic_seed (bg : MotivicBackground) :
     ∃ (b c : bg.Cochain),
       bg.d b = 0 ∧ bg.d c = bg.N • b ∧

@@ -1,4 +1,5 @@
 import Mathlib.Algebra.Group.Defs
+import Mathlib.GroupTheory.OrderOfElement
 import Definitions.Def_typed_coordinates
 
 namespace SelmerCartanMotiveTowers
@@ -36,16 +37,51 @@ using the group's `0` and `≠`. The arithmetic target is explicit
 (`branchZero`, `branchStar`, `terminalGroup`, `localData`, `localize`).
 The deep arithmetic (why such a nonzero class exists) remains an explicitly
 labeled background hypothesis in `WitnessBackground`, but now in
-"there exists data with property P" form where P is a real property. -/
+"there exists data with property P" form where P is a real property.
+
+REVISION NOTE (P0-1 deepening, 2026-10-10, external-verifier todo.md):
+- `terminalClassOrder : addOrderOf terminalClass = 31` — the terminal class
+  has exact order 31 (the verifier noted the old contract had no exact-order
+  condition).
+- `branchZero`/`branchStar` now carry minimal algebraic structure
+  (`Add` on `K₀`, `Mul` on `K*`) instead of being bare types.
+- (W2) gains a finite-depth compatibility restriction system
+  (`carryRestrict` + identity/composition laws): a depth-incoherent
+  normalization family cannot inhabit the contract. The per-depth Hensel
+  verification itself stays paper-side (NUM/EXT).
+The deep Kummer/local-field/Poitou–Tate arithmetic stays background
+(Strategy A); what changed is the TYPE-LEVEL arbitrariness is narrowed. -/
 structure adic_witness where
   -- (W1) an explicit marked repeated cubic line satisfying the filtered source input
   cubicLine : Type
   cubicLine_input_ok : cubicLine → Prop
-  -- (W2) an integral carry normalization at every finite coefficient depth used
+  -- (W2) an integral carry normalization at every finite coefficient depth used,
+  -- with FINITE-DEPTH COMPATIBILITY (P0-1 deepening, 2026-10-10): the paper's
+  -- Hensel certificates at each finite depth are compatible across depths.
+  -- This is recorded as a restriction system (presheaf) on the poset of
+  -- coefficient exponents: normalization data at a deeper level restricts
+  -- to data at any shallower level, satisfying the identity and composition
+  -- laws. The per-depth Hensel VERIFICATION stays paper-side (NUM/EXT);
+  -- what is formalized here is the compatibility STRUCTURE, so a
+  -- depth-incoherent family cannot inhabit the contract.
   carryNormalization : coefficient_exponent → Type
-  -- (W3) coefficient-typed arithmetic target: the two branches K₀ and K*
+  carryRestrict : ∀ (e₁ e₂ : coefficient_exponent),
+      (∀ p, e₁.val p ≤ e₂.val p) → carryNormalization e₂ → carryNormalization e₁
+  carryRestrict_refl : ∀ (e : coefficient_exponent) (x : carryNormalization e),
+      carryRestrict e e (fun _ => le_refl _) x = x
+  carryRestrict_trans : ∀ (e₁ e₂ e₃ : coefficient_exponent)
+      (h₁₂ : ∀ p, e₁.val p ≤ e₂.val p) (h₂₃ : ∀ p, e₂.val p ≤ e₃.val p)
+      (x : carryNormalization e₃),
+      carryRestrict e₁ e₃ (fun p => le_trans (h₁₂ p) (h₂₃ p)) x =
+        carryRestrict e₁ e₂ h₁₂ (carryRestrict e₂ e₃ h₂₃ x)
+  -- (W3) coefficient-typed arithmetic target: the two branches K₀ and K*.
+  -- P0-1 deepening (2026-10-10): the branches are no longer bare types.
+  -- `K₀` carries its additive structure, `K*` its multiplicative structure
+  -- (minimal typeclass constraints — we do not model full number fields).
   branchZero : Type
+  [branchZeroAdd : Add branchZero]
   branchStar : Type
+  [branchStarMul : Mul branchStar]
   -- Terminal obstruction: an abelian group with a distinguished class
   terminalGroup : Type
   [terminalAddComm : AddCommGroup terminalGroup]
@@ -62,6 +98,9 @@ structure adic_witness where
   hasTrivialization : Nonempty Trivialization
   -- (W4b) global nonvanishing as a REAL predicate on real data
   global_nonzero : terminalClass ≠ 0
+  -- (W4c) the terminal class has EXACT order 31 (P0-1 deepening, 2026-10-10):
+  -- the Kummer class is 31-torsion of exact order, not merely nonzero.
+  terminalClassOrder : addOrderOf terminalClass = 31
   -- Numerical data (the example's 31-coincidence, as hypotheses)
   arithPrime : ℕ
   supportLabel : ℕ
@@ -80,5 +119,10 @@ instance AdicWitness.instAddCommGroupTerminal (W : adic_witness) :
 instance AdicWitness.instAddCommGroupLocal (W : adic_witness) :
     AddCommGroup W.localData :=
   W.localAddComm
+/-- Branch algebraic structures, registered as instances (P0-1 deepening). -/
+instance AdicWitness.instAddBranchZero (W : adic_witness) : Add W.branchZero :=
+  W.branchZeroAdd
+instance AdicWitness.instMulBranchStar (W : adic_witness) : Mul W.branchStar :=
+  W.branchStarMul
 
 end SelmerCartanMotiveTowers

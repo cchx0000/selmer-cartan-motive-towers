@@ -4,6 +4,29 @@ import Mathlib.GroupTheory.OrderOfElement
 
 namespace SelmerCartanMotiveTowers
 
+/-- Geometric antecedent data for the root-localization correspondence
+(paper L5422-5426: the motivic residue-divisor identity `∂[t] = N[D_N]`
+on the root stack).
+
+The paper's invariant root coordinate `t = u^N` gives rise to the root
+Moore pair: the coordinate localizes to the cycle `b_mot`, and the
+antecedent cochain witnesses the Moore relation `d c = N • b`. Recording
+this geometric source means `isGenuine` can no longer be satisfied by a
+purely algebraic torsion model with no root-coordinate origin
+(verifier P0-2 feedback).
+
+Background input (Strategy A): the paper constructs this data via the
+equivariant motivic six-functor formalism [Hoyois; Khan-Ravi]. -/
+structure GeometricAntecedent (Cochain : Type) (b_mot : Cochain) where
+  /-- The type of root coordinates. -/
+  RootCoord : Type
+  /-- The invariant root coordinate (paper's `t = u^N`). -/
+  rootCoord : RootCoord
+  /-- Localization of a root coordinate to a cochain. -/
+  localize : RootCoord → Cochain
+  /-- The root coordinate localizes to the root Moore cycle. -/
+  localizesTo : localize rootCoord = b_mot
+
 /-- Motivic arithmetic background package for Theorem 12.2
 (`P2L-thm:v48r4-motivic-seed`, primitive motivic Moore seed) and the
 motivic carrier inputs of Theorem 38.5.
@@ -75,17 +98,32 @@ structure MotivicBackground where
   boundary" model: a boundary has class `0`, whose `addOrderOf` is `1 ≠ N`
   (since `N ≥ 3`). -/
   hb_class_order : addOrderOf (classOf b_mot) = N
+  /-- Geometric antecedent: the invariant root coordinate localizing to
+  `b_mot` (verifier P0-2). `isGenuine` is characterized relative to this
+  data, so genuineness expresses the paper's invariant root coordinate /
+  root-localization correspondence, not just an abstract `N`-torsion class. -/
+  geometricAntecedent : GeometricAntecedent Cochain b_mot
   /-- Marks genuine root-localization correspondences (vs. freely adjoined
   generators). -/
   isGenuine : Cochain → Prop
   /-- Geometric meaning of genuineness: `x` is a genuine antecedent iff it
-  satisfies the Moore relation and its cohomology class is a nonzero
-  `N`-torsion class.
+  satisfies the Moore relation `d x = N • b_mot`, the class `[b_mot]` has
+  exact order `N` (hence is nonzero), and the geometric antecedent data
+  (invariant root coordinate localizing to `b_mot`) is present.
+
+  NOTE (P0-2 fix, 2026-10-10): `classOf` is NEVER applied to `x` itself.
+  The old version required `N • classOf x = 0` for the antecedent `x`,
+  but `x` is not a cycle, so that was meaningless -- and it entailed the
+  cochain-level relation `N^2 • b_mot = 0` (via `classOf_ker`, `d^2 = 0`),
+  contradicting the integral Moore model. All cohomology here is about
+  `[b_mot]`, legitimate because `b_mot` is closed (`hb_closed`).
+
   LIMITATION: the paper's "represented by the invariant root coordinate
   `t = u^N`" is a statement in motivic homotopy theory; what is formalized
-  here is its cohomological shadow. -/
+  here is its cohomological shadow plus the recorded geometric source. -/
   isGenuine_iff : ∀ x, isGenuine x ↔
-    (d x = N • b_mot ∧ classOf x ≠ 0 ∧ N • classOf x = 0)
+    (d x = N • b_mot ∧ addOrderOf (classOf b_mot) = N ∧ classOf b_mot ≠ 0 ∧
+      ∃ r : geometricAntecedent.RootCoord, geometricAntecedent.localize r = b_mot)
   /-- The root antecedent: boundary `N • b_mot`, genuine correspondence. -/
   c_mot : Cochain
   hc_boundary : d c_mot = N • b_mot

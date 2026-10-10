@@ -116,8 +116,12 @@ structure WitnessBackground where
   classNum93 : Prop
   /-- `K₀ = Q(√-331)` carrier type (explicit arithmetic target). -/
   BranchZero : Type
+  /-- `K₀` additive structure (minimal; P0-1 deepening, 2026-10-10). -/
+  [bgBranchZeroAdd : Add BranchZero]
   /-- `K* = Q(√-15391)` carrier type (explicit arithmetic target). -/
   BranchStar : Type
+  /-- `K*` multiplicative structure (minimal; P0-1 deepening, 2026-10-10). -/
+  [bgBranchStarMul : Mul BranchStar]
   /-- LLSWW 4.3.1: proper 31-fold Massey = `κ₅^root` (CITED). -/
   llsWW : Prop
   /-- Global non-extension (paper proves from the above). -/
@@ -132,20 +136,39 @@ structure WitnessBackground where
   /-- Kummer identification `κ_Kum = κ₅^root` (paper proves). Now a real
       equation, not a bare `Prop` label. -/
   kummerEqKappa : kummerClass = kappa
-  /-- Poitou–Tate pairing on the obstruction group (EXT, cited [NSW]).
-      The pairing itself is background input (we do not prove class field
-      theory); what is PROVED below is the derivation of `κ ≠ 0` from it. -/
-  poitouTatePairing : ObstructionGroup → ObstructionGroup → Prop
-  /-- The pairing detects nonvanishing: a class pairing nontrivially with
-      something is nonzero. This is the instantiated nondegeneracy of the
-      Poitou–Tate pairing (EXT, cited [NSW]) — a general fact about the
+  /-- The Kummer class has EXACT order 31 (NUM: the paper computes that the
+      31-primary Kummer class `κ₅^root` is 31-torsion of exact order).
+      P0-1 deepening (2026-10-10): the verifier noted the old contract had
+      no exact-order condition on the terminal class. -/
+  kappaOrder31 : addOrderOf kappa = 31
+  /-- Poitou–Tate pairing on the obstruction group (EXT, cited [NSW]),
+      valued in the 31-primary part of `ℚ/ℤ`, modeled additively as
+      `ZMod 31`. The pairing itself is background input (we do not prove
+      class field theory); its bilinearity laws are recorded so that a
+      "nontrivial pairing" is a statement about a NONZERO VALUE, not an
+      arbitrary `Prop` relation.
+      P0-1 deepening (2026-10-10): the verifier noted the old
+      `G → G → Prop` was an arbitrary relation with no codomain. -/
+  poitouTatePairing : ObstructionGroup → ObstructionGroup → ZMod 31
+  /-- Bilinearity in the first argument (EXT, cited [NSW]). -/
+  pairing_add_left : ∀ x₁ x₂ y,
+      poitouTatePairing (x₁ + x₂) y =
+        poitouTatePairing x₁ y + poitouTatePairing x₂ y
+  /-- Bilinearity in the second argument (EXT, cited [NSW]). -/
+  pairing_add_right : ∀ x y₁ y₂,
+      poitouTatePairing x (y₁ + y₂) =
+        poitouTatePairing x y₁ + poitouTatePairing x y₂
+  /-- The pairing detects nonvanishing: a class pairing to a NONZERO value
+      with something is nonzero. This is the instantiated nondegeneracy of
+      the Poitou–Tate pairing (EXT, cited [NSW]) — a general fact about the
       pairing, not a fact about `kappa` specifically. -/
-  pairingDetectsNonzero : ∀ x y, poitouTatePairing x y → x ≠ 0
-  /-- The SPECIFIC arithmetic input: the Kummer class pairs nontrivially.
-      (NUM/EXT: the paper's Poitou–Tate computation produces an explicit
-      nonzero pairing value.) This is the concrete numerical fact; everything
-      downstream — in particular `κ ≠ 0` — is proved from it. -/
-  kummerPairingNonzero : ∃ y, poitouTatePairing kummerClass y
+  pairingDetectsNonzero : ∀ x, (∃ y, poitouTatePairing x y ≠ 0) → x ≠ 0
+  /-- The SPECIFIC arithmetic input: the Kummer class pairs to a nonzero
+      value. (NUM/EXT: the paper's Poitou–Tate computation produces an
+      explicit nonzero pairing value in `ZMod 31`.) This is the concrete
+      numerical fact; everything downstream — in particular `κ ≠ 0` — is
+      proved from it. -/
+  kummerPairingNonzero : ∃ y, poitouTatePairing kummerClass y ≠ 0
   /-- Local obstruction data at the places above 31. -/
   LocalObstructionGroup : Type
   [localObstructionAddComm : AddCommGroup LocalObstructionGroup]
@@ -208,6 +231,6 @@ is a proof, not an assumption. -/
 theorem WitnessBackground.kappa_ne_zero (bg : WitnessBackground) : bg.kappa ≠ 0 := by
   obtain ⟨y, hy⟩ := bg.kummerPairingNonzero
   rw [bg.kummerEqKappa] at hy
-  exact bg.pairingDetectsNonzero _ _ hy
+  exact bg.pairingDetectsNonzero _ ⟨y, hy⟩
 
 end SelmerCartanMotiveTowers

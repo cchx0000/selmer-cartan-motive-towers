@@ -34,7 +34,17 @@ REVISION NOTE (M7 strengthening, 2026-10-10): The production statement now
 explicitly requires `Nontrivial M.carrier`, `Nontrivial M.corrAlgebra`, and
 the separation property `∀ i j, RS.d i ≠ RS.e j` in the conclusion (not just
 as structure fields), so the non-degeneracy is visible at the statement
-level and matches M6's target properties. -/
+level and matches M6's target properties.
+
+REVISION NOTE (M7 Hom structure, 2026-10-10): `ControlEdge` now carries a
+Hom structure (`hom : Role → Role` with `hom_zero`, `hom_add`,
+`hom_nonzero : ∃ x, hom x ≠ 0`, plus `degree_zero`/`closed` markers),
+addressing the verifier's "no Hom, zero morphism, or degree" criticism.
+The witness uses `hom = id` (additive by `rfl`; nonzero via
+`Sum.inr 0 ≠ 0`), documented as the objectwise evaluation of the Boolean
+correspondence `U_{q_i}`. The `Role` type `Fin card ⊕ Fin card` carries
+formal `Zero`/`Add` instances (model artifacts for stating additivity).
+The additive Karoubi envelope and Morita equivalence remain background. -/
 theorem sol_thm_role_separated_objectification
     (S : finite_ordered_support) (h2 : 2 ≤ S.primes.card)
     (N : ℕ) (hNodd : Odd N) (hNsf : Squarefree N) (hN3 : 3 ≤ N)
@@ -47,6 +57,7 @@ theorem sol_thm_role_separated_objectification
         Function.Injective embed := by
   have h0 : 0 < S.primes.card := by omega
   have h1 : 1 < S.primes.card := by omega
+  haveI : NeZero S.primes.card := ⟨by omega⟩
   refine ⟨{ support := S, coeffOrder := N,
             coeffOrder_odd := hNodd, coeffOrder_squarefree := hNsf,
             carrier := Fin S.primes.card ⊕ Fin S.primes.card,

@@ -1,6 +1,7 @@
 import Definitions.Def_adic_witness
 import Definitions.Def_finite_ordered_support
 import Definitions.Def_pointed_cyclic_carrier
+import Definitions.Def_gerbe_provenance
 
 namespace SelmerCartanMotiveTowers
 
@@ -188,6 +189,13 @@ structure WitnessBackground where
   provenanceFor : Gerbe → adic_witness → Prop
   /-- The gerbe has provenance for every witness (Dwyer CITED + §3 data). -/
   gerbeProvenance : ∀ W : adic_witness, provenanceFor gerbe W
+  /-- The concrete operation-level provenance data (P1-4 M15): the
+      classifying map with its `x^{(30)}, λ_*` coordinate profile, the
+      pointed pullback identity `ρ̄^* ω = κ_5^{root} = c_1^{(31)}(Q_5)`,
+      and the unipotent central extension with order-31 kernel.
+      This is the structured form of `provenanceFor`; the full
+      algebraic-stack construction remains background (CITED). -/
+  gerbeProvenanceData : GerbeProvenance
   /- §5. Carrier span (Theorem 38.5 inputs).
 
   The three pointed cyclic order-31 carrier lines: the arithmetic line

@@ -90,6 +90,7 @@ Consumed by: M14/goal (`thm_31adic_witness`) — routes §3 data into `adic_witn
 | `Gerbe`, `nonempty_Gerbe`, `isMu31Gerbe`, `gerbe`, `gerbeIs` | DEF | μ₃₁-gerbe setup |
 | `provenanceFor` | DEF | Provenance relation |
 | `gerbeProvenance` | EXT | Dwyer defining-system theorem (cited) in LLSWW form + §3 data. Note: the `∀ W` quantification is strong; it records the cited theorem's uniformity, not a per-witness construction. |
+| `gerbeProvenanceData` | EXT | Concrete operation-level provenance (P1-4 M15): `ClassifyingMap` (31 coordinates, `x^{(30)}, λ_*` profile), `PullbackIdentity` (`ρ̄^* ω = κ_5^{root} = c_1^{(31)}(Q_5)`), `UnipotentExtension` (order-31 kernel). Structured form of `provenanceFor`; full stack construction CITED. |
 
 Consumed by: M15 (`thm_gerbe_provenance`).
 

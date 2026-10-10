@@ -8,6 +8,11 @@
 (`ppowerRed_comp`, `crtModulus_eq_prod_coe`, `crtPairwiseCoprime`,
 `crtProductEquiv`, `crtProductEquiv_one`, `evalAtCoe`,
 `crtProductEquiv_apply`); all Lean base axioms only, 0 `sorryAx`.
+**Update 2026-10-10** (P1-4 M15): `sol_thm_gerbe_provenance` re-audited
+with concrete `GerbeProvenance` conjunct; depends on axioms:
+[propext, Classical.choice, Quot.sound], 0 `sorryAx`.
+New structures `ClassifyingMap`, `PullbackIdentity`,
+`UnipotentExtension`, `GerbeProvenance` are definitions (no axioms).
 
 ## §1. Project axioms and opaques
 

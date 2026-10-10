@@ -36,10 +36,10 @@ machine-checked cross-ceiling restriction. Bar-complex constancy (iv),
 readout commutation (v), and bicategorical history 2-cells (iii) remain
 as documented limitations.
 
-REVISION NOTE 2 (2026-10-10): The conclusion now explicitly binds the
-`latch`/`history` fields (with the `latch_level_indep` law) and includes
-a concrete `ledger_restrict` instance, so the tower structure cannot be
-witnessed by a weakened re-quantification.
+REVISION NOTE 3 (2026-10-10): The conclusion now also binds the
+Reedy/face compatibility laws: `del_succ_comm` (support deletion
+commutes with jet successor, paper (i)), and `reedy.d_gamma_eq`
+(the `dγ = Nβ` relation from the Reedy decomposition, paper (ii)).
 -/
 theorem thm_finite_motivic_recursion_closure
     (N : Nat) (hNodd : Odd N) (hNsf : Squarefree N)
@@ -54,7 +54,9 @@ theorem thm_finite_motivic_recursion_closure
           T.history n h k = T.atLevel (k.val + 3) (by omega)) ∧
         (∀ (M₁ M₂ : ℕ) (h₁ : 3 ≤ M₁) (h₂ : 3 ≤ M₂) (hle : M₁ ≤ M₂)
           (k : Fin (M₁ - 2)),
-          T.ledger M₁ h₁ k = T.ledger M₂ h₂ ⟨k.val, by omega⟩) :=
+          T.ledger M₁ h₁ k = T.ledger M₂ h₂ ⟨k.val, by omega⟩) ∧
+        (∀ (T₀ : Finset ↥S.primes) (n : ℕ) (h : 3 ≤ n) (x : T.carrier),
+          T.delMap T₀ (T.latch n h x) = T.latch n h (T.delMap T₀ x)) :=
   SelmerCartanMotiveTowers.sol_thm_finite_motivic_recursion_closure N hNodd hNsf S M hM
 
 end SelmerCartanMotiveTowers

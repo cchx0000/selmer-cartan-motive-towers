@@ -100,7 +100,8 @@ structure UnipotentExtension where
   proj : total → base
   /-- The kernel generator (the `μ_{31}` band generator). -/
   kernelGen : total
-  /-- The kernel has exact order 31: this is what makes it a `μ_{31}`-gerbe. -/
+  /-- The kernel has exact order 31 (necessary for a `μ_{31}`-gerbe;
+      the stack structure itself is background). -/
   kernelOrder : addOrderOf kernelGen = 31
   /-- The kernel generator projects to the base identity: it lies in the
       kernel of `proj`. -/
@@ -140,11 +141,17 @@ instance UnipotentExtension.instAddCommGroup (E : UnipotentExtension) :
 (`W31-thm:terminal-unipotent-gerbe-provenance`).
 
 Bundles the classifying map, the pullback identity, and the unipotent
-extension into the concrete operation-level provenance the paper
-constructs. This replaces the previous arbitrary `provenanceFor`
-predicate with checkable structure: 31 coordinates with the
+extension into concrete operation-level provenance data.
+This provides checkable structure (31 coordinates with the
 `x^{(30)}, λ_*` profile, the three-way class identity, and the
-order-31 extension kernel. -/
+order-31 extension kernel) alongside the previous `provenanceFor`
+predicate, which is retained for the background-level provenance claim.
+Note: the `UnipotentExtension` here models the group extension
+`U → Ū` (unipotent central extension with μ₃₁ kernel); the gerbe
+projection `G_f → X_*` is a separate geometric structure not formalized
+here (no algebraic stacks in Mathlib). An order-31 kernel is necessary
+but not sufficient for a μ₃₁-gerbe — the stack structure remains background.
+-/
 structure GerbeProvenance where
   /-- The classifying morphism with its coordinate profile. -/
   classifying : ClassifyingMap

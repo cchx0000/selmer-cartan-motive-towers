@@ -5,6 +5,60 @@ import Definitions.Def_gerbe_provenance
 
 namespace SelmerCartanMotiveTowers
 
+/-- The Qi Kummer datum (paper §33): the distinguished Kummer element `α`
+with principal divisor `(α) = P₀³` in the `K₀` divisor class group
+(additive notation). The EXISTENCE of such an `α` is NUM/paper (the paper
+verifies the Qi Kummer element); the exponent 3 and the principality
+equation are real mathematical content, not a bare `Prop` label
+(verifier P0-1, 2026-10-10). -/
+structure KummerDatum where
+  DivGroup : Type
+  [divAddComm : AddCommGroup DivGroup]
+  alpha : DivGroup
+  P0 : DivGroup
+  /-- `(α) = P₀³`: the Kummer element is principal with exact `P₀`-exponent 3. -/
+  principalEq : alpha = 3 • P0
+
+/-- Per-depth pointed primitive carry reductions (Thm 37.1(i), paper §34).
+`K₀` supplies, at every finite coefficient depth `r`, a pointed primitive
+reduction of exact order `31^r`, with canonical restriction maps forming a
+compatible system ("compatible family of pointed primitive reductions ...
+with canonical carry normalization at every finite `r`"). The per-depth
+Hensel verification is NUM/paper; the compatibility LAWS are recorded so
+the formal family is a genuine presheaf with a specified global section —
+the "specified compatible section" the verifier asked for (P0-1,
+2026-10-10) — not a constant family. -/
+structure CarryReductionSystem where
+  Red : ℕ → Type
+  [redAddComm : ∀ r, AddCommGroup (Red r)]
+  /-- the pointed primitive reduction at depth `r` -/
+  redClass : ∀ r, Red r
+  /-- exact order `31^r` at depth `r` (Thm 37.1(i)) -/
+  redClassOrder : ∀ r, addOrderOf (redClass r) = 31 ^ r
+  /-- canonical restriction to a shallower depth -/
+  restrict : ∀ {r₁ r₂ : ℕ}, r₁ ≤ r₂ → Red r₂ → Red r₁
+  restrict_refl : ∀ (r : ℕ) (x : Red r), restrict (le_refl r) x = x
+  restrict_trans : ∀ {r₁ r₂ r₃ : ℕ} (h₁₂ : r₁ ≤ r₂) (h₂₃ : r₂ ≤ r₃)
+      (x : Red r₃),
+      restrict (le_trans h₁₂ h₂₃) x = restrict h₁₂ (restrict h₂₃ x)
+  /-- the pointed classes form a compatible section -/
+  restrict_pointed : ∀ {r₁ r₂ : ℕ} (h : r₁ ≤ r₂),
+      restrict h (redClass r₂) = redClass r₁
+
+/-- The per-depth reduction groups' additive structures, registered as
+instances (CarryReductionSystem pattern; cf. the background's obstruction
+instances below). -/
+instance CarryReductionSystem.instAddCommGroupRed (S : CarryReductionSystem)
+    (r : ℕ) : AddCommGroup (S.Red r) :=
+  S.redAddComm r
+
+/-- The Kummer divisor group's additive structure, registered as an
+instance (so the principality equation can be stated outside the
+structure). -/
+instance KummerDatum.instAddCommGroupDiv (D : KummerDatum) :
+    AddCommGroup D.DivGroup :=
+  D.divAddComm
+
 /-- Witness arithmetic background package for Theorems 26.12, 37.1, 38.1,
 38.5 (`P2M-thm:prime-power-all-support-comparison`,
 `thm:paper1-31adic-witness`, `W31-thm:terminal-unipotent-gerbe-provenance`,
@@ -61,7 +115,19 @@ Moore seed) and their pointed span.
 STATUS: background hypothesis package. Each field is labeled with its
 source. These are the concrete arithmetic inputs; per the user's decision,
 they are introduced as hypotheses now and may be replaced by concrete
-arithmetic proofs later. -/
+arithmetic proofs later.
+
+P0-1 CONTINUATION (2026-10-10, external-verifier todo.md): the remaining
+bare `Prop` labels of §3 (`lambda31_exact2`, `qiKummer`, `carryNormalized`,
+`classNum93`) are replaced by structured data below — a `KummerDatum` with
+the real principality equation `(α) = P₀³`, a `CarryReductionSystem` of
+per-depth pointed primitive reductions of exact order `31^r` with
+compatibility laws, numerical data with their equations (`lambda31 = 2`,
+`classNumStar = 93`), and branch discriminants (`-331`, `-15391`) pinning
+the `K₀`/`K*` arithmetic identity. The exact-order field `kappaOrder31`
+is replaced by the independent torsion input `kappaTorsion31 : 31 • κ = 0`
+plus the DERIVED lemma `kappa_exact_order31` (anti-circularity). -/
+
 structure WitnessBackground where
   /- §1. Imported branch inputs (assumed, not proved). -/
   q : Nat
@@ -107,14 +173,41 @@ structure WitnessBackground where
      trivialization data. The deep arithmetic stays as explicitly labeled
      background hypotheses, now in "there exists data with property P" form
      where P is a real mathematical property. -/
-  /-- `K₀ = Q(√-331)`: exact-`λ₃₁ = 2` (Knospe CITED + paper computes). -/
-  lambda31_exact2 : Prop
-  /-- Qi Kummer element `(α) = P₀³` (paper verifies). -/
-  qiKummer : Prop
-  /-- Carry normalization via Hensel certificates (paper computes). -/
-  carryNormalized : Prop
-  /-- `K* = Q(√-15391)`: class number 93 (paper computes). -/
-  classNum93 : Prop
+  /-- `K₀ = Q(√-331)`: base-field discriminant (NUM, paper §32). This pins
+      the arithmetic identity of the `K₀`-branch: the witness's
+      `baseFieldDisc` routes from here (verifier P0-1, 2026-10-10). -/
+  K0disc : ℤ
+  K0disc_eq : K0disc = -331
+  /-- `K₀ = Q(√-331)`: exact-`λ₃₁ = 2` (CITED: Knospe rank-one criterion
+      [KnospeSpecialValues2026] + Qi split-prime Massey criterion
+      [QiMasseyLambda]; the value 2 is paper-verified). Recorded as a
+      numerical datum with its equation, not a bare `Prop` label
+      (verifier P0-1, 2026-10-10). -/
+  lambda31 : ℕ
+  lambda31_eq : lambda31 = 2
+  /-- The Qi Kummer datum (paper §33): the distinguished Kummer element `α`
+      with `(α) = P₀³`. The EXISTENCE of such an `α` is NUM/paper (the paper
+      verifies the Qi Kummer element); the exponent 3 and the principality
+      equation are real mathematical content (verifier P0-1, 2026-10-10). -/
+  qiKummerData : KummerDatum
+  /-- Per-depth pointed primitive carry reductions (Thm 37.1(i), paper §34):
+      at every finite coefficient depth `r`, a pointed primitive reduction
+      of EXACT order `31^r`, with canonical restriction maps forming a
+      compatible system. The per-depth Hensel VERIFICATION is NUM/paper;
+      the compatibility LAWS are recorded so the formal family is a genuine
+      presheaf with a specified global section, not a constant family
+      (verifier P0-1, 2026-10-10). -/
+  carrySystem : CarryReductionSystem
+  /-- `K* = Q(√-15391)`: base-field discriminant (NUM, paper §32). This pins
+      the arithmetic identity of the `K*`-branch (verifier P0-1,
+      2026-10-10). -/
+  KstarDisc : ℤ
+  KstarDisc_eq : KstarDisc = -15391
+  /-- `K* = Q(√-15391)`: class number 93 (NUM: paper computes via reduced
+      forms), as a numerical datum with its equation, not a bare `Prop`
+      label (verifier P0-1, 2026-10-10). -/
+  classNumStar : ℕ
+  classNumStar_eq : classNumStar = 93
   /-- `K₀ = Q(√-331)` carrier type (explicit arithmetic target). -/
   BranchZero : Type
   /-- `K₀` additive structure (minimal; P0-1 deepening, 2026-10-10). -/
@@ -137,11 +230,14 @@ structure WitnessBackground where
   /-- Kummer identification `κ_Kum = κ₅^root` (paper proves). Now a real
       equation, not a bare `Prop` label. -/
   kummerEqKappa : kummerClass = kappa
-  /-- The Kummer class has EXACT order 31 (NUM: the paper computes that the
-      31-primary Kummer class `κ₅^root` is 31-torsion of exact order).
-      P0-1 deepening (2026-10-10): the verifier noted the old contract had
-      no exact-order condition on the terminal class. -/
-  kappaOrder31 : addOrderOf kappa = 31
+  /-- The Kummer class is 31-torsion (NUM: the paper computes that
+      `κ₅^root`, living in the `μ₃₁`-coefficient 31-primary part
+      `Sha²_{S₃₁}(K*, μ₃₁)`, is killed by 31). This is the INDEPENDENT
+      torsion input: it records where `κ` lives (coefficient profile), not
+      its exact order. The exact order `addOrderOf κ = 31` is DERIVED below
+      (`kappa_exact_order31`) from this plus `κ ≠ 0` (verifier P0-1
+      anti-circularity, 2026-10-10). -/
+  kappaTorsion31 : 31 • kappa = 0
   /-- Poitou–Tate pairing on the obstruction group (EXT, cited [NSW]),
       valued in the 31-primary part of `ℚ/ℤ`, modeled additively as
       `ZMod 31`. The pairing itself is background input (we do not prove
@@ -173,8 +269,10 @@ structure WitnessBackground where
   /-- Local obstruction data at the places above 31. -/
   LocalObstructionGroup : Type
   [localObstructionAddComm : AddCommGroup LocalObstructionGroup]
-  /-- Localization map. -/
-  localizeObstruction : ObstructionGroup → LocalObstructionGroup
+  /-- Localization map at the 31-adic places. Recorded as a bundled additive
+      group homomorphism (EXT/paper: localization is a homomorphism), not an
+      arbitrary function (verifier P0-1, 2026-10-10). -/
+  localizeObstruction : ObstructionGroup →+ LocalObstructionGroup
   /-- Trivialization data for the local vanishing (local extension at the
       31-adic places, paper proves); each datum certifies the real equation. -/
   TrivDatum : Type
@@ -240,5 +338,21 @@ theorem WitnessBackground.kappa_ne_zero (bg : WitnessBackground) : bg.kappa ≠ 
   obtain ⟨y, hy⟩ := bg.kummerPairingNonzero
   rw [bg.kummerEqKappa] at hy
   exact bg.pairingDetectsNonzero _ ⟨y, hy⟩
+
+/-- Exact order 31, DERIVED (not assumed).
+
+P0-1 ANTI-CIRCULARITY (verifier todo.md, 2026-10-10): the previous field
+`kappaOrder31 : addOrderOf kappa = 31` directly assumed the conclusion —
+and since exact order 31 implies `κ ≠ 0`, it mooted the pairing-based
+derivation of `kappa_ne_zero`. Now the background supplies two INDEPENDENT
+inputs: (NUM) `kappaTorsion31 : 31 • kappa = 0` (the coefficient-profile
+torsion — where `κ` lives) and (NUM) `kummerPairingNonzero` (the nonzero
+pairing value — what `κ` does); both `κ ≠ 0` and `addOrderOf κ = 31` are
+PROVED. The step uses `addOrderOf_eq_prime`: a nonzero `p`-torsion element
+for prime `p` has exact order `p`. -/
+theorem WitnessBackground.kappa_exact_order31 (bg : WitnessBackground) :
+    addOrderOf bg.kappa = 31 := by
+  have h31 : Fact (Nat.Prime 31) := ⟨by decide⟩
+  exact addOrderOf_eq_prime bg.kappaTorsion31 bg.kappa_ne_zero
 
 end SelmerCartanMotiveTowers

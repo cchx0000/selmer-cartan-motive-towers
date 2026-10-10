@@ -50,7 +50,23 @@ REVISION NOTE (P0-1 deepening, 2026-10-10, external-verifier todo.md):
   normalization family cannot inhabit the contract. The per-depth Hensel
   verification itself stays paper-side (NUM/EXT).
 The deep Kummer/local-field/Poitou–Tate arithmetic stays background
-(Strategy A); what changed is the TYPE-LEVEL arbitrariness is narrowed. -/
+(Strategy A); what changed is the TYPE-LEVEL arbitrariness is narrowed.
+
+REVISION NOTE (P0-1 continuation, 2026-10-10, external-verifier todo.md):
+- The background's exact-order field is replaced by the INDEPENDENT torsion
+  input `kappaTorsion31 : 31 • κ = 0` plus the DERIVED lemma
+  `kappa_exact_order31` (via `addOrderOf_eq_prime`): exact order 31 is now
+  proved from 31-torsion + `κ ≠ 0`, not assumed (anti-circularity).
+- (W1)/(W2) route structured background data: the Qi Kummer datum with the
+  real principality equation `(α) = P₀³`, the exact-`λ₃₁ = 2` numerical
+  equation, and the per-depth `CarryReductionSystem` (pointed primitive
+  reductions of exact order `31^r` with a compatible restriction section) —
+  replacing the constant family + identity restriction.
+- The `K₀`/`K*` arithmetic identity enters via branch discriminants
+  (`K0disc = -331`, `KstarDisc = -15391`); the contract pins
+  `h_baseFieldDisc : baseFieldDisc = -331`.
+- The background localization is now a bundled additive group homomorphism,
+  not an arbitrary function. -/
 structure adic_witness where
   -- (W1) an explicit marked repeated cubic line satisfying the filtered source input
   cubicLine : Type
@@ -109,6 +125,10 @@ structure adic_witness where
   h_arithPrime : arithPrime = 31
   h_supportLabel : supportLabel = 31
   h_coeffDepthPrime : coeffDepthPrime = 31
+  /-- The base-field discriminant is pinned to `K₀ = Q(√-331)` (P0-1
+      continuation, 2026-10-10): the `K₀`-branch arithmetic identity enters
+      the contract as an equation, routed from the background's `K0disc`. -/
+  h_baseFieldDisc : baseFieldDisc = -331
 
 /-- The witness's own group structures, registered as instances so that
 `0`, `≠`, etc. in statements about a witness `W` resolve to the witness's

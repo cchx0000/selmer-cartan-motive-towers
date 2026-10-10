@@ -1,0 +1,27 @@
+# Build log — P0-1 continuation (merged tree), 2026-10-10
+
+Command (explicit, per P0-3):
+  cd ~/prove2me_workspace && lake build Definitions Theorems Solutions
+
+Result: Build completed successfully (3065 jobs), EXIT 0.
+Only linter warnings (unused variable/simp-arg hints); no errors, no sorry.
+
+What was built (merged tree = origin/main 637f0f7f content + local work):
+- P0-1 continuation (this run): `KummerDatum` with `(α) = P₀³` principality
+  equation, `CarryReductionSystem` (per-depth pointed primitive reductions of
+  exact order 31^r with restriction laws + compatible section),
+  `K0disc = -331` / `KstarDisc = -15391` / `lambda31 = 2` / `classNumStar = 93`
+  as numerical data with equations, `kappaTorsion31 : 31 • κ = 0` replacing the
+  assumed `kappaOrder31`, DERIVED `kappa_exact_order31` via
+  `addOrderOf_eq_prime`, localization as a bundled `AddMonoidHom`,
+  `h_baseFieldDisc` in the witness contract, rewritten
+  `sol_thm_31adic_witness` + new `sol_thm_31adic_witness_trace` (Thm 37.1
+  (i)–(iv) traceability).
+- From origin/main (637f0f7f): verifier todo.md, 16:36 watchdog P1-5 doc sync
+  (5 Solution files), AXIOMS.md 54-item audit, README.md.
+- From local e227b68: `Def_confluent_package.lean` LIMITATION notes,
+  `Def_gerbe_provenance.lean` kernelOrder/GerbeProvenance honesty tweaks
+  (re-applied on top of origin/main's narrowed version).
+
+Toolchain: Lean 4.33.1 / Mathlib 0df444a360eaa60ab8c11dca51a86af692955474
+(lean-toolchain + lakefile.lean at repo root, per P0-3).

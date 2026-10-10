@@ -62,14 +62,17 @@ Consumed by: M10 (`thm_prime_power_comparison`) — `crtRealization`, `crtRealiz
 
 | Field | Label | Source |
 |---|---|---|
-| `lambda31_exact2` | EXT/NUM | `K₀ = Q(√-331)` exact `λ₃₁ = 2`; Knospe criterion cited + Bernoulli valuation computed |
-| `qiKummer` | LEM | Qi Kummer element `(α) = P₀³`; paper verifies |
-| `carryNormalized` | LEM | Hensel certificates; paper computes |
-| `classNum93` | NUM | `K* = Q(√-15391)` class number 93; paper computes |
+| `K0disc`, `K0disc_eq` | NUM | `K₀ = Q(√-331)` base-field discriminant `-331`; pins the `K₀`-branch arithmetic identity (P0-1 continuation) |
+| `lambda31`, `lambda31_eq` | EXT/NUM | `K₀` exact `λ₃₁ = 2` as a numerical datum with its equation (was bare `Prop`); Knospe criterion cited + Bernoulli valuation computed |
+| `qiKummerData : KummerDatum` | NUM/LEM | Qi Kummer element `α` with the real principality equation `(α) = P₀³` (`alpha = 3 • P0`); existence paper-verified (was bare `Prop`) |
+| `carrySystem : CarryReductionSystem` | NUM/LEM | Per-depth pointed primitive reductions of exact order `31^r` with canonical restriction maps + identity/composition laws and a compatible pointed section (was bare `Prop`); per-depth Hensel verification paper-computed |
+| `KstarDisc`, `KstarDisc_eq` | NUM | `K* = Q(√-15391)` base-field discriminant `-15391`; pins the `K*`-branch arithmetic identity (P0-1 continuation) |
+| `classNumStar`, `classNumStar_eq` | NUM | `K*` class number 93 as a numerical datum with its equation (was bare `Prop`); paper computes via reduced forms |
 | `BranchZero`, `BranchStar` | DEF | Explicit arithmetic targets `K₀`, `K*` (P0-1); now with minimal algebraic structure: `Add` on `K₀`, `Mul` on `K*` (P0-1 deepening) |
 | `kummerClass` | DEF | The Kummer class `κ_Kum` from the Qi Kummer element |
 | `kummerEqKappa` | LEM | `kummerClass = kappa` as a real equation (paper proves) |
-| `kappaOrder31` | NUM | `addOrderOf kappa = 31`: the Kummer class has exact order 31 (paper computes; P0-1 deepening) |
+| `kappaTorsion31` | NUM | `31 • kappa = 0`: the Kummer class is 31-torsion (coefficient-profile input; paper computes). The exact order is DERIVED, not assumed (anti-circularity, P0-1 continuation) |
+| `WitnessBackground.kappa_exact_order31` (theorem, not a field) | PROVED | `addOrderOf kappa = 31` DERIVED from `kappaTorsion31` + `kappa_ne_zero` via `addOrderOf_eq_prime`. **Anti-circularity**: the old `kappaOrder31` field assumed the conclusion (and implied `κ ≠ 0`, mooting the pairing derivation); now torsion and nonvanishing are independent inputs. |
 | `llsWW` | EXT | LLSWW Thm 4.3.1 (proper 31-fold Massey); cited |
 | `globalNonExtension` | LEM | Paper proves from the above |
 | `ObstructionGroup`, `AddCommGroup`, `kappa` | DEF | Global obstruction group (Sha²-like) + distinguished class |
@@ -78,7 +81,7 @@ Consumed by: M10 (`thm_prime_power_comparison`) — `crtRealization`, `crtRealiz
 | `pairingDetectsNonzero` | EXT | Pairing nondegeneracy: pairing to a nonzero value ⟹ nonzero class (cited [NSW]) |
 | `kummerPairingNonzero` | NUM/EXT | The specific nonzero pairing value for the Kummer class (in `ZMod 31`) |
 | `WitnessBackground.kappa_ne_zero` (theorem, not a field) | PROVED | `κ ≠ 0` DERIVED from the above three inputs + `kummerEqKappa`. **Anti-circularity fix**: previously a bare field; now the derivation is a proof. |
-| `LocalObstructionGroup`, `AddCommGroup`, `localizeObstruction` | DEF | Local data + localization map (P0-1) |
+| `LocalObstructionGroup`, `AddCommGroup`, `localizeObstruction` | DEF | Local data + localization map as a bundled additive group homomorphism (was an arbitrary function; P0-1 continuation) |
 | `TrivDatum`, `trivNonempty`, `trivVanishes` | LEM | Local extension at 31-adic places; paper proves; each datum certifies the real equation |
 
 Consumed by: M14/goal (`thm_31adic_witness`) — routes §3 data into `adic_witness` W1–W4.
@@ -102,9 +105,9 @@ Consumed by: M15 (`thm_gerbe_provenance`).
 | `hM : M.carrier ≃ bg.LMot.carrier` (theorem-level hypothesis, not a background field) | EXT | M16's assumed identity of the motivic target `M` with the concrete carrier `LMot`; the paper's marked-ledger identification, recorded as input. The production `ρ_M` is the bare composite `(canonicalIso Lsrc LMot).toEquiv.trans hM.symm` — no additivity or marking structure is proved for it. **Distinguish**: the cyclic-carrier isomorphisms are constructed; the motivic identity `hM` is assumed. |
 | (removed) | — | Old `CarrierLine` type + `isOrder31`/`carrierSpan`/`hLar`/`hLsrc`/`hLMot`/`hSpan` predicates deleted in P1-4. |
 
-Consumed by: M16 (`thm_motivic_specialization`) — constructs `Lsrc ≃+ Lar` and `Lsrc ≃+ LMot`.
+Consumed by: M16 (`thm_motivic_specialization`) — constructs `Lsrc ≃+ Lar` and `Lsrc ≃+ LMot` via `canonicalIso`; `witnessArithIso` gives `↥(zmultiples W.terminalClass) ≃+ Lar.carrier` (pointed, from `terminalClassOrder`); `ρ_M : Lsrc.carrier ≃ M.carrier` via `hM.symm` (background identification `hM : M.carrier ≃ LMot.carrier`).
 
-**Note on M14's §3 usage**: M14 (`thm_31adic_witness`) routes `QAdicLine`, `qiKummer`, `carryNormalized`, `ObstructionGroup`/`kappa`, `kummerClass`/`kummerEqKappa` (used by the proved `kappa_ne_zero` lemma), `poitouTatePairing`/`pairingDetectsNonzero`/`kummerPairingNonzero`, `TrivDatum` into the witness. The fields `lambda31_exact2`, `classNum93`, `llsWW`, `globalNonExtension` are recorded background labels not projected into the current proof term — they document the paper's arithmetic context.
+**Note on M14's §3 usage**: M14 (`thm_31adic_witness`) routes `QAdicLine`, `qiKummerData` (principality equation), `lambda31_eq`, `carrySystem` (per-depth `31^r` reductions + restriction laws), `K0disc` (via the witness's `h_baseFieldDisc`), `ObstructionGroup`/`kappa`, `kummerClass`/`kummerEqKappa` (used by the proved `kappa_ne_zero` lemma), `kappaTorsion31` (used by the proved `kappa_exact_order31` lemma), `poitouTatePairing`/`pairingDetectsNonzero`/`kummerPairingNonzero`, `TrivDatum` into the witness. The fields `classNumStar`/`classNumStar_eq`, `KstarDisc`/`KstarDisc_eq`, `llsWW`, `globalNonExtension` are recorded background labels not projected into the current proof term — they document the paper's arithmetic context. The traceability theorem `sol_thm_31adic_witness_trace` extracts the paper's Thm 37.1 conclusions (i)–(iv) with per-item input labels.
 
 ## FormalBackground (M2, M11, M12, M13)
 

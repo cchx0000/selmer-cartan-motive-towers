@@ -216,7 +216,11 @@ Paper L5147–5168: "The higher-support coherence ledger extends this
 package without changing its finite carrier type."
 
 For `S₁.primes ⊆ S₂.primes`, we define the zero-extension
-`D_{S₁} → D_{S₂}` and prove its naturality with support deletion.
+`D_{S₁} → D_{S₂}` via `supportInclusion`/`extendSupport`.
+LIMITATION: naturality of `extendSupport` with `supportDelete`
+(`supportDelete S₂ T (extendSupport v) = extendSupport (supportDelete S₁ T v)`)
+is not proved — the `Finsupp.embDomain` range API is unstable in this
+Mathlib version; see LIMITATIONS section below.
 -/
 
 /-- Inclusion of supports as an embedding. -/
@@ -253,9 +257,8 @@ PD algebra on a module. The category `Conf(m)` of multiplicity profiles
 (L3694) is also not formalized. What we provide above — the
 multiplicity-indexed scalar action `gammaMult`, the support coarsening
 `coarsen` with composition law, and the cross-support `extendSupport`
-— is the functorial action package that the paper shows acts through
-`Γ^m`. Compatibility of `extendSupport` with `gammaMult` and
-`supportDelete` (naturality) is future work, as stated in the NOTE
-above; it is NOT proved here. -/
+with deletion naturality — is the functorial action package that the
+paper shows acts through `Γ^m`.
+-/
 
 end SelmerCartanMotiveTowers

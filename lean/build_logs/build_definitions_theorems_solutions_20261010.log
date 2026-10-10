@@ -1,0 +1,229 @@
+⚠ [3022/3065] Replayed Definitions.Def_moore_cohomology_line
+warning: Definitions/Def_moore_cohomology_line.lean:39:34: This simp argument is unused:
+  mooreBoundaries
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [mooreDiff, zsmul_eq_mul]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Definitions/Def_moore_cohomology_line.lean:39:51: This simp argument is unused:
+  zsmul_eq_mul
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [mooreDiff, mooreBoundaries]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Definitions/Def_moore_cohomology_line.lean:42:21: This simp argument is unused:
+  mooreBoundaries
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [mooreDiff, zsmul_eq_mul]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Definitions/Def_moore_cohomology_line.lean:42:38: This simp argument is unused:
+  zsmul_eq_mul
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [mooreDiff, mooreBoundaries]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Definitions/Def_moore_cohomology_line.lean:139:5: Variable name `I` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _I
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Definitions/Def_moore_cohomology_line.lean:143:21: This simp argument is unused:
+  confGen
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [qPrimaryRed]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+⚠ [3026/3065] Replayed Definitions.Def_dga_obstruction
+warning: Definitions/Def_dga_obstruction.lean:139:40: Variable name `ha` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _ha
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [3027/3065] Replayed Definitions.Def_jet_ledger
+warning: Definitions/Def_jet_ledger.lean:130:40: Variable name `hM` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hM
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [3028/3065] Replayed Definitions.Def_confluent_package
+warning: Definitions/Def_confluent_package.lean:59:33: This simp argument is unused:
+  Finsupp.filter_apply
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [h]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Definitions/Def_confluent_package.lean:88:2: try 'simp' instead of 'simpa'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+warning: Definitions/Def_confluent_package.lean:104:13: This simp argument is unused:
+  h2
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [h]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Definitions/Def_confluent_package.lean:117:13: This simp argument is unused:
+  h2
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [h]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Definitions/Def_confluent_package.lean:200:32: This simp argument is unused:
+  Finsupp.filter_apply
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [coarsen, supportDelete]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Definitions/Def_confluent_package.lean:240:11: Variable name `x` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _x
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Definitions/Def_confluent_package.lean:240:13: Variable name `y` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _y
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [3029/3065] Replayed Definitions.Def_role_separation
+warning: Definitions/Def_role_separation.lean:113:19: Variable name `i` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _i
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Definitions/Def_role_separation.lean:113:21: Variable name `j` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _j
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Definitions/Def_role_separation.lean:115:21: Variable name `i` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _i
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Definitions/Def_role_separation.lean:115:23: Variable name `j` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _j
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Definitions/Def_role_separation.lean:116:27: Variable name `h` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _h
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Definitions/Def_role_separation.lean:117:41: Variable name `x` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _x
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Definitions/Def_role_separation.lean:117:43: Variable name `y` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _y
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [3035/3065] Replayed Solutions.Sol_thm_channel_complete_realization
+warning: Solutions/Sol_thm_channel_complete_realization.lean:55:43: try 'simp' instead of 'simpa'
+
+Note: This linter can be disabled with `set_option linter.unnecessarySimpa false`
+warning: Solutions/Sol_thm_channel_complete_realization.lean:95:24: This simp argument is unused:
+  (h1 p hp)
+
+Hint: Omit it from the simp argument list.
+  [apply] simp [omegaClass]
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Solutions/Sol_thm_channel_complete_realization.lean:195:52: This simp argument is unused:
+  ZMod.natCast_self
+
+Hint: Omit it from the simp argument list.
+  [apply] simp
+
+Note: This linter can be disabled with `set_option linter.unusedSimpArgs false`
+warning: Solutions/Sol_thm_channel_complete_realization.lean:260:9: Variable name `hRing` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hRing
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [3036/3065] Replayed Theorems.Thm_SelmerCartanMotiveTowers_thm_channel_complete_realization
+warning: Theorems/Thm_SelmerCartanMotiveTowers_thm_channel_complete_realization.lean:54:9: Variable name `hRing` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hRing
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [3053/3065] Replayed Solutions.Sol_thm_prime_power_comparison
+warning: Solutions/Sol_thm_prime_power_comparison.lean:35:5: Variable name `S` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _S
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [3057/3065] Replayed Solutions.Sol_thm_role_separated_objectification
+warning: Solutions/Sol_thm_role_separated_objectification.lean:60:2: Try this: 
+  haveI̵
+
+The goal is a proposition, so `have` is preferred over `haveI`.
+The difference between `have` and `haveI` is that `haveI` inlines the value.
+But this is not relevant for proofs because of proof irrelevance.
+
+Note: This linter can be disabled with `set_option linter.style.haveILetI false`
+warning: Solutions/Sol_thm_role_separated_objectification.lean:50:51: Variable name `hN3` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _hN3
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+⚠ [3061/3065] Replayed Solutions.Sol_thm_universal_higher_obstruction_recursion
+warning: Solutions/Sol_thm_universal_higher_obstruction_recursion.lean:29:7: Variable name `S` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _S
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Solutions/Sol_thm_universal_higher_obstruction_recursion.lean:29:9: Variable name `u` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _u
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Solutions/Sol_thm_universal_higher_obstruction_recursion.lean:29:11: Variable name `X` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _X
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Solutions/Sol_thm_universal_higher_obstruction_recursion.lean:30:8: Variable name `S` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _S
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+warning: Solutions/Sol_thm_universal_higher_obstruction_recursion.lean:30:10: Variable name `T` is not explicitly referenced.
+
+Hint: The binding can be removed (if unused) or named `_` (if used implicitly). Alternatively, prefix the name with `_` to silence this warning:
+  [apply] _T
+
+Note: This linter can be disabled with `set_option linter.unusedVariables false`
+Build completed successfully (3065 jobs).
+EXIT_CODE=0

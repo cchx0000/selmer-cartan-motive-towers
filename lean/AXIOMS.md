@@ -3,7 +3,12 @@
 **Source SHA**: `d5ffb0e985fcbd60b388929d2a685437e8088e70`
 **Audit date**: 2026-10-09
 **Method**: `#print axioms` via `lake env lean` on each declaration below.
-**Result**: **0 `sorryAx`** across all 54 declarations.
+**Result**: **0 `sorryAx`** across all 58 declarations.
+**Update 2026-10-10** (P1-4 M3 round 2, `e122cfaf`): 4 new named
+declarations audited (`moore_cohomology_apply_mk`,
+`moore_cohomology_of_diff`, `moore_cohomology_of_diff_apply_mk`,
+`mooreGen_is_cohomology_class_proof`); all Lean base axioms only, 0
+`sorryAx`.
 **Update 2026-10-10** (P1-4 M10): 7 new declarations audited
 (`ppowerRed_comp`, `crtModulus_eq_prod_coe`, `crtPairwiseCoprime`,
 `crtProductEquiv`, `crtProductEquiv_one`, `evalAtCoe`,
@@ -438,9 +443,9 @@ Classification: Lean base axioms only.
 | 53 | `sol_thm_gerbe_provenance` (M15) | Lean base triple |
 | 54 | `sol_thm_motivic_specialization` (M16) | Lean base triple |
 
-**Total: 54 declarations. `sorryAx`: 0.**
+**Total: 58 declarations. `sorryAx`: 0.**
 
-### Changes from the 47-item audit (47 → 54)
+### Changes from the 47-item audit (47 → 58)
 
 1. Added 7 P1-4 M10 CRT declarations (2026-10-10): `ppowerRed_comp`,
    `crtModulus_eq_prod_coe`, `crtPairwiseCoprime`, `crtProductEquiv`,
@@ -451,14 +456,21 @@ Classification: Lean base axioms only.
    Quot.sound], 0 `sorryAx`. The new structures `ClassifyingMap`,
    `PullbackIdentity`, `UnipotentExtension`, `GerbeProvenance` are
    definitions (no axioms); `unipotentExtensionModel` is a definition too.
-3. Coverage note: the per-item audit source SHA
+3. Added 4 P1-4 M3 round-2 declarations (2026-10-10, `e122cfaf`):
+   `moore_cohomology_apply_mk`, `moore_cohomology_of_diff`,
+   `moore_cohomology_of_diff_apply_mk`, `mooreGen_is_cohomology_class_proof`
+   — all Lean base axioms only, 0 `sorryAx`. They close the
+   `[1] → mooreGen → confGen` generator chain in proof steps; see §3
+   entries and summary-table rows 34a–34d.
+4. Coverage note: the per-item audit source SHA
    `d5ffb0e985fcbd60b388929d2a685437e8088e70` is not resolvable via the
    repository API (verifier: 422), and later source changes (M16
    `witnessArithIso`/`hM`, M6 `omegaClass`/`reesCoeff`, M7 `ControlEdge`,
-   M8 `ReedyDecomp`, P0-0 `UnipotentExtension` fields, M15 re-revision) are
-   not yet covered by a per-item `#print axioms` rerun; see P0-3. The
-   54-item table records the declarations as listed at audit time, not a
-   claim that every current module has been rerun.
+   M8 `ReedyDecomp`, P0-0 `UnipotentExtension` fields, M15 re-revision, M3
+   round-2 generator chain `e122cfaf`) are not yet covered by a per-item
+   `#print axioms` rerun; see P0-3. The 58-item table records the
+   declarations as listed at audit time, not a claim that every current
+   module has been rerun.
 
 ### Changes from the previous audit (28 → 47)
 

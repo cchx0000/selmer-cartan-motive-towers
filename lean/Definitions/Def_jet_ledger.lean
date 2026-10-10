@@ -40,6 +40,11 @@ structure jet_tower (S : finite_ordered_support) (N : ℕ) where
   atLevel_algebra : ∀ (n : ℕ) (h : 3 ≤ n), (atLevel n h).corrAlgebra = corrAlgebra
   /-- (ii) Reedy latching: jet successor map at level `n`. -/
   latch : (n : ℕ) → 3 ≤ n → carrier → carrier
+  /-- (ii) Latching is independent of jet level: the proper-face latching
+      object and Boolean saturation are those of the original Moore–Reedy
+      reconstruction, "independently of the jet level" (paper (ii)). -/
+  latch_level_indep : ∀ (n₁ n₂ : ℕ) (h₁ : 3 ≤ n₁) (h₂ : 3 ≤ n₂),
+    latch n₁ h₁ = latch n₂ h₂
   /-- (iii) History: at level `n`, the finite family of objects at
       levels `3, 4, ..., n` (indexed by `Fin (n - 2)`). -/
   history : (n : ℕ) → (h : 3 ≤ n) → Fin (n - 2) → motivic_moore_reedy

@@ -20,16 +20,29 @@ structure guarantees: (1) `d`/`e` images are disjoint (so `d ≠ e` as
 families — the old degenerate model is excluded by type); (2) every marked
 edge is witnessed by a nonzero `ControlEdge` (not a free predicate).
 
+The carrier is `Nontrivial` (witnessed by `inl 0 ≠ inr 0`) and the
+correspondence algebra `Bool` is `Nontrivial`, matching the non-degeneracy
+properties of the M6 target (Theorem 19.6): this `M` is a valid input shape
+for the channel-complete realization.
+
 REVISION NOTE (P1-2 deepening, 2026-10-09): Replaces the free-predicate
 version. `isSeparated = fun _ => True` is now impossible: `separated`
 is the real disjointness `∀ i j, d i ≠ e j`. `coeffOrder` is the general
-`N`, not hardcoded 3. -/
+`N`, not hardcoded 3.
+
+REVISION NOTE (M7 strengthening, 2026-10-10): The production statement now
+explicitly requires `Nontrivial M.carrier`, `Nontrivial M.corrAlgebra`, and
+the separation property `∀ i j, RS.d i ≠ RS.e j` in the conclusion (not just
+as structure fields), so the non-degeneracy is visible at the statement
+level and matches M6's target properties. -/
 theorem sol_thm_role_separated_objectification
     (S : finite_ordered_support) (h2 : 2 ≤ S.primes.card)
     (N : ℕ) (hNodd : Odd N) (hNsf : Squarefree N) (hN3 : 3 ≤ N)
     : ∃ (M : motivic_moore_reedy) (RS : RoleSeparation S)
         (embed : RS.Role → M.carrier),
         M.support = S ∧ M.coeffOrder = N ∧
+        Nontrivial M.carrier ∧ Nontrivial M.corrAlgebra ∧
+        (∀ i j, RS.d i ≠ RS.e j) ∧
         (∃ i j, RS.hasEdge i j) ∧
         Function.Injective embed := by
   have h0 : 0 < S.primes.card := by omega
@@ -41,6 +54,9 @@ theorem sol_thm_role_separated_objectification
           canonicalRoleSeparation S,
           id,
           rfl, rfl,
+          ⟨Sum.inl ⟨0, h0⟩, Sum.inr ⟨0, h0⟩, Sum.inl_ne_inr⟩,
+          ⟨true, false, fun h => Bool.noConfusion h⟩,
+          fun i j => Sum.inl_ne_inr,
           ⟨⟨0, h0⟩, ⟨1, h1⟩, Nat.zero_lt_one⟩,
           Function.injective_id⟩
 

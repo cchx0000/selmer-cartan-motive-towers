@@ -29,6 +29,9 @@ projection deletion, equivalence-based permutation action with identity
 laws, and naturality. The divided-power algebra `Γ^m(D_S)` itself remains
 background (see `Def_confluent_package.lean` LIMITATION); what is
 formalized is the functorial action package on `D_S`.
+REVISION NOTE (binding, 2026-10-10): the existential is now bound to the
+concrete definitions (`P.baseDatum = direction_lattice S`,
+`HEq (del T) ⇑(supportDelete S T)`, etc.), excluding the Unit weak model.
 -/
 theorem thm_finite_confluent_interface
     (S : finite_ordered_support) (m : confluence_multiplicity)
@@ -36,6 +39,11 @@ theorem thm_finite_confluent_interface
     ∃ (P : source_package)
       (del : Finset ↥S.primes → P.baseDatum → P.baseDatum)
       (permAct : (↥S.primes ≃ ↥S.primes) → P.baseDatum → P.baseDatum),
+      P.baseDatum = direction_lattice S ∧
+      P.gammaModule = direction_lattice S ∧
+      P.coeffRing = coeff_ring ν ∧
+      (∀ T, HEq (del T) (⇑(supportDelete S T))) ∧
+      (∀ σ, HEq (permAct σ) (⇑(permActDir S σ))) ∧
       P.support = S ∧ P.confluenceMult = m ∧ P.coeffExponent = ν ∧
       (∀ T x, del T (del T x) = del T x) ∧
       (∀ x, permAct (Equiv.refl _) x = x) ∧

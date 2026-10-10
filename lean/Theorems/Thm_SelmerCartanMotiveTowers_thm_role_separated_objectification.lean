@@ -24,6 +24,13 @@ allowed `d = e`, and hardcoded `coeffOrder = 3`. This revision:
   unconstrained predicate;
 - `coeffOrder` is the general `N` (odd, squarefree, `N ≥ 3`), not hardcoded 3.
 
+REVISION NOTE (M7 strengthening, 2026-10-10): The conclusion now explicitly
+requires `Nontrivial M.carrier`, `Nontrivial M.corrAlgebra`, and the
+separation property `∀ i j, RS.d i ≠ RS.e j` (the `RoleSeparation.separated`
+field, surfaced at the statement level), matching the non-degeneracy
+properties of the M6 target (Theorem 19.6). The constructed `M` is thus a
+valid channel-complete-realization target shape.
+
 LIMITATIONS (honest):
 - Cutoff functoriality (paper item (iv)): not formalized; requires the
   direct-sum summand bookkeeping absent from the discrete model.
@@ -37,6 +44,8 @@ theorem thm_role_separated_objectification
     : ∃ (M : motivic_moore_reedy) (RS : RoleSeparation S)
         (embed : RS.Role → M.carrier),
         M.support = S ∧ M.coeffOrder = N ∧
+        Nontrivial M.carrier ∧ Nontrivial M.corrAlgebra ∧
+        (∀ i j, RS.d i ≠ RS.e j) ∧
         (∃ i j, RS.hasEdge i j) ∧
         Function.Injective embed :=
   SelmerCartanMotiveTowers.sol_thm_role_separated_objectification S h2 N hNodd hNsf hN3

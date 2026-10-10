@@ -87,41 +87,55 @@ The paper constructs the dg realization with seven properties. We model:
 - `M.carrier` as `(channel_index S → ZMod N) × ℤ`;
 - `M.corrAlgebra` as `ZMod N`;
 - `chanMap` as Dirac delta (injective, order `N` by `dirac_order`);
-- `ρ` from channel support data (not constant);
+- `ρ` from channel support data (not constant); the `ℤ` component records
+  `f 0`, witnessing non-constancy;
 - `delMap (f, z) = (f, 0)` (idempotent).
 
 REVISION NOTE (P1-2 deep, 2026-10-09): See theorem file.
 LIMITATIONS: See theorem file.
--/
+
+REVISION NOTE 2 (2026-10-10): The `ρ` is now genuinely non-constant
+(the `ℤ` component records `f 0`), `Source` is `Nontrivial` (not just
+`Nonempty`), and `Ring M.corrAlgebra` is provided. -/
 theorem sol_thm_channel_complete_realization
     (S : finite_ordered_support) (N : Nat) (hNodd : Odd N) (hNsf : Squarefree N)
     (hN1 : 1 < N)
     : ∃ (Source : Type) (M : motivic_moore_reedy) (hAdd : AddCommGroup M.carrier)
+        (hRing : Ring M.corrAlgebra)
         (ρ : Source → M.carrier)
         (chanMap : channel_index S → M.carrier)
         (delMap : M.carrier → M.carrier),
         M.support = S ∧ M.coeffOrder = N ∧
-        Nonempty Source ∧ Nontrivial M.carrier ∧ Nontrivial M.corrAlgebra ∧
+        Nontrivial Source ∧ Nontrivial M.carrier ∧ Nontrivial M.corrAlgebra ∧
         Function.Injective chanMap ∧
         (∀ c : channel_index S, @addOrderOf M.carrier hAdd.toAddMonoid (chanMap c) = N) ∧
-        (∀ x, delMap (delMap x) = delMap x) := by
+        (∀ x, delMap (delMap x) = delMap x) ∧
+        (∃ a b : Source, ρ a ≠ ρ b) := by
   have hNT : Nontrivial (ZMod N) := by
     rw [ZMod.nontrivial_iff]; omega
+  have hSrcNT : Nontrivial (ℕ → Bool) :=
+    ⟨fun _ => true, fun _ => false, fun h => by simpa using congrFun h 0⟩
   refine ⟨ℕ → Bool,
           { support := S, coeffOrder := N, coeffOrder_odd := hNodd,
             coeffOrder_squarefree := hNsf,
             carrier := (channel_index S → ZMod N) × ℤ,
             corrAlgebra := ZMod N },
           inferInstance,
-          fun f => (fun c => if c.supp ⊆ S.primes.filter (fun p => f p) then 1 else 0, 0),
+          inferInstance,
+          fun f => (fun c => if c.supp ⊆ S.primes.filter (fun p => f p) then 1 else 0,
+            if f 0 then (1:ℤ) else 0),
           fun c => (Function.update (0 : channel_index S → ZMod N) c 1, 0),
           fun p => (p.1, 0),
           rfl, rfl,
-          ⟨fun _ => false⟩,
+          hSrcNT,
           ⟨(0, 0), (0, 1), by simp⟩,
           hNT,
           dirac_injective S N hN1,
           fun c => dirac_order S N hN1 c,
-          fun x => by simp⟩
+          fun x => by simp,
+          ⟨fun _ => true, fun _ => false, by
+            intro h
+            have h2 := congrArg Prod.snd h
+            simp at h2⟩⟩
 
 end SelmerCartanMotiveTowers

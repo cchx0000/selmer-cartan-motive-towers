@@ -31,6 +31,13 @@ has a real `AddCommGroup` structure; `chanMap` is the Dirac delta
 `corrAlgebra` is `ZMod N`. The `Unit`/`Bool`-carrier model does not
 satisfy the new statement.
 
+REVISION NOTE 2 (2026-10-10): Strengthens the production statement per
+verifier feedback — the conclusion now constrains `ρ` (non-constant:
+`∃ a b, ρ a ≠ ρ b`), requires `Nontrivial Source` (excludes `Unit`
+source), and requires `Ring M.corrAlgebra` (not just a bare `Type`).
+A constant-`ρ` model or `Unit`-source model does not satisfy the new
+statement.
+
 LIMITATIONS (honest): Properties (iii) (cyclotomic transfer/Rees profile),
 (v) (genuine motivic antecedent), (vi) (Fubini), (vii) (relabelling/Koszul)
 require the full dg algebra and motivic constructions. The dg controller
@@ -40,14 +47,16 @@ theorem thm_channel_complete_realization
     (S : finite_ordered_support) (N : Nat) (hNodd : Odd N) (hNsf : Squarefree N)
     (hN1 : 1 < N)
     : ∃ (Source : Type) (M : motivic_moore_reedy) (hAdd : AddCommGroup M.carrier)
+        (hRing : Ring M.corrAlgebra)
         (ρ : Source → M.carrier)
         (chanMap : channel_index S → M.carrier)
         (delMap : M.carrier → M.carrier),
         M.support = S ∧ M.coeffOrder = N ∧
-        Nonempty Source ∧ Nontrivial M.carrier ∧ Nontrivial M.corrAlgebra ∧
+        Nontrivial Source ∧ Nontrivial M.carrier ∧ Nontrivial M.corrAlgebra ∧
         Function.Injective chanMap ∧
         (∀ c : channel_index S, @addOrderOf M.carrier hAdd.toAddMonoid (chanMap c) = N) ∧
-        (∀ x, delMap (delMap x) = delMap x) :=
+        (∀ x, delMap (delMap x) = delMap x) ∧
+        (∃ a b : Source, ρ a ≠ ρ b) :=
   SelmerCartanMotiveTowers.sol_thm_channel_complete_realization S N hNodd hNsf hN1
 
 end SelmerCartanMotiveTowers

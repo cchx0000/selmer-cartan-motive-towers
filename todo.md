@@ -2,7 +2,7 @@
 
 ## 审计基线与范围
 
-- 审计日期：2026-10-09（UTC）；默认分支：`main`。
+- 审计日期：2026-10-09 至 2026-10-10（UTC）；默认分支：`main`。
 - 首次实际 Lean 提交 / 首次完整源码审计基线：[`ebf86316451f383234c3cf437cec35b01fc1f8fa`](https://github.com/cchx0000/selmer-cartan-motive-towers/commit/ebf86316451f383234c3cf437cec35b01fc1f8fa)。
 - 审计树：`f51c14d9554345fcdd8d05d70ebafef81fdc7e3a`；前一提交：`55f336e8485b692bc505e6ee77bbd0ec7c5f9420`。两者直接相邻；前一版本只有 README 与论文，新提交首次加入实际 Lean 源码。
 - 论文：[`selmer_cartan_motive_towers_31adic_witness_unified_v0_1.tex`](selmer_cartan_motive_towers_31adic_witness_unified_v0_1.tex)，blob `6ee1db83403ec5aed4ad67fd978c25a85d2edd22`。本次对照相关原文及 `MISSION_DESCRIPTION.md`、`INVENTORY.md`，没有对整篇论文作数学正确性认证。
@@ -21,12 +21,21 @@
 
 ### 2026-10-09 增量审查：截至 `bb298a04`
 
-- 本次逐提交检查 [`977450467cd4794f25cf2aa8c7292c502c6f19a2...bb298a04daa6899d5bfd679713c469226e61a526`](https://github.com/cchx0000/selmer-cartan-motive-towers/compare/977450467cd4794f25cf2aa8c7292c502c6f19a2...bb298a04daa6899d5bfd679713c469226e61a526)，新增 4 个直接相邻提交；最新源码审查游标为 `bb298a04daa6899d5bfd679713c469226e61a526`，树为 `a1bdeb901263a5f8d3b50f31465772d80c474936`。前一提交 `9774504` 只更新本 TODO。
+- 本次逐提交检查 [`977450467cd4794f25cf2aa8c7292c502c6f19a2...bb298a04daa6899d5bfd679713c469226e61a526`](https://github.com/cchx0000/selmer-cartan-motive-towers/compare/977450467cd4794f25cf2aa8c7292c502c6f19a2...bb298a04daa6899d5bfd679713c469226e61a526)，新增 4 个直接相邻提交；该次源码审查游标为 `bb298a04daa6899d5bfd679713c469226e61a526`，树为 `a1bdeb901263a5f8d3b50f31465772d80c474936`。前一提交 `9774504` 只更新本 TODO。
 - `e61373deee1db16d2c957318dc722404d0517fc8` 新增 DGA/curvature、CRT/prime-power reduction 和 classical-cone 数值模型，改写 M2/M10/M11，并新增 `P1_INFEASIBLE.md`。代数辅助结果有实质进展；改写后的生产结论仍须逐项与论文核对，不能将更弱命题沿用旧名后视为原目标完成。
 - `a3020f105622af73afb0f3d687c3371e47e6f9a8` 将 `kappa_ne_zero` 从字段改为由 pairing 关系、其检出条件和 Kummer 等式导出的引理；删除 Moore cochain 的 `hb_order` / `hb_exact`；将作者公理报告扩为 47 项。这修掉旧的直接字段投影和强制 `d c = 0` 路径，尚未建立实际算术 pairing 或忠实 integral complex。
 - `1d69e6ada613f6e05d73746ad9dd953333e2b5b5` 补齐 channel 的 A/B 非空，新增 ZMod-valued Dirac 单射及其精确阶源码，并改写 M6 的具体 `ρ` / 删除。`bb298a04daa6899d5bfd679713c469226e61a526` 新增 direction-lattice projection、role separation 和 jet-tower/跨 ceiling ledger 模型，改写 M4/M7/M8；其结构连接与仍允许的弱模型见 P1-2。
 - 完整树含 `lean/` 下 54 个 Lean 文件（21 Definitions、16 Theorems、16 实质 Solutions、1 SmokeTest；根目录另有 `lakefile.lean`）。去注释静态扫描有 24 个 structure、10 个 instance 声明、4 个显式 axiom、2 个无体 opaque；无可执行 `sorry` / `admit` / `unsafe`。全部 16 对生产定理/解答的参数和结论去注释、规范化空白后相同，生产声明仍调用对应 `sol_*`。
 - 论文、mission、四个项目 axiom、两个 opaque、构建配置和 `BUILD.md` 未改。当前源码 SHA 的 GitHub check-runs、commit statuses、Actions runs 均为 0；本次没有运行 Lean、Lake、证明或 `/verify`。`AXIOMS.md` 已补 source SHA，但该 SHA 当前无法通过仓库 API 解析，且无入库脚本、完整日志及退出状态；不能视为当前源码的可复现凭据。
+
+### 2026-10-10 增量审查：截至 `ba4b2e73`
+
+- 本次逐提交检查 [`f62187dac9b8f3d2e4fe86f3e1fe0fe32c15deed...ba4b2e73209b3713a2fd351b299ca2e891b8a0c2`](https://github.com/cchx0000/selmer-cartan-motive-towers/compare/f62187dac9b8f3d2e4fe86f3e1fe0fe32c15deed...ba4b2e73209b3713a2fd351b299ca2e891b8a0c2)，新增 3 个直接相邻提交，共改变 13 个文件；最新审查游标为 `ba4b2e73209b3713a2fd351b299ca2e891b8a0c2`，树为 `25919894620f53e2b7f7a4b4cd4318240c919bbb`。前一提交 `f62187d` 只更新本 TODO；本轮审查前 TODO blob 仍为 `4a543bfacca14bafca17bac07f0179caedc1dfa1`。
+- `69274136cbd42dacdc2714785a056b4a77bae1d2` 为三个 library 加入递归 submodule globs，并更新 `BUILD.md` / `lean/README.md` 的接线说明。旧“未配置 globs”缺口已修复；默认目标仍只有 Solutions，README 实际仍列 18 Definitions（真实为 21），不能按提交说明的“21”记为完成。
+- `8c1f2e1a38a2ca716cf976dadeafbc5ba0652160` 修改 `Def_jet_ledger.lean` 与 M4/M6/M7/M8 的四对声明/解答：M4 将存在对象与实际方向格、系数环、删除及重标号绑定；M6 新增 ring、非平凡 Source 与非恒定 ρ；M7 显式列出分离及 carrier/algebra 非平凡；M8 新增 latch 跨层相等律，并将 history/ledger 等式显式列入结论。这些源码强化应计入进展，剩余 dg、通道及递归语义见 P1-2。
+- `ba4b2e73209b3713a2fd351b299ca2e891b8a0c2` 只更新 `lean/BACKGROUND_INPUTS.md`：撤下已删除 cochain torsion 字段的当前表项，纠正 M2/M10 消费项，并承认 M14 的 `kummerEqKappa` 及 pairing 推导链被使用。P1-1 中相应四项陈旧记录已撤销；背景输入是否足以表达论文目标仍须另验。
+- 重查完整当前树的 54 个 `lean/` 源文件（21 Definitions、16 Theorems、16 实质 Solutions、1 SmokeTest；根目录另有 `lakefile.lean`）：24 个 structure、10 个 instance 声明、4 个显式 axiom、2 个无体 opaque；去注释/字符串后无可执行 `sorry` / `admit` / `unsafe`。16 对生产定理/解答的参数和结论去注释、规范化空白后仍相同，调用对应 `sol_*`；这是静态检查，不是 Lean 编译或数学完备性认证。
+- 论文、mission、项目 axiom/opaque 与 `AXIOMS.md` 未改。本次三个新 SHA 的 GitHub check-runs、commit statuses、Actions runs 均为 0；没有运行 Lean、Lake、证明或 `/verify`。47 项作者公理报告的 source SHA `d5ffb0e985fcbd60b388929d2a685437e8088e70` 重查仍返回 `422: No commit found`；不可当作本轮源码的可复现构建或依赖凭据。
 
 当前应报告为“条件式骨架、局部代数构造与独立解答源码，尚有声明语义和复现缺口”。仓库声明的 Strategy A 允许列明的外部算术输入；下面区分允许的输入、与结论等价的假设、以及根本没有证明字段的命题标签。数值证书的第一性原理验证不自动纳入当前 mission。
 
@@ -56,8 +65,9 @@
 
 - [ ] 验证正式构建入口覆盖所有预定模块，并保存对应源码 SHA、命令、完整结果的构建与依赖审计凭据。新增配置和作者报告构成进展，尚不足以关闭本项。
   - [x] 源码层面已补入根目录 `lean-toolchain` 与 `lakefile.lean`：Lean `leanprover/lean4:v4.33.1`，Mathlib 固定到 `0df444a360eaa60ab8c11dca51a86af692955474`；新增 `BUILD.md` 说明复现步骤。仅确认文件与版本记录存在，不表示构建通过。
-  - [x] 16 个实质解答已统一改为唯一的 `SelmerCartanMotiveTowers.sol_<name>`，消除原有同名 `solution` 冲突。`BUILD.md` 记录独立 Prove2Me 模块评测与联合导入的选择；后续源码已接回 Theorems，相关文档须同步（P1-5）。联合导入本身尚无本次独立验证。
-  - 构建覆盖仍有静态缺口：[Lean v4.33.1 的 Lake 配置源码](https://github.com/leanprover/lean4/blob/v4.33.1/src/lake/Lake/Config/LeanLibConfig.lean#L30-L46)规定默认 `roots = #[name]`、`globs = roots.map Glob.one`；[Glob.one 只枚举该模块](https://github.com/leanprover/lean4/blob/v4.33.1/src/lake/Lake/Config/Glob.lean#L53-L59)。当前 `lakefile.lean` 的三个 `lean_lib` 未指定 `roots` / `globs`；默认目标只有 `Solutions`，仓库没有 `lean/Solutions.lean`、`lean/Definitions.lean` 或 `lean/Theorems.lean` 聚合根模块。须使用显式模块列表/递归 globs，或补齐导入全部预定模块的根入口，并验证实际覆盖，不能把裸 `lake build` 当作全部子模块已检查的证据。
+  - [x] 16 个实质解答已统一改为唯一的 `SelmerCartanMotiveTowers.sol_<name>`，消除原有同名 `solution` 冲突。`BUILD.md` 记录独立 Prove2Me 模块评测与联合导入的选择，并已同步 Theorems 导入 Solutions 的接线说明；联合导入本身尚无本次独立验证。
+  - [x] `69274136` 已为 Definitions、Theorems、Solutions 分别设置 `Glob.submodules`，修掉无聚合根模块且未枚举子模块的问题。[当前配置](https://github.com/cchx0000/selmer-cartan-motive-towers/blob/ba4b2e73209b3713a2fd351b299ca2e891b8a0c2/lakefile.lean#L27-L32)与 [Lake submodule 枚举语义](https://github.com/leanprover/lean4/blob/v4.33.1/src/lake/Lake/Config/Glob.lean#L53-L59)已静态核对。
+  - 默认覆盖仍未完整：只有 Solutions 标记 `@[default_target]`，`BUILD.md` 仍只运行裸 `lake build`。当前 Solutions 的本地 import 闭包覆盖 17 Solutions 与全部 21 Definitions，但不包含任何 Theorems；独立声明的 Theorems library 不会因此自动成为默认目标。须显式构建 `lake build Definitions Theorems Solutions` 或建立等效完整入口，并保存覆盖全部 54 模块的运行证据；新增 globs 不能替代该验证。
   - 依赖和日志：Mathlib 已固定提交，其 toolchain 匹配，且该提交自带固定传递依赖的 manifest；仓库仍未提交根 `lake-manifest.json`，这是实际解析结果的留档缺口，不能据此声称依赖必然漂移。应保存干净 checkout 实际解析的依赖清单或等价证据。`BUILD.md` 要求记录源码 SHA、完整 `build.log` 和退出码，却未附这些运行产物；其 `lake build 2>&1 | tee build.log` 还须明确保留构建进程的退出状态，避免只记录 `tee` 的状态。
   - `lean/AXIOMS.md` 最新 blob 为 `7b483dcd2e05f08634452ae700b03e5089147757`，作者报告已从 28 项扩为 47 项（4 axiom、2 opaque、7 package instances、18 定义/辅助结果、16 `sol_*`），均称无 `sorryAx`；M2 改报仅 `propext`，M11/M12/M13 仍报 `tau_one`，M9 报无公理，其余解答报 Lean 基础公理。报告新增 source SHA `d5ffb0e985fcbd60b388929d2a685437e8088e70`，但本次仓库 API 返回 `422: No commit found`，无法核对其与现树的关系；不要再说“未记录 SHA”，也不能把它视为可定位源码凭据。入库脚本、完整命令/日志和退出状态仍缺失，本次未独立复现。
   - 继续单独核对 `Def_rec_one_mot.lean` 的 `tau_one`、`depth_of_full`、`depth_of_rec`、`tau_one_depth_fiber`，以及 `full_mot` / `rec_one_mot` 两个 opaque。报告称两个 opaque 无公理依赖；在可复现凭据齐备前，不把该陈述升级为本次验证结论。47 项虽补入部分 M3/M16 与 DGA/CRT/cone 声明，仍未列出接回的 16 个 Theorems，未逐项列全生产定义；新 `WitnessBackground.kappa_ne_zero`、M6 的 Dirac 结果、M4/M7/M8 新结构及修订后的解答也须与可定位源码重新核对；“absent everywhere”须限定覆盖范围。背景包中的裸 `Prop` 标签也不能因未出现在公理报告中便被当作成立的假设。
@@ -69,7 +79,7 @@
 
 - [x] 已新增 `lean/BACKGROUND_INPUTS.md`，记录 DEF/EXT/NUM/LEM 标签与使用声明，承认部分结果为条件组装。
 - [ ] 继续核验并补全四个背景包的逐字段台账，区分“定义 / 外部定理 / 数值假设 / 本文待证引理 / 目标重述”；标签和文献名不能代替声明适用条件与依赖证明。
-  - 台账已补 `FormalBackground.nonempty_FramedSector` / `nonempty_DGCategory`，`Classical` 任意类型已被具体数值模型替换，M16 §5 也已更新，旧漏项应撤销。但“Every field / exact fields / No GOAL!”仍须逐项核对：MotivicBackground 表仍列已删除 `hb_order` / `hb_exact`；M10 仍称消耗已不再使用的 `crtLine` / `crtLineHas`；M2 仍称消耗已不再导入的 FormalBackground §1；M14 附注将实际被 `kappa_ne_zero` 使用的 `kummerEqKappa` 列为未用标签。`lambda31_exact2`、`classNum93` 等仍为未证明的 Prop 标签。反循环界限见 P0-1；`stackIsDerived` 等结论型字段不能因标 DEF 而当作已建立的结构。
+  - 台账已补 `FormalBackground.nonempty_FramedSector` / `nonempty_DGCategory`，`Classical` 任意类型已被具体数值模型替换，M16 §5 也已更新。`ba4b2e73` 又修正四项陈旧记录：不再列已删除的 `hb_order` / `hb_exact` 为当前字段，M10 不再称消耗 `crtLine` / `crtLineHas`，M2 不再称消耗 FormalBackground §1，M14 正确列出 `kummerEqKappa` 与 pairing 推导链。剩余“Every field / exact fields / No GOAL!”的语义断言仍须核验：`lambda31_exact2`、`classNum93` 等为未证明的 Prop 标签；反循环界限见 P0-1，`stackIsDerived` 等结论型字段不能因标 DEF 而当作已建立的结构。
   - `ClassFieldBackground.masseyExact` 目前对任意三个 exact-order 字符和 cup-vanishing 条件便给出 Massey 精确阶；未包含特选第三射线、中心 Frobenius、固定 Heisenberg lift、指定 nullhomotopy 或单位局部不变量。应限定到实际构造数据，不能仅凭注释中的文献名视为一般定理。
   - `FormalBackground.obsCocycle/liftIff/gaugeInv/natural` 旧字段仍在，但 M2 已改为独立的 curvature 代数结果，不再投影它们；不能继续把 M2 描述为原条件组装。M11 的 `shadowZero/shadowMoore` 已针对 `ClassicalMooreCone` 的数值条件，仍直接由背景提供；`stackIsDerived`、`eRecBijective/eFullBijective` 等也仍是对应结论输入，不能替代实际 functor/stack/Morita 构造。
   - M10 已不再投影 `crtLineHas`，但 `crtRealizationIs` 及 M15 的 `gerbeIs/gerbeProvenance` 仍为背景结论；`gerbeProvenance : ∀ W, ...` 还须关联到产生该 gerbe 的具体 witness。M16 的三个 `pointed_cyclic_carrier` 与构造同构已在台账 §5 同步，三条 carrier 与实际 W/M 的关联仍见 P1-4。
@@ -79,17 +89,18 @@
 
 - [ ] 完成 M4 `thm_finite_confluent_interface` 的实际有限 confluent package。
   - 已落实的源码子项：新增 `direction_lattice S := ↥S.primes →₀ ℤ`、依赖 ν 的 ZMod 系数环、真实坐标删除及基于等价的重标号，并有删除幂等、身份/复合、删除—重标号自然性的证明体；旧“额外 ℤ 方向格、系数与 ν 无关、删除一律为零”不再适用于所选 solution。[定义与作用律](https://github.com/cchx0000/selmer-cartan-motive-towers/blob/bb298a04daa6899d5bfd679713c469226e61a526/lean/Definitions/Def_confluent_package.lean#L34-L130)
-  - 生产声明却未将存在的 `P.baseDatum/gammaModule/coeffRing` 绑定到这些对象，且删掉旧前两分量的 `Nontrivial`、系数分量的 `Nonempty` 与 `linAct`；七个裸 Type 全为 Unit、作用为恒等的模型仍满足，甚至前三分量 Empty、后四 Unit 也可空泛满足。所选 solution 的 Γᵐ 仍取方向格，confluence/defect/resonance/PD 四分量取 Unit。须把实际对象、Γᵐ/PD 与线性作用、跨支撑映射进入生产接口，保留空支撑的合法退化，不能用删掉约束代替结构。验收仍对齐论文 L5147–5168。[生产声明](https://github.com/cchx0000/selmer-cartan-motive-towers/blob/bb298a04daa6899d5bfd679713c469226e61a526/lean/Theorems/Thm_SelmerCartanMotiveTowers_thm_finite_confluent_interface.lean#L33-L46)
+  - [x] `8c1f2e1a` 已将生产声明的 `P.baseDatum/gammaModule` 绑定为 `direction_lattice S`、`P.coeffRing` 绑定为 `coeff_ring ν`，并用 HEq 绑定实际 `supportDelete` / `permActDir`；旧任意 Unit/Empty carrier 与无关作用模型不再适用。[生产声明](https://github.com/cchx0000/selmer-cartan-motive-towers/blob/ba4b2e73209b3713a2fd351b299ca2e891b8a0c2/lean/Theorems/Thm_SelmerCartanMotiveTowers_thm_finite_confluent_interface.lean#L36-L54)
+  - Γᵐ 仍被绑定为方向格本身，与 multiplicity m 无关；所选 solution 的 confluence/defect/resonance/PD 四分量仍取 Unit。尚无一般 direction-linear action、PD/Γᵐ 结构、confluence coarsening 或跨支撑 package 映射及相容律。须将这些实际对象和操作进入生产接口，保留空支撑的合法退化；按论文 L5147–5168 的七分量与作用要求验收，不能将方向格上的投影律视为全部 confluent package。
 - [ ] 完成 M6 `thm_channel_complete_realization` 的 dg、通道实现与 Moore 类语义。
-  - 已落实的源码子项：A/B 非空条件、channel 的 DecidableEq、carrier 加法群、Dirac 单射及每个 `chanMap c` 的精确加法阶 N。所选 carrier 为 `(channel_index S → ZMod N) × ℤ`，`corrAlgebra` 的底层类型为 ZMod N；不能再沿用旧 Bool/Unit carrier 或缺少 A/B 非空的批评。[Dirac 证明体](https://github.com/cchx0000/selmer-cartan-motive-towers/blob/bb298a04daa6899d5bfd679713c469226e61a526/lean/Solutions/Sol_thm_channel_complete_realization.lean#L9-L81)
-  - 论文 (iv) 要求 `[ρ(Ω_I)]` 的阶 N；现在只有独立 `chanMap c` 的阶，没有 Ω、投影、cycles/boundaries 或 `chanMap`—ρ 关系。生产结论对 ρ 无任何性质，仍允许 Unit Source/常值 ρ；公共 corrAlgebra 仍是裸 Type，所选 ZMod 不会自动成为声明中的 ring/dg algebra。具体 ρ 虽已基于 `c.supp ⊆ filter f`，却只看支撑，不区分同一支撑的 `(A,B)` 与 `(B,A)`；空 channel 时仍为常值。`delMap(f,z)=(f,0)` 仅删除辅助 ℤ 坐标，无被删支撑参数或通道删除规则。[生产声明与模型](https://github.com/cchx0000/selmer-cartan-motive-towers/blob/bb298a04daa6899d5bfd679713c469226e61a526/lean/Solutions/Sol_thm_channel_complete_realization.lean#L82-L125)
+  - 已落实的源码子项：A/B 非空条件、channel 的 DecidableEq、carrier 加法群、Dirac 单射及每个 `chanMap c` 的精确加法阶 N。所选 carrier 为 `(channel_index S → ZMod N) × ℤ`；`8c1f2e1a` 又在生产声明中要求 `Ring M.corrAlgebra`、`Nontrivial Source` 和 `∃ a b, ρ a ≠ ρ b`，并给出 ZMod N ring 和非恒定 ρ 的证明体。旧 Unit Source、常值 ρ、只有裸 corrAlgebra 类型的批评已修掉。[当前声明与模型](https://github.com/cchx0000/selmer-cartan-motive-towers/blob/ba4b2e73209b3713a2fd351b299ca2e891b8a0c2/lean/Solutions/Sol_thm_channel_complete_realization.lean#L101-L139)
+  - 论文 (iv) 要求 `[ρ(Ω_I)]` 的阶 N；现在仍只有独立 `chanMap c` 的阶，没有 Ω、投影、cycles/boundaries 或 `chanMap`—ρ 关系。ρ 的非恒定由新增辅助 ℤ 坐标 `if f 0 then 1 else 0` 保证，即使无 channel 也成立；第一坐标仍只看 `c.supp`，不能区分同支撑的 `(A,B)` 与 `(B,A)`。保留 Dirac 与阶条件、令 `ρ f = (0, if f 0 then 1 else 0)` 仍符合接口，说明非恒定本身未绑定通道实现（源码层面的模型分析，未运行 Lean）。ρ 仍只是到 carrier 的函数，ring 未与 carrier 的 endomorphism/dg correspondence 结构关联；`delMap(f,z)=(f,0)` 仅删除辅助坐标，无被删支撑参数或通道删除规则。
   - 新增 `1 < N` 是范围变化，须与 genuine root-pair 前提对应。验收仍按论文 L6145–6189 七项性质补实际 dg controller、根 Moore pair、Boolean/channel realization、严格支撑删除、Rees transfer、实现类精确阶、genuine antecedent、Fubini 与重标号/Koszul 相容性；Dirac 阶只是代数子项，不能勾选原 (iv)。
 - [ ] 完成 M7 `thm_role_separated_objectification` 的角色对象与控制态射。
-  - 已落实的源码子项：`RoleSeparation.separated : ∀ i j, d i ≠ e j` 真正排除两族重合；标记固定为 `i < j` 并附端点见证；系数从硬编码 3 泛化为给定奇平方自由 N。
-  - `ControlEdge` 只有两个端点及 `src ≠ tgt`，没有 Hom、零态射、微分或度数；字段名 `nonzero` 不等于非零态射，不同对象之间仍可有零态射。应恢复 Boolean correspondence 的指定 objectwise evaluation 与非零闭合 degree-zero 控制映射。定理仍存在性自造 M，solution 为两份 Fin 的和/Bool，仅以集合单射关联；未接到 M6 目标的 additive/Karoubi summands。须补低支撑、cutoff、higher cells 与 Morita 相容性，按论文 L6297–6327 验收。[ControlEdge 与角色结构](https://github.com/cchx0000/selmer-cartan-motive-towers/blob/bb298a04daa6899d5bfd679713c469226e61a526/lean/Definitions/Def_role_separation.lean#L6-L76)
+  - 已落实的源码子项：`RoleSeparation.separated : ∀ i j, d i ≠ e j` 真正排除两族重合；标记固定为 `i < j` 并附端点见证；系数从硬编码 3 泛化为给定奇平方自由 N。`8c1f2e1a` 又在生产结论显式列出分离和 carrier/algebra 非平凡；其中分离已由旧结构字段保证，carrier 非平凡可由分离、embed 单射及 h2 推出，algebra 非平凡则新增排除了 Unit algebra。当前接口仍允许 Role/carrier/algebra 全取 Bool、两族分别常值 false/true，所有标记边复用不等端点对；每族内部的索引区别尚未进入约束（静态模型分析）。
+  - `ControlEdge` 仍只有两个端点及 `src ≠ tgt`，没有 Hom、零态射、微分或度数；字段名 `nonzero` 不等于非零态射，不同对象之间仍可有零态射。应恢复 Boolean correspondence 的指定 objectwise evaluation 与非零闭合 degree-zero 控制映射。定理仍存在性自造 M，solution 为两份 Fin 的和/Bool，仅以集合单射关联；新增非平凡条件没有提供 M6 的 AddCommGroup、Ring、精确阶 N 通道或与同一 realization 的兼容关系，不能据注释称其已经是 channel-complete target。须补 additive/Karoubi summands、低支撑、cutoff、higher cells 与 Morita 相容性，按论文 L6297–6327 验收。[生产结论与模型](https://github.com/cchx0000/selmer-cartan-motive-towers/blob/ba4b2e73209b3713a2fd351b299ca2e891b8a0c2/lean/Solutions/Sol_thm_role_separated_objectification.lean#L38-L62)
 - [ ] 完成 M8 `thm_finite_motivic_recursion_closure` 的有限递归结构。
-  - 已落实的源码子项：`jet_tower` 全层共享 carrier/algebra，`Fin (M-2)` 对应 `k+3` 层，并有同一 tower 的跨 ceiling `ledger_restrict`；solution 固定使用 Fin 3，不再随 ceiling 增长。旧“层未对应 3..M、只在同 ceiling 内共享、carrier 随 M 增长”的批评已修掉。[tower/ledger](https://github.com/cchx0000/selmer-cartan-motive-towers/blob/bb298a04daa6899d5bfd679713c469226e61a526/lean/Definitions/Def_jet_ledger.lean#L24-L71)
-  - `latch` 仍是无 Reedy/face/Moore 相容律的 carrier 自映射；`history` 是过去 jet 层列表，未表达 reduced insertion histories、history blocks 及 2-cell coherence。solution 的 atLevel/history 仍常值、latch 为 id、基础 carrier/algebra 为 Fin 3/Bool。问题不是必须人为造非常值 ledger，而是共享的对象和操作须为所需 dg/root 结构。继续补 support deletion—successor 交换、proper-face latching/Boolean saturation/cofiber/Moore antecedent、history、bar/transgression、readout 及混合交换图（论文 L12472–12550）；不能把共同 carrier 与命名字段当作 (i)/(ii)/(iii)/(vi) 已验收。[所选模型](https://github.com/cchx0000/selmer-cartan-motive-towers/blob/bb298a04daa6899d5bfd679713c469226e61a526/lean/Solutions/Sol_thm_finite_motivic_recursion_closure.lean#L43-L62)
+  - 已落实的源码子项：`jet_tower` 全层共享 carrier/algebra，`Fin (M-2)` 对应 `k+3` 层，并有同一 tower 的跨 ceiling `ledger_restrict`；solution 固定使用 Fin 3，不再随 ceiling 增长。`8c1f2e1a` 新增 `latch_level_indep`，排除了逐层任意变化的 latch，并将该律、history_eq 与跨 ceiling 限制显式放进生产结论；history_eq / ledger_restrict 原已由结构/定义保证，后两项主要是接口显式化。[当前 tower/ledger](https://github.com/cchx0000/selmer-cartan-motive-towers/blob/ba4b2e73209b3713a2fd351b299ca2e891b8a0c2/lean/Definitions/Def_jet_ledger.lean#L24-L76)
+  - `latch` 虽跨层相同，仍无 Reedy/face/Moore 相容律；任意统一自映射仍可满足，跨层相等不能代替真正的 proper-face latching object 或 Boolean saturation。`history` 虽从 atLevel 构造，solution 的 `atLevelFn := fun _ _ => base`，所以 history 展开后仍常值，基础 carrier/algebra 仍为 Fin 3/Bool、latch 为 id。问题不是必须人为造非常值 ledger，而是共享对象和操作须为所需 dg/root 结构。继续补 support deletion—successor 交换、proper-face latching/Boolean saturation/cofiber/Moore antecedent、reduced insertion histories/history blocks/2-cell coherence、bar/transgression、readout 及混合交换图（论文 L12472–12550）；不能把共同 carrier、跨层相等和命名字段当作 (i)/(ii)/(iii)/(vi) 已验收。[所选模型](https://github.com/cchx0000/selmer-cartan-motive-towers/blob/ba4b2e73209b3713a2fd351b299ca2e891b8a0c2/lean/Solutions/Sol_thm_finite_motivic_recursion_closure.lean#L43-L81)
 
 ### P1-3：从任意函数/类型恢复 obstruction、category 与 stack
 
@@ -112,8 +123,8 @@
 
 - [x] 源码层面已把全部 16 个 `sol_*` 接入对应 Theorems：每项都新增正确 import 并调用对应解答，去注释/规范化空白后的参数与结论一致；旧 `by sorry` 已从生产声明移除。该完成项只描述源码接线，不代表语义验收或编译通过。
 - [x] `8a1d6783` 已更正 README 中 M14 重复计数与 SmokeTest 统计：16 个实质解答含主目标，第17个文件仅为烟雾测试。
-- [ ] 同步最新声明、模块和构建模式的文档：`lean/README.md` 仍写“12 definitions”“16 theorem drafts / by sorry”“drafts are not yet discharged”；实际已有 21 Definitions 文件，16 Theorems 已接线。`BUILD.md` 仍称接回草稿待办。背景台账与公理报告已有更新，但仍有 P1-1 / P0-3 所列的陈旧消费清单、不可定位源码 SHA 和覆盖缺口；代码注释中的“非零 integral differential”“Moore exact order”“real cone”等亦须限定到实际类型表达的范围。
-- [ ] 继续收窄“全部已证明”“all modules build cleanly”等陈述：明确是哪些条件式声明、哪些输入与构建凭据，并保留源码完成、编译验证、依赖公理和与论文语义差距的区别。先前语义任务仍须按各自验收，不因接线或消除文本 `sorry` 自动关闭。
+- [ ] 完成最新声明、模块和构建模式的文档同步：`69274136` 已在 `lean/README.md` 的 Layout 与 `BUILD.md` 承认 16 Theorems 接线、删除旧空 M7 说明和“all modules build cleanly (grep)”句子，应撤销对应旧批评。但 README 实际只更新到“18 definition modules”，仍漏 `confluent_package` / `role_separation` / `jet_ledger` 三模块；末尾 Not yet done 仍写接回草稿待办。`BACKGROUND_INPUTS.md` 的四项陈旧消费记录已由 `ba4b2e73` 修正；公理报告仍有 P0-3 所列不可定位源码 SHA 与覆盖缺口。M7 的“valid channel-complete target”、M8 将 latch 相等等同 Reedy 性质，以及“非零 integral differential”“real cone”等说明仍须限定到实际类型表达的范围。
+- [ ] 继续收窄“全部已证明”等陈述：README 仍称所有 16 里程碑已证明；须明确是哪些条件式/弱化声明、哪些输入与构建凭据，并保留源码完成、编译验证、依赖公理和论文语义差距的区别。旧“all modules build cleanly”句子已删除；不因接线、递归 globs 或消除文本 `sorry` 自动关闭语义或编译任务。
   - 验收：统计从真实声明和依赖闭包生成，逐项显示“文本完成 / 编译验证 / 依赖公理 / 与论文差距”；`MISSION_DESCRIPTION.md`、`INVENTORY.md` 与代码状态不相互矛盾。
 
 ## 声明与文件索引
@@ -151,11 +162,11 @@
 | M1 / Thm 6.5 | `thm_ray_class_primitive` | `ClassFieldBackground` 的两射线、第三射线、lift、Massey 字段组装 | P1-1 |
 | M2 / Thm 9.4 | `thm_universal_higher_obstruction_recursion` | Bianchi/展开/curvature 自然性源码；尚未推出原 obstruction 四项 | P1-1、P1-3 |
 | M3 / Thm 8.21 | `thm_formal_filtered_alignment` | 具体 CRT pointed AddEquiv 与 q-reduction，待接实际 filtered line | P1-4 |
-| M4 / Thm 11.6 | `thm_finite_confluent_interface` | 具体方向格/ZMod/删除与重标号；生产接口未绑定，仍允许 Unit 弱模型 | P1-2 |
+| M4 / Thm 11.6 | `thm_finite_confluent_interface` | 已绑定具体方向格/ZMod/删除与重标号；Γᵐ/PD/coarsening 等仍缺 | P1-2 |
 | M5 / Thm 12.2 | `thm_motivic_seed` | 保留类精确阶、删除 cochain torsion；antecedent 类接口仍有残余 torsion | P0-2 |
-| M6 / Thm 19.6 | `thm_channel_complete_realization` | 非空有序分拆、Dirac 单射与阶 N；未绑定实现 obstruction 类 | P1-2 |
-| M7 / Thm 19.9 | `thm_role_separated_objectification` | 角色像不交、一般 N 与端点见证；尚非 dg 非零态射，target 仍自造 | P1-2 |
-| M8 / Thm 25.14 | `thm_finite_motivic_recursion_closure` | 3..M ledger 与跨 ceiling 限制；Reedy/history/闭包语义仍缺 | P1-2 |
+| M6 / Thm 19.6 | `thm_channel_complete_realization` | Dirac 阶 N、ring、非平凡 Source 与非恒定 ρ；未绑定实现 obstruction 类 | P1-2 |
+| M7 / Thm 19.9 | `thm_role_separated_objectification` | 显式分离/非平凡与端点见证；尚非 dg 非零态射或 M6-compatible target | P1-2 |
+| M8 / Thm 25.14 | `thm_finite_motivic_recursion_closure` | 3..M ledger、跨 ceiling 限制与同一 latch；Reedy/history/闭包语义仍缺 | P1-2 |
 | M9 / Thm 26.7 | `thm_successor_stage_functor` | 给定 obstruction/Moore lift/closure 后的函数组装 | P1-3 |
 | M10 / Thm 26.12 | `thm_prime_power_comparison` | 具体 ZMod/二元 CRT/p-power reductions；完整乘积与 dg realization 未绑定 | P1-1、P1-4 |
 | M11 / Thm 27.5 | `thm_classical_low_sector_comparison` | 数值 cone/ZMod reductions；shadow 函子与实际 cone 识别仍缺 | P1-3 |

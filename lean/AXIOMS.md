@@ -3,7 +3,12 @@
 **Source SHA**: `d5ffb0e985fcbd60b388929d2a685437e8088e70`
 **Audit date**: 2026-10-09
 **Method**: `#print axioms` via `lake env lean` on each declaration below.
-**Result**: **0 `sorryAx`** across all 58 declarations.
+**Result**: **0 `sorryAx`** across all 59 declarations.
+**Update 2026-10-10** (M2 Leibniz fix): 1 new declaration audited
+(`SuperDGA.leibniz_of_decomp`, linear extension of the Leibniz rule to
+mixed elements); depends on axioms: [propext] only, 0 `sorryAx`. The old
+single `leibniz` field (`if isOdd a`) was replaced by the homogeneous
+fields `leibniz_even` / `leibniz_odd` (structure fields, not tabled).
 **Update 2026-10-10** (P1-4 M3 round 2, `e122cfaf`): 4 new named
 declarations audited (`moore_cohomology_apply_mk`,
 `moore_cohomology_of_diff`, `moore_cohomology_of_diff_apply_mk`,
@@ -147,6 +152,23 @@ Classification: Lean base axiom only.
 'SelmerCartanMotiveTowers.SuperDGA.naturality' depends on axioms: [propext]
 ```
 Classification: Lean base axiom only.
+
+#### `SuperDGA.leibniz_of_decomp`
+```
+'SelmerCartanMotiveTowers.SuperDGA.leibniz_of_decomp' depends on axioms: [propext]
+```
+Classification: Lean base axiom only. Linear extension of the Leibniz rule
+to mixed elements along the even/odd decomposition.
+
+**Revision note (2026-10-10, M2 Leibniz fix):** the old single `leibniz`
+field (`if isOdd a`) mis-signed mixed elements and excluded the standard
+super-DGA model `Λ_ℚ(θ)`, `dθ = 1`. It is replaced by the homogeneous
+fields `leibniz_even` / `leibniz_odd` (structure fields, not tabled) plus
+the proved linear extension `leibniz_of_decomp` above.
+`GaugeUnit` now requires evenness as subgroup membership (`g ∈ evenPart`);
+`DGAHom` preserves parity as subgroup membership (a nonzero odd element
+may map to `0`). The declaration total moves 58 → 59 (see summary-table
+row 18a and the §4 change log).
 
 ### M10 CRT (`Def_crt_product.lean`)
 
@@ -421,6 +443,7 @@ Classification: Lean base axioms only.
 | 6 | `rec_one_mot` | none |
 | 7–13 | 7 package instances | Lean base triple |
 | 14–18 | `SuperDGA`, `bianchi`, `bianchi_cocycle`, `curvature_expand`, `naturality` | `propext` only |
+| 18a | `leibniz_of_decomp` (2026-10-10, M2 Leibniz fix) | `propext` only |
 | 19–29 | `crtModulus`, `crtLine_order`, `ppowerRed`, `MoorePresentation`, `ppowerRed_comp`, `crtModulus_eq_prod_coe`, `crtPairwiseCoprime`, `crtProductEquiv`, `crtProductEquiv_one`, `evalAtCoe`, `crtProductEquiv_apply` | Lean base axioms |
 | 30–33 | `ClassicalMooreCone` (none), `reduce_refl`, `reduce_trans`, `line_order` | none / Lean base |
 | 34–35 | `moore_cohomology`, `qPrimaryRed` | Lean base axioms |
@@ -443,9 +466,9 @@ Classification: Lean base axioms only.
 | 53 | `sol_thm_gerbe_provenance` (M15) | Lean base triple |
 | 54 | `sol_thm_motivic_specialization` (M16) | Lean base triple |
 
-**Total: 58 declarations. `sorryAx`: 0.**
+**Total: 59 declarations. `sorryAx`: 0.**
 
-### Changes from the 47-item audit (47 → 58)
+### Changes from the 47-item audit (47 → 59)
 
 1. Added 7 P1-4 M10 CRT declarations (2026-10-10): `ppowerRed_comp`,
    `crtModulus_eq_prod_coe`, `crtPairwiseCoprime`, `crtProductEquiv`,
@@ -468,9 +491,15 @@ Classification: Lean base axioms only.
    `witnessArithIso`/`hM`, M6 `omegaClass`/`reesCoeff`, M7 `ControlEdge`,
    M8 `ReedyDecomp`, P0-0 `UnipotentExtension` fields, M15 re-revision, M3
    round-2 generator chain `e122cfaf`) are not yet covered by a per-item
-   `#print axioms` rerun; see P0-3. The 58-item table records the
+   `#print axioms` rerun; see P0-3. The 59-item table records the
    declarations as listed at audit time, not a claim that every current
    module has been rerun.
+5. Added 1 M2 declaration (2026-10-10, Leibniz fix):
+   `SuperDGA.leibniz_of_decomp` — [propext] only, 0 `sorryAx`; see §3
+   entry and summary-table row 18a. The old single `leibniz` field
+   (`if isOdd a`) was replaced by `leibniz_even` / `leibniz_odd`
+   (structure fields, not tabled); `GaugeUnit` / `DGAHom` parity fields
+   were also revised (subgroup membership).
 
 ### Changes from the previous audit (28 → 47)
 

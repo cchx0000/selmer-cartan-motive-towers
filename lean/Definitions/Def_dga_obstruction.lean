@@ -58,6 +58,18 @@ This file formalizes the **parity-graded** DGA core. The four clauses are:
   only marks *homogeneous* odd elements; mixed even+odd elements are
   classified as not-odd. A full treatment would thread homogeneous
   decompositions through every statement.
+- **Leibniz revision (2026-10-10)**: the old single `leibniz` field used
+  `if isOdd a` and mis-signed mixed elements — e.g. in the standard super
+  DGA `Λ_ℚ(θ)` with `dθ = 1`, on the mixed element `a = 1 + θ` and `b = θ`
+  the old rule gave `1 + 2θ` where the true value is `1`, so the interface
+  excluded this valid model. It is replaced by `leibniz_even` /
+  `leibniz_odd` on homogeneous inputs plus linear extension
+  (`SuperDGA.leibniz_of_decomp`), restoring the model. `GaugeUnit` now
+  requires evenness as positive subgroup membership (`g ∈ evenPart`)
+  rather than the weak `¬ isOdd g`, and `DGAHom` preserves parity as
+  subgroup membership, allowing graded maps that send a nonzero odd
+  element to `0`. The truncated gauge with an odd part is still future
+  work.
 - **PD filtration**: Not formalized. The paper's PD-degree counting
   ("higher terms have higher weight") is represented by the algebraic
   form of the identities; a future refinement may add an ℕ-weight grading.
@@ -76,8 +88,15 @@ This file formalizes the **parity-graded** DGA core. The four clauses are:
     the *homogeneous* odd elements and is tied to the grading by `isOdd_eq`,
     so it is no longer an arbitrary predicate.
 
-    Note on the sign: in characteristic 2 the `(-1 : A)` in `leibniz` equals
-    `1`; the grading laws themselves are characteristic-free. -/
+    The Leibniz rule is stated on **homogeneous** inputs (`leibniz_even` for
+    even elements, `leibniz_odd` with the Koszul sign `-1` for homogeneous
+    odd elements) and extends linearly to arbitrary mixed elements via
+    `SuperDGA.leibniz_of_decomp`. This repairs the old single-`leibniz`
+    interface with `if isOdd a`, which mis-signed mixed elements and
+    excluded genuine models such as `Λ_ℚ(θ)` with `dθ = 1`.
+
+    Note on the sign: in characteristic 2 the `(-1 : A)` in `leibniz_odd`
+    equals `1`; the grading laws themselves are characteristic-free. -/
 structure SuperDGA where
   A : Type
   [ring : Ring A]
@@ -86,7 +105,6 @@ structure SuperDGA where
   d : A → A
   d_add : ∀ a b, d (a + b) = d a + d b
   d_squared : ∀ a, d (d a) = 0
-  leibniz : ∀ a b, d (a * b) = d a * b + (if isOdd a then (-1 : A) else 1) * (a * d b)
   /-- 偶/奇分解 (even/odd decomposition): the even part is an additive
       subgroup, closed under multiplication and containing `1`. -/
   evenPart : AddSubgroup A
@@ -108,6 +126,13 @@ structure SuperDGA where
   d_of_odd : ∀ a : A, a ∈ oddPart → d a ∈ evenPart
   /-- `isOdd` is the homogeneous-odd predicate, determined by the grading. -/
   isOdd_eq : ∀ a : A, isOdd a ↔ (a ∈ oddPart ∧ a ∉ evenPart)
+  /-- Leibniz rule for homogeneous even elements (no Koszul sign).
+      Placed after the grading fields since it refers to `evenPart`. -/
+  leibniz_even : ∀ a b, a ∈ evenPart → d (a * b) = d a * b + a * d b
+  /-- Leibniz rule for homogeneous odd elements (Koszul sign `-1`).
+      Mixed elements are handled by `SuperDGA.leibniz_of_decomp` via the
+      even/odd decomposition. -/
+  leibniz_odd : ∀ a b, isOdd a → d (a * b) = d a * b + (-1 : A) * (a * d b)
 
 namespace SuperDGA
 
@@ -168,8 +193,7 @@ theorem bianchi (X : S.A) (hX : S.isOdd X) :
     S.d (curvature S X) + X * (curvature S X) - (curvature S X) * X = 0 := by
   unfold curvature
   rw [S.d_add, S.d_squared]
-  have h_leib := S.leibniz X X
-  rw [if_pos hX] at h_leib
+  have h_leib := S.leibniz_odd X X hX
   simp only [zero_add]
   rw [h_leib, mul_add, add_mul]
   have h_assoc : X * (X * X) = (X * X) * X := (mul_assoc X X X).symm
@@ -209,17 +233,38 @@ theorem curvature_expand (X Y : S.A) :
   rw [S.d_add, add_mul, mul_add, mul_add]
   abel
 
+/-- Leibniz rule extended to arbitrary (possibly mixed) elements by linear
+    extension along the even/odd decomposition.
+
+    The old single-`leibniz` interface used `if isOdd a` and therefore
+    classified a mixed element such as `a = 1 + θ` in `Λ_ℚ(θ)` (with
+    `dθ = 1`) as not-odd, evaluating the right-hand side at the wrong sign:
+    for `b = θ` the old rule gives `1 + 2θ` where the true value is `1`.
+    With the decomposition `a = e + o` the correct formula is the sum of
+    the homogeneous rules. -/
+theorem leibniz_of_decomp (a b e o : S.A) (he : e ∈ S.evenPart)
+    (ho : S.isOdd o) (h : e + o = a) :
+    S.d (a * b) =
+      (S.d e * b + e * S.d b) + (S.d o * b + (-1 : S.A) * (o * S.d b)) := by
+  conv_lhs => rw [← h]
+  rw [add_mul, S.d_add, S.leibniz_even e b he, S.leibniz_odd o b ho]
+
 /-- A Maurer-Cartan element: `X` with `F(X) = 0`. -/
 def IsMaurerCartan (X : S.A) : Prop :=
   curvature S X = 0
 
 /-- A gauge unit: a degree-0 (even) element `g` with `dg = 0` that is a unit.
-    The paper's truncated gauge (`g = 1 +` positive PD degree) refines this. -/
+
+    Evenness is required positively as subgroup membership (`g ∈ evenPart`),
+    not as the negated predicate `¬ isOdd g` (which a mixed even+odd element
+    also satisfies). The paper's truncated gauge (`g = 1 +` positive PD
+    degree, which may have an odd part) is a further refinement not captured
+    by this even-unit model. -/
 structure GaugeUnit where
   g : S.A
   g_inv : S.A
-  hg_even : ¬S.isOdd g
-  hg_inv_even : ¬S.isOdd g_inv
+  hg_even : g ∈ S.evenPart
+  hg_inv_even : g_inv ∈ S.evenPart
   dg_eq : S.d g = 0
   dg_inv_eq : S.d g_inv = 0
   mul_inv : g * g_inv = 1
@@ -240,14 +285,19 @@ namespace SuperDGA
 variable {S T : SuperDGA}
 
 /-- A homomorphism of super-DGAs: preserves multiplication, differential,
-    unit, and parity. -/
+    unit, and parity.
+
+    Parity is preserved as subgroup membership, so a graded map may send a
+    nonzero odd element to `0` (which lies in both subgroups); the old
+    `map_odd : ∀ a, T.isOdd (toFun a) ↔ S.isOdd a` excluded such maps. -/
 structure DGAHom (S T : SuperDGA) where
   toFun : S.A → T.A
   map_mul : ∀ a b, toFun (a * b) = toFun a * toFun b
   map_add : ∀ a b, toFun (a + b) = toFun a + toFun b
   map_d : ∀ a, toFun (S.d a) = T.d (toFun a)
   map_one : toFun 1 = 1
-  map_odd : ∀ a, T.isOdd (toFun a) ↔ S.isOdd a
+  map_even : ∀ a, a ∈ S.evenPart → toFun a ∈ T.evenPart
+  map_odd : ∀ a, a ∈ S.oddPart → toFun a ∈ T.oddPart
 
 /-- Naturality (clause iv): DGA homomorphisms preserve curvature.
     This is the algebraic core of the paper's naturality statement:

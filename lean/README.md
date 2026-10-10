@@ -9,13 +9,14 @@ Strategy A background packages.**
 
 ## Layout
 
-- `Definitions/` — 18 definition modules:
+- `Definitions/` — 21 definition modules:
   - 8 foundational: `finite_ordered_support`, `typed_coordinates`, `source_package`,
     `full_mot`, `rec_one_mot`, `motivic_moore_reedy`, `selmer_cartan_tower`, `adic_witness`
   - 4 arithmetic background packages (Strategy A, explicitly labeled hypotheses):
     `classfield_background`, `motivic_background`, `witness_background`, `formal_background`
   - 6 P1-3/P1-4 concrete-structure modules: `channel_index`, `moore_cohomology_line`,
     `pointed_cyclic_carrier`, `dga_obstruction`, `crt_product`, `classical_shadow_cone`
+  - 3 P1-2 deep-structure modules: `confluent_package`, `role_separation`, `jet_ledger`
 - `Theorems/` — 16 production theorem statements (`Thm_SelmerCartanMotiveTowers_*.lean`).
   Each now imports its `Solutions/` module and discharges the statement by
   applying the corresponding `sol_*` proof (P1-5 rewiring complete; no `by sorry` remains).

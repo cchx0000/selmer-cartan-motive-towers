@@ -57,16 +57,23 @@ REVISION NOTE (P0-1 continuation, 2026-10-10, external-verifier todo.md):
   input `kappaTorsion31 : 31 • κ = 0` plus the DERIVED lemma
   `kappa_exact_order31` (via `addOrderOf_eq_prime`): exact order 31 is now
   proved from 31-torsion + `κ ≠ 0`, not assumed (anti-circularity).
-- (W1)/(W2) route structured background data: the Qi Kummer datum with the
-  real principality equation `(α) = P₀³`, the exact-`λ₃₁ = 2` numerical
-  equation, and the per-depth `CarryReductionSystem` (pointed primitive
-  reductions of exact order `31^r` with a compatible restriction section) —
-  replacing the constant family + identity restriction.
-- The `K₀`/`K*` arithmetic identity enters via branch discriminants
+- (W1)/(W2) route structured background data: the Qi Kummer datum recording
+  the principality-equation FORM `alpha = 3 • P0` (NOT the actual
+  principal-divisor identity `(α) = P₀³` in `K₀`, whose domain/divisor bridge
+  stays paper-side), the exact-`λ₃₁ = 2` numerical equation, and the
+  per-depth `CarryReductionSystem` (pointed primitive reductions of exact
+  order `31^r` with a compatible restriction section) — replacing the
+  constant family + identity restriction. NOTE (verifier P0-1): the witness
+  output contract retains only the per-depth carrier TYPES and restriction
+  MAPS; the exact-order facts and the pointed section stay background.
+- The paper's REPORTED discriminant values enter as numeric equations
   (`K0disc = -331`, `KstarDisc = -15391`); the contract pins
-  `h_baseFieldDisc : baseFieldDisc = -331`.
+  `h_baseFieldDisc : baseFieldDisc = -331`. These are numeric hypotheses,
+  not a proof that the branch types are the actual number fields.
 - The background localization is now a bundled additive group homomorphism,
-  not an arbitrary function. -/
+  not an arbitrary function. The witness contract itself stores only its
+  underlying function (`⇑localizeObstruction`); additivity is NOT part of
+  the `adic_witness` output contract. -/
 structure adic_witness where
   -- (W1) an explicit marked repeated cubic line satisfying the filtered source input
   cubicLine : Type
@@ -125,9 +132,10 @@ structure adic_witness where
   h_arithPrime : arithPrime = 31
   h_supportLabel : supportLabel = 31
   h_coeffDepthPrime : coeffDepthPrime = 31
-  /-- The base-field discriminant is pinned to `K₀ = Q(√-331)` (P0-1
-      continuation, 2026-10-10): the `K₀`-branch arithmetic identity enters
-      the contract as an equation, routed from the background's `K0disc`. -/
+  /-- The paper's REPORTED base-field discriminant value `-331` enters the
+      contract as a numeric equation (P0-1 continuation, 2026-10-10), routed
+      from the background's `K0disc`. This records the value; it does not make
+      the branch type the actual number field `K₀ = Q(√-331)`. -/
   h_baseFieldDisc : baseFieldDisc = -331
 
 /-- The witness's own group structures, registered as instances so that

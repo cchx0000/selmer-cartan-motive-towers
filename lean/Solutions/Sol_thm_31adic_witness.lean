@@ -15,23 +15,29 @@ Strategy A assembly, now with real mathematical content: the witness
 contract `adic_witness` is inhabited from the explicit 31-adic background
 inputs in `WitnessBackground` §3 —
 (W1) the marked repeated cubic line: the (I3) `QAdicLine` with the Qi Kummer
-datum's real principality equation `(α) = P₀³` (`qiKummerData.principalEq`)
-and the exact-`λ₃₁ = 2` numerical equation (`lambda31_eq`) — no longer bare
+datum's principality-equation FORM `alpha = 3 • P0` (`qiKummerData.principalEq`
+— the equation shape in an abstract group, NOT the actual `(α) = P₀³`
+principal-divisor identity in `K₀`, which stays paper-side) and the
+exact-`λ₃₁ = 2` numerical equation (`lambda31_eq`) — no longer bare
 `Prop` labels;
 (W2) integral carry normalization at every finite coefficient depth: the
-background's `CarryReductionSystem` — at each finite depth `r` a pointed
-primitive reduction of EXACT order `31^r`, with canonical restriction maps
-satisfying the identity/composition laws and a specified compatible pointed
-section — wired into the witness's `carryNormalization`/`carryRestrict`
-family at the 31-component of the coefficient exponent. The family is no
-longer constant and restriction is no longer the identity; the LAWS are
-discharged by the background's recorded compatibility laws;
+per-depth carrier TYPES and restriction MAPS of the background's
+`CarryReductionSystem` are wired into the witness's
+`carryNormalization`/`carryRestrict` family at the 31-component of the
+coefficient exponent. The family is no longer constant and restriction is no
+longer the identity; the identity/composition LAWS are discharged by the
+background's recorded compatibility laws. NOTE (verifier P0-1): the
+exact-order facts (`redClassOrder`), the pointed reductions themselves, and
+the compatible pointed section (`restrict_pointed`) STAY BACKGROUND — the
+witness output contract does NOT retain them;
 (W3) the explicit arithmetic target (`branchZero`/`branchStar` for
 `K₀`/`K*`, the obstruction group with the distinguished Kummer class
-`κ₅^root`, and the localization map — now a bundled additive group
-homomorphism, not an arbitrary function); the `K₀`-branch identity is
-pinned by `h_baseFieldDisc : baseFieldDisc = -331`, routed from the
-background's `K0disc`;
+`κ₅^root`, and the localization map). The background localization is a
+bundled additive group homomorphism, but the witness contract stores only
+its underlying function — additivity is NOT in the output contract. The
+paper's REPORTED `K₀` discriminant value is recorded by
+`h_baseFieldDisc : baseFieldDisc = -331`, routed from the background's
+`K0disc` (a numeric hypothesis, not field-structure proof);
 (W4a) local triviality via the background's trivialization DATA
 (`trivNonempty`, each datum certifying the real local-vanishing equation);
 (W4b) global nonvanishing via the PROVED lemma `WitnessBackground.kappa_ne_zero`;
@@ -44,9 +50,13 @@ hypotheses); the base-field discriminant is `K₀ = Q(√-331)`.
 
 HONEST SCOPE: Kummer theory, local fields, and Poitou–Tate duality stay
 background hypotheses (Strategy A). What narrowed is type-level arbitrariness:
-exact order 31 derived (not assumed), branch discriminants, the Kummer
-principality equation, `ZMod 31`-valued bilinear pairing, per-depth exact
-`31^r` reductions with compatibility laws, and a homomorphic localization. -/
+exact order 31 derived (not assumed), branch-discriminant NUMERIC EQUATIONS
+(not field-structure proofs), the Kummer equation FORM `alpha = 3 • P0`
+(not the actual principal-divisor identity), `ZMod 31`-valued bilinear
+pairing, per-depth exact `31^r` reductions with compatibility laws (background;
+the output contract keeps only carrier types + restriction maps), and a
+homomorphic background localization (the output contract stores only its
+underlying function). -/
 theorem sol_thm_31adic_witness (bg : WitnessBackground) : Nonempty adic_witness :=
   ⟨{ cubicLine := bg.QAdicLine,
      cubicLine_input_ok := fun _ =>
@@ -81,25 +91,28 @@ theorem sol_thm_31adic_witness (bg : WitnessBackground) : Nonempty adic_witness 
      h_baseFieldDisc := bg.K0disc_eq }⟩
 
 /-- Traceability audit for Theorem 37.1 (verifier P0-1 acceptance,
-2026-10-10): each of the paper's four conclusions (paper L15765–15774) is
-extracted from the background below with its allowed-input label.
-  (i)   `K₀` supplies an exact-`λ₃₁ = 2` repeated cubic [CITED/NUM:
-        `lambda31_eq`] and a compatible family of pointed primitive
-        reductions of exact order `31^r` at every finite `r` [NUM/paper:
-        `carrySystem.redClassOrder`], with canonical carry normalization at
-        every finite depth [NUM/paper: `carrySystem.restrict` laws];
-  (ii)  `K*` supplies the pointed nonzero class `κ₅^root` [PROVED:
-        `kappa_ne_zero` from EXT pairing + LEM Kummer identification + NUM
-        nonzero pairing value] of exact order 31 [PROVED:
-        `kappa_exact_order31` from NUM 31-torsion + `κ ≠ 0`];
-  (iii) the displayed Kummer element represents the proper 31-fold Massey
-        value [LEM/paper: `kummerEqKappa`; CITED: `llsWW`];
-  (iv)  the recursive map extends at the 31-adic places [paper:
-        `trivVanishes` data]; the "no global extension" half is the
-        background field `globalNonExtension` (LEM: the paper proves it from
-        the §32–37 chain) — recorded, not re-derived, here.
-The "recursive map exists through stage 30" part of (iv) is source-tower
-content (M1–M16), not witness-layer. -/
+2026-10-10): six VERIFIED algebraic/numerical conjuncts extracted from the
+background, each with its allowed-input label — the formalizable part of the
+paper's four conclusions (paper L15765–15774).
+  (i)   exact-`λ₃₁ = 2` [CITED/NUM: `lambda31_eq`] and per-depth exact order
+        `31^r` of the carry reductions [NUM/paper: `carrySystem.redClassOrder`];
+  (ii)  the pointed nonzero class `κ₅^root` [PROVED: `kappa_ne_zero` from EXT
+        pairing + LEM Kummer identification + NUM nonzero pairing value] of
+        exact order 31 [PROVED: `kappa_exact_order31` from NUM 31-torsion +
+        `κ ≠ 0`];
+  (iii) the Kummer identification `kummerClass = kappa` [LEM/paper:
+        `kummerEqKappa`]. NOT stated here: the proper 31-fold Massey identity
+        — there is no Massey object in the formalization; `llsWW` is an UNUSED
+        bare-`Prop` background label recording the paper's cited claim,
+        neither assumed as a usable hypothesis nor proved;
+  (iv)  local trivialization at the 31-adic places via background DATA
+        [paper: `trivVanishes`]. NOT stated here: the "recursive map through
+        stage 30" (source-tower content, M1–M16) and the "no global extension"
+        half — `globalNonExtension` is an UNUSED bare-`Prop` background label,
+        neither assumed as a usable hypothesis nor proved.
+Do NOT describe this theorem as extracting all four conclusions: proper
+Massey/Bockstein identities, the stage-30 map, and global nonextension are
+absent from the statement (verifier P0-1, 2026-10-10). -/
 theorem sol_thm_31adic_witness_trace (bg : WitnessBackground) :
     bg.lambda31 = 2
       ∧ (∀ r, addOrderOf (bg.carrySystem.redClass r) = 31 ^ r)

@@ -5,18 +5,23 @@ import Definitions.Def_gerbe_provenance
 
 namespace SelmerCartanMotiveTowers
 
-/-- The Qi Kummer datum (paper §33): the distinguished Kummer element `α`
-with principal divisor `(α) = P₀³` in the `K₀` divisor class group
-(additive notation). The EXISTENCE of such an `α` is NUM/paper (the paper
-verifies the Qi Kummer element); the exponent 3 and the principality
-equation are real mathematical content, not a bare `Prop` label
-(verifier P0-1, 2026-10-10). -/
+/-- The Qi Kummer datum (paper §33): records the FORM of the paper's
+principality identity `(α) = P₀³` as the equation `alpha = 3 • P0` in an
+abstract additive group. This is an equation-FORM model, NOT the actual
+principal-divisor identity: `DivGroup` is an arbitrary `AddCommGroup` —
+there is no number-field element, no divisor-class-group map, no primality
+of `P₀`, and no link to the `K₀` branch type. The paper's verification of
+the actual Qi Kummer element stays paper-side (NUM/paper); what is
+formalized here is the equation shape — real mathematical content, but
+strictly weaker than the arithmetic statement (verifier P0-1, 2026-10-10). -/
 structure KummerDatum where
   DivGroup : Type
   [divAddComm : AddCommGroup DivGroup]
   alpha : DivGroup
   P0 : DivGroup
-  /-- `(α) = P₀³`: the Kummer element is principal with exact `P₀`-exponent 3. -/
+  /-- `alpha = 3 • P0`: the equation FORM of `(α) = P₀³` (exact `P₀`-exponent
+      3). The actual principal-divisor identity in `K₀` needs the
+      domain/divisor bridge, which is not formalized (paper-side). -/
   principalEq : alpha = 3 • P0
 
 /-- Per-depth pointed primitive carry reductions (Thm 37.1(i), paper §34).
@@ -119,12 +124,15 @@ arithmetic proofs later.
 
 P0-1 CONTINUATION (2026-10-10, external-verifier todo.md): the remaining
 bare `Prop` labels of §3 (`lambda31_exact2`, `qiKummer`, `carryNormalized`,
-`classNum93`) are replaced by structured data below — a `KummerDatum` with
-the real principality equation `(α) = P₀³`, a `CarryReductionSystem` of
-per-depth pointed primitive reductions of exact order `31^r` with
-compatibility laws, numerical data with their equations (`lambda31 = 2`,
-`classNumStar = 93`), and branch discriminants (`-331`, `-15391`) pinning
-the `K₀`/`K*` arithmetic identity. The exact-order field `kappaOrder31`
+`classNum93`) are replaced by structured data below — a `KummerDatum`
+recording the principality-equation FORM `alpha = 3 • P0` (abstract additive
+group; NOT the actual principal-divisor identity, whose domain/divisor
+bridge stays paper-side), a `CarryReductionSystem` of per-depth pointed
+primitive reductions of exact order `31^r` with compatibility laws,
+numerical data with their equations (`lambda31 = 2`, `classNumStar = 93`),
+and branch discriminants (`-331`, `-15391`) recording the paper's REPORTED
+values (numeric hypotheses — they do not endow the branch types with
+number-field structure). The exact-order field `kappaOrder31`
 is replaced by the independent torsion input `kappaTorsion31 : 31 • κ = 0`
 plus the DERIVED lemma `kappa_exact_order31` (anti-circularity). -/
 
@@ -173,8 +181,9 @@ structure WitnessBackground where
      trivialization data. The deep arithmetic stays as explicitly labeled
      background hypotheses, now in "there exists data with property P" form
      where P is a real mathematical property. -/
-  /-- `K₀ = Q(√-331)`: base-field discriminant (NUM, paper §32). This pins
-      the arithmetic identity of the `K₀`-branch: the witness's
+  /-- `K₀ = Q(√-331)`: base-field discriminant (NUM, paper §32). This records
+      the paper's REPORTED discriminant value as a numeric equation; it does
+      not give the `K₀`-branch type any number-field structure. The witness's
       `baseFieldDisc` routes from here (verifier P0-1, 2026-10-10). -/
   K0disc : ℤ
   K0disc_eq : K0disc = -331
@@ -185,10 +194,12 @@ structure WitnessBackground where
       (verifier P0-1, 2026-10-10). -/
   lambda31 : ℕ
   lambda31_eq : lambda31 = 2
-  /-- The Qi Kummer datum (paper §33): the distinguished Kummer element `α`
-      with `(α) = P₀³`. The EXISTENCE of such an `α` is NUM/paper (the paper
-      verifies the Qi Kummer element); the exponent 3 and the principality
-      equation are real mathematical content (verifier P0-1, 2026-10-10). -/
+  /-- The Qi Kummer datum (paper §33): the principality-equation FORM
+      `alpha = 3 • P0` in an abstract additive group. The paper's actual
+      principal-divisor identity `(α) = P₀³` in `K₀` (existence + verification
+      of the Qi Kummer element) stays paper-side (NUM/paper); what is
+      formalized is the equation shape — real content, but not the arithmetic
+      statement (verifier P0-1, 2026-10-10). -/
   qiKummerData : KummerDatum
   /-- Per-depth pointed primitive carry reductions (Thm 37.1(i), paper §34):
       at every finite coefficient depth `r`, a pointed primitive reduction
@@ -198,8 +209,9 @@ structure WitnessBackground where
       presheaf with a specified global section, not a constant family
       (verifier P0-1, 2026-10-10). -/
   carrySystem : CarryReductionSystem
-  /-- `K* = Q(√-15391)`: base-field discriminant (NUM, paper §32). This pins
-      the arithmetic identity of the `K*`-branch (verifier P0-1,
+  /-- `K* = Q(√-15391)`: base-field discriminant (NUM, paper §32). This records
+      the paper's REPORTED discriminant value as a numeric equation; it does
+      not give the `K*`-branch type any number-field structure (verifier P0-1,
       2026-10-10). -/
   KstarDisc : ℤ
   KstarDisc_eq : KstarDisc = -15391
@@ -216,9 +228,16 @@ structure WitnessBackground where
   BranchStar : Type
   /-- `K*` multiplicative structure (minimal; P0-1 deepening, 2026-10-10). -/
   [bgBranchStarMul : Mul BranchStar]
-  /-- LLSWW 4.3.1: proper 31-fold Massey = `κ₅^root` (CITED). -/
+  /-- LLSWW 4.3.1 (proper 31-fold Massey identification) as a bare `Prop`
+      BACKGROUND LABEL recording the paper's cited claim (CITED). It carries
+      no proof content, is UNUSED by any proof term, and is neither assumed
+      as a usable hypothesis nor proved — do not cite it as either
+      (verifier P0-1, 2026-10-10). -/
   llsWW : Prop
-  /-- Global non-extension (paper proves from the above). -/
+  /-- Global non-extension as a bare `Prop` BACKGROUND LABEL recording the
+      paper's claim (paper-side proof). It carries no proof content, is UNUSED
+      by any proof term, and is neither assumed as a usable hypothesis nor
+      proved — do not cite it as either (verifier P0-1, 2026-10-10). -/
   globalNonExtension : Prop
   /-- The global obstruction group (Sha²-like) carrying the Kummer class. -/
   ObstructionGroup : Type

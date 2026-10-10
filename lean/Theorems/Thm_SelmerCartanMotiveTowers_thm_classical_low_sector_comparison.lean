@@ -10,9 +10,9 @@ Assuming the formal background (`FormalBackground` §2: the paper's specific
 classical shadow functor from the framed Cartan-generated root/Moore sector
 to classical Moore cones), there exists a classical shadow functor sending
 the rooted arithmetic zero-motive to the cone of zero (the Artin object,
-`H⁰ = ℤ`) and the primitive motivic Moore seed (with its genuine root-stack
+`H¹ = ℤ`) and the primitive motivic Moore seed (with its genuine root-stack
 antecedent) to a nontrivial Moore cone `Q_d` (the standard
-multiplication-by-`d` presentation, `H⁰ = ZMod d`).
+multiplication-by-`d` presentation, `H¹ = ZMod d`).
 
 P1-3 REVISION (2026-10-09): The target is now CONCRETE
 (`ClassicalMooreCone`, the paper's `Q_d = Cone(d : T → T)[-1]` as explicit
@@ -20,7 +20,7 @@ P1-3 REVISION (2026-10-09): The target is now CONCRETE
 (`d = 0` / `d > 0`), not opaque.  The source sector and the shadow functor
 itself remain background inputs (the paper's marked dg sector is not
 formalizable in Mathlib); target-side cone computations (order-reduction
-maps `q_{d,d'}`, transitivity, `H⁰ = ZMod d`) are PROVED in
+maps `q_{d,d'}`, transitivity, `H¹ = ZMod d`) are PROVED in
 `Def_classical_shadow_cone`, not assumed.
 
 REVISION NOTE (2026-10-09): The first draft was FALSE — it universally

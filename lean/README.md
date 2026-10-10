@@ -3,9 +3,11 @@
 Local Lean 4 (v4.33.1) + Mathlib formalization of the paper
 `selmer_cartan_motive_towers_31adic_witness_unified_v0_1.tex`.
 
-**Status (2026-10-09): all 16 milestones (M1–M16; the main goal,
-Theorem 37.1, is M14) proved, sorry-free, as conditionals on the
-Strategy A background packages.**
+**Status (2026-10-09): all 16 milestone statements (M1–M16; the main goal,
+Theorem 37.1, is M14) discharge sorry-free as conditionals on the
+Strategy A background packages.** "Proved" here means the conditional
+statement holds given the background hypotheses — see Fidelity notes
+below for the coverage caveats (genuine proofs vs. background assemblies).
 
 ## Layout
 
@@ -66,7 +68,5 @@ package instance registered instead).
 
 - Platform `/verify` on Prove2Me: deliberately deferred (local-only for now).
 - Concrete arithmetic inputs (Strategy B) to replace background axioms later.
-- Reconnect `Solutions/` proofs to the `Theorems/` draft statements and
-  keep per-declaration `#print axioms` reports (external-verifier P0-3/P1-5).
 - Paper 1 (`arithmetic-cartan-single-prime-atlas`) is on hold pending the
   author's revision.

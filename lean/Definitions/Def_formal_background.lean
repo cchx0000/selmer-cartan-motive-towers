@@ -78,7 +78,7 @@ structure FormalBackground where
      predicates) are `IsArtin`/`IsMoorePresentation` and the two defining
      properties `shadowZero`/`shadowMoore`, which are falsifiable statements
      about the degree `d`.  Target-side cone computations (reduction maps,
-     transitivity, `H⁰ = ZMod d`) are PROVED in `Def_classical_shadow_cone`,
+     transitivity, `H¹ = ZMod d`) are PROVED in `Def_classical_shadow_cone`,
      not assumed. -/
   FramedSector : Type
   nonempty_FramedSector : Nonempty FramedSector

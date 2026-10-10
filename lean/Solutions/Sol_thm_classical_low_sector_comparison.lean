@@ -9,7 +9,7 @@ functor into the CONCRETE target `ClassicalMooreCone` (the paper's
 `Q_d = Cone(d : T → T)[-1]`), with concrete defining properties
 (`bg.shadowZero : IsArtin`, `bg.shadowMoore : IsMoorePresentation`).
 The proof is direct assembly; the target-side cone theory (order-reduction
-`q_{d,d'}`, transitivity, `H⁰ = ZMod d`) is proved in
+`q_{d,d'}`, transitivity, `H¹ = ZMod d`) is proved in
 `Def_classical_shadow_cone`, not assumed here. -/
 theorem sol_thm_classical_low_sector_comparison (bg : FormalBackground) :
     ∃ shadow : bg.FramedSector → ClassicalMooreCone,

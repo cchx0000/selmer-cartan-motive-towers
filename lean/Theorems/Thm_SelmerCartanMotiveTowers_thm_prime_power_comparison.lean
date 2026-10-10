@@ -13,12 +13,19 @@ Let `S` be a finite ordered support and `ν` a finite odd-prime depth datum.
 The CRT product line `L^{conf}_ν = ZMod N_ν` (with `N_ν = ∏ p^{ν_p}`,
 concrete via `crtModulus`) has a canonical pointed universal Moore
 presentation with `B_ν = 1` of exact order `N_ν` (paper property (i)).
-The p-power reduction maps `ZMod (p^a) →+* ZMod (p^b)` are concrete
-(via `ppowerRed`; paper property (iii)). The support-functorial dg
-realization `ρ_{S,ν}^{Mot,MR}` remains a background hypothesis
+The **finite CRT product** is the pointed ring isomorphism
+`ZMod N_ν ≃+* Π_{p ∈ supp ν} ZMod (p^{ν_p})` (`crtProductEquiv`, sending
+`1 ↦ 1`), whose `p`-component is the actual p-primary reduction
+`ZMod.castHom` (generator/coefficient exchange diagram
+`crtProductEquiv_apply`). The p-power reduction maps
+`ZMod (p^a) →+* ZMod (p^b)` are concrete (via `ppowerRed`; paper property
+(iii)) and compose: `red_{c≤b} ∘ red_{b≤a} = red_{c≤a}`
+(`ppowerRed_comp`). The support-functorial dg realization
+`ρ_{S,ν}^{Mot,MR}` remains a background hypothesis
 (`WitnessBackground`: `crtRealization`, `crtRealizationIs`), as it
 requires a DGA foundation not present in Mathlib (see LIMITATION in
-`Def_crt_product.lean`).
+`Def_crt_product.lean`); the integral 2-term complex
+`ℤ C_ν →[N_ν] ℤ B_ν` is likewise honestly labeled as not constructed.
 
 REVISION NOTE (2026-10-09): The first draft was FALSE — it universally
 quantified over arbitrary `Line`/`Realization` types and unconstrained
@@ -28,14 +35,28 @@ REVISION NOTE 2 (2026-10-09, P1-4): The CRT product, Moore presentation,
 and p-power reductions are now concrete (`Def_crt_product.lean`):
 `N_ν` is `crtModulus ν`, the line is `ZMod N_ν`, the Moore class is `1`
 with exact order `N_ν` (`crtLine_order`), and reductions are `ppowerRed`.
-Only the dg realization stays in the background. -/
+Only the dg realization stays in the background.
+REVISION NOTE 3 (2026-10-10, P1-4): Full finite CRT product isomorphism
+added (`crtProductEquiv`, pointed, with the generator/coefficient
+exchange diagram); the reduction clause now gives the actual `ppowerRed`
+maps with their composition law instead of a bare `Nonempty`. -/
 theorem thm_prime_power_comparison
     (S : finite_ordered_support) (ν : coefficient_exponent)
     (bg : WitnessBackground) :
     -- (i) Concrete CRT product has Moore presentation of exact order N_ν
     addOrderOf (crtMoorePresentation ν).B = crtModulus ν ∧
-    -- (iii) Concrete p-power reduction maps exist
-    (∀ (p a b : ℕ), b ≤ a → Nonempty (ZMod (p ^ a) →+* ZMod (p ^ b))) ∧
+    -- (ii) Finite CRT product pointed isomorphism + exchange diagram
+    (∃ e : ZMod (crtModulus ν) ≃+*
+        Π p : ↥(ν.val.support), ZMod (p.val.val ^ ν.val p.val),
+      e 1 = 1 ∧
+      ∀ (p : ↥(ν.val.support)) (x : ZMod (crtModulus ν)),
+        e x p = ZMod.castHom
+          (Finset.dvd_prod_of_mem (fun q => q.val ^ ν.val q) p.property)
+          (ZMod (p.val.val ^ ν.val p.val)) x) ∧
+    -- (iii) Concrete p-power reduction maps with composition law
+    (∀ (p a b c : ℕ) (h₁ : b ≤ a) (h₂ : c ≤ b),
+      (ppowerRed (p := p) h₂).comp (ppowerRed (p := p) h₁)
+        = ppowerRed (p := p) (h₂.trans h₁)) ∧
     -- Dg realization (background; DGA foundation needed)
     ∃ (ρ : bg.DgRealization), bg.crtIsSupportFunctorialDg ρ :=
   SelmerCartanMotiveTowers.sol_thm_prime_power_comparison S ν bg

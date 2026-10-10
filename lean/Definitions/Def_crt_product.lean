@@ -1,4 +1,5 @@
 import Mathlib.Data.ZMod.Basic
+import Mathlib.Data.ZMod.QuotientRing
 import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Finsupp.Basic
 import Mathlib.Data.Nat.Prime.Basic
@@ -6,6 +7,8 @@ import Mathlib.RingTheory.Coprime.Basic
 import Definitions.Def_typed_coordinates
 
 namespace SelmerCartanMotiveTowers
+
+open scoped Function
 
 /-- The coefficient modulus `N_ν = ∏_{p ∈ supp ν} p^{ν_p}` (paper §28,
 `P2M-thm:prime-power-all-support-comparison`).
@@ -57,6 +60,15 @@ def crtBinary {m n : ℕ} (h : m.Coprime n) :
 def ppowerRed {p a b : ℕ} (h : b ≤ a) : ZMod (p ^ a) →+* ZMod (p ^ b) :=
   ZMod.castHom (pow_dvd_pow p h) (ZMod (p ^ b))
 
+/-- p-power reductions compose: `red_{c≤b} ∘ red_{b≤a} = red_{c≤a}`
+    (paper property (iii): the reductions form a compatible system).
+    Proof: ring homomorphisms out of `ZMod (p^a)` are unique
+    (`ZMod.subsingleton_ringHom`), so the two sides agree. -/
+theorem ppowerRed_comp {p a b c : ℕ} (h₁ : b ≤ a) (h₂ : c ≤ b) :
+    (ppowerRed (p := p) h₂).comp (ppowerRed (p := p) h₁)
+      = ppowerRed (p := p) (h₂.trans h₁) :=
+  Subsingleton.elim _ _
+
 /-- A concrete Moore presentation: the data of a Moore class `B` of exact
     order `N` (paper: "canonical pointed universal Moore presentation
     `ℤ C_ν →[N_ν] ℤ B_ν`", with `dC_ν = N_ν • B_ν` and `ord[B_ν] = N_ν`).
@@ -75,12 +87,100 @@ def crtMoorePresentation (ν : coefficient_exponent) :
   { B := 1
     hB := crtLine_order ν }
 
-/- LIMITATION (P1-4): The "support-functorial dg realization"
+/-! ## Finite CRT product isomorphism (P1-4 revision, verifier feedback)
+
+The binary CRT (`crtBinary` / `ZMod.chineseRemainder`) iterates to a ring
+isomorphism between `ZMod N_ν` and the product of the p-primary lines.
+We use Mathlib's general finite CRT `ZMod.prodEquivPi`
+(`Mathlib/Data/ZMod/QuotientRing.lean`), which is itself proved by
+iterating the binary case. -/
+
+/-- The coefficient modulus as a product over the coerced support:
+    `N_ν = ∏_{p : ↥(supp ν)} p^{ν_p}`. This aligns `crtModulus` with the
+    product Mathlib's `ZMod.prodEquivPi` takes. -/
+theorem crtModulus_eq_prod_coe (ν : coefficient_exponent) :
+    crtModulus ν = ∏ p : ↥(ν.val.support), (p.val.val ^ ν.val p.val) := by
+  have h := Finset.prod_coe_sort (ν.val.support)
+    (fun q : { p : ℕ // p.Prime ∧ p ≠ 2 } => q.val ^ ν.val q)
+  show ν.val.support.prod (fun p => p.val ^ ν.val p) =
+    ∏ p : ↥(ν.val.support),
+      (fun q : { p : ℕ // p.Prime ∧ p ≠ 2 } => q.val ^ ν.val q) p.val
+  rw [h]
+
+/-- The prime-power factors are pairwise coprime, in the form consumed by
+    Mathlib's `ZMod.prodEquivPi`. -/
+theorem crtPairwiseCoprime (ν : coefficient_exponent) :
+    Pairwise
+      (Nat.Coprime on fun p : ↥(ν.val.support) => (p.val.val ^ ν.val p.val)) := by
+  intro x y hne
+  apply ppow_coprime (x.val).2.1 (y.val).2.1
+  intro h
+  apply hne
+  exact Subtype.ext (Subtype.ext h)
+
+/-- The **finite CRT product isomorphism**
+    `ZMod N_ν ≃+* Π_{p ∈ supp ν} ZMod (p^{ν_p})`
+    (paper `P2M-thm:prime-power-all-support-comparison`: "the CRT product
+    of the p-primary lines"). Pointed: it sends the generator `1` to the
+    tuple `(1, 1, …)` (see `crtProductEquiv_one`). -/
+noncomputable def crtProductEquiv (ν : coefficient_exponent) :
+    ZMod (crtModulus ν) ≃+*
+      Π p : ↥(ν.val.support), ZMod (p.val.val ^ ν.val p.val) :=
+  (ZMod.ringEquivCongr (crtModulus_eq_prod_coe ν)).trans
+    (ZMod.prodEquivPi _ (crtPairwiseCoprime ν))
+
+/-- Point preservation: the CRT isomorphism sends the generator `1` of
+    `ZMod N_ν` to the tuple of generators `(1, 1, …)`. This is the
+    "pointed" part of the comparison (automatic for a `RingEquiv`). -/
+theorem crtProductEquiv_one (ν : coefficient_exponent) :
+    crtProductEquiv ν 1 = 1 :=
+  map_one _
+
+/-- Evaluation at a support point as a ring homomorphism
+    (used for the exchange diagram below). -/
+def evalAtCoe {P : Type*} (M : P → Type*) [∀ p, Ring (M p)] (s : Finset P)
+    (p : ↥s) : (Π q : ↥s, M q.val) →+* M p.val where
+  toFun x := x p
+  map_one' := rfl
+  map_mul' _ _ := rfl
+  map_zero' := rfl
+  map_add' _ _ := rfl
+
+/-- **Generator/coefficient exchange diagram**: the `p`-component of the
+    CRT isomorphism is the actual p-primary reduction
+    `ZMod N_ν →+* ZMod (p^{ν_p})` (the canonical `ZMod.castHom`), not just
+    an abstractly existing `RingHom`. Proof: both sides are ring
+    homomorphisms out of `ZMod N_ν`, hence equal
+    (`ZMod.subsingleton_ringHom`). -/
+theorem crtProductEquiv_apply (ν : coefficient_exponent) (p : ↥(ν.val.support))
+    (x : ZMod (crtModulus ν)) :
+    crtProductEquiv ν x p
+      = ZMod.castHom (Finset.dvd_prod_of_mem (fun q => q.val ^ ν.val q) p.property)
+          (ZMod (p.val.val ^ ν.val p.val)) x := by
+  have heq := Subsingleton.elim
+    ((evalAtCoe (fun q => ZMod (q.val ^ ν.val q)) _ p).comp
+      (crtProductEquiv ν).toRingHom)
+    (ZMod.castHom (Finset.dvd_prod_of_mem (fun q => q.val ^ ν.val q) p.property)
+      (ZMod (p.val.val ^ ν.val p.val)))
+  exact DFunLike.congr_fun heq x
+
+/- LIMITATION (P1-4): Two pieces of the paper's Moore presentation are not
+    yet constructed here, and are honestly labeled as such.
+    (a) The "support-functorial dg realization"
     `ρ_{S,ν}^{Mot,MR} : U^{rec}_{S,N_ν} → M^{Mot,MR}_{S,N_ν}` requires a
     differential graded algebra (DGA) foundation. Mathlib has no DGA
     structure (verified by grep: no `MaurerCartan`, no bundled DGA).
     The dg realization remains a background hypothesis in
     `WitnessBackground` (`crtRealization`, `crtRealizationIs`).
-    If the M2 DGA construction is completed, it can be connected here. -/
+    If the M2 DGA construction is completed, it can be connected here.
+    (b) The integral 2-term complex `ℤ C_ν →[N_ν] ℤ B_ν` (the integral
+    chain `C`, the differential `d`, and the quotient identification
+    `coker(d) ≃+* ZMod N_ν`): `MoorePresentation` records the Moore class
+    `B` and its exact order, which is what the comparison theorem consumes,
+    but the integral antecedent `C` and the differential are not built.
+    What IS now concrete (this revision): the finite CRT product ring
+    isomorphism `crtProductEquiv` (pointed, `1 ↦ 1`), the actual p-primary
+    reductions with their composition law (`ppowerRed_comp`) and the
+    generator/coefficient exchange diagram (`crtProductEquiv_apply`). -/
 
 end SelmerCartanMotiveTowers

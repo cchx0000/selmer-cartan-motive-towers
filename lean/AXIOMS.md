@@ -3,7 +3,11 @@
 **Source SHA**: `d5ffb0e985fcbd60b388929d2a685437e8088e70`
 **Audit date**: 2026-10-09
 **Method**: `#print axioms` via `lake env lean` on each declaration below.
-**Result**: **0 `sorryAx`** across all 47 declarations.
+**Result**: **0 `sorryAx`** across all 54 declarations.
+**Update 2026-10-10** (P1-4 M10): 7 new declarations audited
+(`ppowerRed_comp`, `crtModulus_eq_prod_coe`, `crtPairwiseCoprime`,
+`crtProductEquiv`, `crtProductEquiv_one`, `evalAtCoe`,
+`crtProductEquiv_apply`); all Lean base axioms only, 0 `sorryAx`.
 
 ## §1. Project axioms and opaques
 
@@ -157,6 +161,48 @@ Classification: Lean base axioms only.
 #### `MoorePresentation`
 ```
 'SelmerCartanMotiveTowers.MoorePresentation' depends on axioms: [propext, Classical.choice, Quot.sound]
+```
+Classification: Lean base axioms only.
+
+#### `ppowerRed_comp` (P1-4 revision, 2026-10-10)
+```
+'SelmerCartanMotiveTowers.ppowerRed_comp' depends on axioms: [propext, Quot.sound]
+```
+Classification: Lean base axioms only.
+
+#### `crtModulus_eq_prod_coe` (P1-4 revision, 2026-10-10)
+```
+'SelmerCartanMotiveTowers.crtModulus_eq_prod_coe' depends on axioms: [propext, Classical.choice, Quot.sound]
+```
+Classification: Lean base axioms only.
+
+#### `crtPairwiseCoprime` (P1-4 revision, 2026-10-10)
+```
+'SelmerCartanMotiveTowers.crtPairwiseCoprime' depends on axioms: [propext, Classical.choice, Quot.sound]
+```
+Classification: Lean base axioms only.
+
+#### `crtProductEquiv` (P1-4 revision, 2026-10-10)
+```
+'SelmerCartanMotiveTowers.crtProductEquiv' depends on axioms: [propext, Classical.choice, Quot.sound]
+```
+Classification: Lean base axioms only.
+
+#### `crtProductEquiv_one` (P1-4 revision, 2026-10-10)
+```
+'SelmerCartanMotiveTowers.crtProductEquiv_one' depends on axioms: [propext, Classical.choice, Quot.sound]
+```
+Classification: Lean base axioms only.
+
+#### `evalAtCoe` (P1-4 revision, 2026-10-10)
+```
+'SelmerCartanMotiveTowers.evalAtCoe' depends on axioms: [propext, Classical.choice, Quot.sound]
+```
+Classification: Lean base axioms only.
+
+#### `crtProductEquiv_apply` (P1-4 revision, 2026-10-10)
+```
+'SelmerCartanMotiveTowers.crtProductEquiv_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
 ```
 Classification: Lean base axioms only.
 
@@ -338,26 +384,26 @@ Classification: Lean base axioms only.
 | 6 | `rec_one_mot` | none |
 | 7–13 | 7 package instances | Lean base triple |
 | 14–18 | `SuperDGA`, `bianchi`, `bianchi_cocycle`, `curvature_expand`, `naturality` | `propext` only |
-| 19–22 | `crtModulus`, `crtLine_order`, `ppowerRed`, `MoorePresentation` | Lean base axioms |
-| 23–26 | `ClassicalMooreCone` (none), `reduce_refl`, `reduce_trans`, `line_order` | none / Lean base |
-| 27–28 | `moore_cohomology`, `qPrimaryRed` | Lean base axioms |
-| 29–31 | `pointed_cyclic_carrier`, `nat_card_eq`, `canonicalIso` | Lean base triple |
-| 32 | `sol_thm_ray_class_primitive` (M1) | Lean base triple |
-| 33 | `sol_thm_universal_higher_obstruction_recursion` (M2) | `propext` only |
-| 34 | `sol_thm_formal_filtered_alignment` (M3) | Lean base triple |
-| 35 | `sol_thm_finite_confluent_interface` (M4) | Lean base triple |
-| 36 | `sol_thm_motivic_seed` (M5) | Lean base triple |
-| 37 | `sol_thm_channel_complete_realization` (M6) | Lean base triple |
-| 38 | `sol_thm_role_separated_objectification` (M7) | Lean base triple |
-| 39 | `sol_thm_finite_motivic_recursion_closure` (M8) | Lean base triple |
-| 40 | `sol_thm_successor_stage_functor` (M9) | none |
-| 41 | `sol_thm_prime_power_comparison` (M10) | Lean base triple |
-| 42 | `sol_thm_classical_low_sector_comparison` (M11) | `tau_one` |
-| 43 | `sol_prop_stack_globalization` (M12) | `tau_one` |
-| 44 | `sol_thm_marked_morita_independence` (M13) | `tau_one` |
-| 45 | `sol_thm_31adic_witness` (M14) | Lean base triple |
-| 46 | `sol_thm_gerbe_provenance` (M15) | Lean base triple |
-| 47 | `sol_thm_motivic_specialization` (M16) | Lean base triple |
+| 19–29 | `crtModulus`, `crtLine_order`, `ppowerRed`, `MoorePresentation`, `ppowerRed_comp`, `crtModulus_eq_prod_coe`, `crtPairwiseCoprime`, `crtProductEquiv`, `crtProductEquiv_one`, `evalAtCoe`, `crtProductEquiv_apply` | Lean base axioms |
+| 30–33 | `ClassicalMooreCone` (none), `reduce_refl`, `reduce_trans`, `line_order` | none / Lean base |
+| 34–35 | `moore_cohomology`, `qPrimaryRed` | Lean base axioms |
+| 36–38 | `pointed_cyclic_carrier`, `nat_card_eq`, `canonicalIso` | Lean base triple |
+| 39 | `sol_thm_ray_class_primitive` (M1) | Lean base triple |
+| 40 | `sol_thm_universal_higher_obstruction_recursion` (M2) | `propext` only |
+| 41 | `sol_thm_formal_filtered_alignment` (M3) | Lean base triple |
+| 42 | `sol_thm_finite_confluent_interface` (M4) | Lean base triple |
+| 43 | `sol_thm_motivic_seed` (M5) | Lean base triple |
+| 44 | `sol_thm_channel_complete_realization` (M6) | Lean base triple |
+| 45 | `sol_thm_role_separated_objectification` (M7) | Lean base triple |
+| 46 | `sol_thm_finite_motivic_recursion_closure` (M8) | Lean base triple |
+| 47 | `sol_thm_successor_stage_functor` (M9) | none |
+| 48 | `sol_thm_prime_power_comparison` (M10) | Lean base triple |
+| 49 | `sol_thm_classical_low_sector_comparison` (M11) | `tau_one` |
+| 50 | `sol_prop_stack_globalization` (M12) | `tau_one` |
+| 51 | `sol_thm_marked_morita_independence` (M13) | `tau_one` |
+| 52 | `sol_thm_31adic_witness` (M14) | Lean base triple |
+| 53 | `sol_thm_gerbe_provenance` (M15) | Lean base triple |
+| 54 | `sol_thm_motivic_specialization` (M16) | Lean base triple |
 
 **Total: 47 declarations. `sorryAx`: 0.**
 

@@ -57,24 +57,32 @@
 
 ### 2026-10-10 增量审查：截至 `a8591d8b`
 
-- 本次逐提交检查 [`a2e943d4f1a839783af20a7d7338f5bc05a08f57...a8591d8b7ef4a012c9e37684ae99470718662bc5`](https://github.com/cchx0000/selmer-cartan-motive-towers/compare/a2e943d4f1a839783af20a7d7338f5bc05a08f57...a8591d8b7ef4a012c9e37684ae99470718662bc5)，新增 2 个直接相邻提交，共改变 13 个文件；最新源码审查游标为 `a8591d8b7ef4a012c9e37684ae99470718662bc5`，树为 `8dd6cdc87bd2fd3412377b990a1097e0d65355d3`。前一提交 `a2e943d4` 只更新本 TODO；本轮审查前 TODO blob 为 `5d0045b2deb9088ad2e9a852ece5ca9f627d9055`。
+- 本次逐提交检查 [`a2e943d4f1a839783af20a7d7338f5bc05a08f57...a8591d8b7ef4a012c9e37684ae99470718662bc5`](https://github.com/cchx0000/selmer-cartan-motive-towers/compare/a2e943d4f1a839783af20a7d7338f5bc05a08f57...a8591d8b7ef4a012c9e37684ae99470718662bc5)，新增 2 个直接相邻提交，共改变 13 个文件；该次源码审查游标为 `a8591d8b7ef4a012c9e37684ae99470718662bc5`，树为 `8dd6cdc87bd2fd3412377b990a1097e0d65355d3`。前一提交 `a2e943d4` 只更新本 TODO；本轮审查前 TODO blob 为 `5d0045b2deb9088ad2e9a852ece5ca9f627d9055`。
 - `936f7824317007c730e9798e6d47024feafabf6d` 新增 `omegaClass`、`channelOfFinset` 与 `omega_order`，生产 M6 现在真正约束 `ρ (omega I)` 的精确加法阶 N，应撤销“无 Ω / 只约束独立 chanMap 的阶”。这是 Boolean/product 模型的代数进展，尚无 obstruction-cohomology 识别；`reesCoeff` 只是数值三元组 1,N,N²，未给乘法律或接入生产结论。
 - `a8591d8b7ef4a012c9e37684ae99470718662bc5` 为 M7 加入保零/保加法且非零的 endomap，为 M8 加入加法群分解、`dγ=Nβ`、删除—latch 交换和共同 apex，为 M15 加入 `ClassifyingMap/PullbackIdentity/UnipotentExtension/GerbeProvenance`。旧“只有端点 / 完全没有 splitting 或 provenance 数据”的表述须撤销，剩余语义见 P1-2/P1-4。
-- **新增 P0 阻断：`UnipotentExtension` 的字段不相容。** `kernelCentral` 在 t=0 强迫 kernelGen=0，故 `addOrderOf kernelGen=1`，与 `kernelOrder=31` 矛盾。`GerbeProvenance.extension` 与 `WitnessBackground.gerbeProvenanceData` 逐层继承此空类型；M10/M14/M15/M16 的背景前提不可满足。该结论来自源码数学检查，不是编译结果，也不表示 Lean 本身不一致；详见 P0-0。
+- **当时新增 P0 阻断：`UnipotentExtension` 的字段不相容（已于 `bbef8d5ce3e90de3aaecae2be696b063a4c536b0` 源码修复，见下次增量及 P0-0）。** `kernelCentral` 在 t=0 强迫 kernelGen=0，故 `addOrderOf kernelGen=1`，与 `kernelOrder=31` 矛盾。`GerbeProvenance.extension` 与 `WitnessBackground.gerbeProvenanceData` 逐层继承此空类型；M10/M14/M15/M16 的背景前提不可满足。该结论来自源码数学检查，不是编译结果，也不表示 Lean 本身不一致；详见 P0-0。
 - 重查全部 55 个 `lean/` 源文件（22 Definitions、16 Theorems、16 实质 Solutions、1 SmokeTest；根另有 `lakefile.lean`）：31 个 structure、15 个显式 instance 声明，另有 1 条 instance attribute；4 个既有 axiom、2 个无体 opaque。去注释/字符串后无可执行 `sorry` / `admit` / `unsafe`；16 对生产定理/解答的参数与结论规范化后相同，并导入/调用对应 `sol_*`。无 sorry 或无新增公理不能证明参数化背景可满足。
 - 论文、mission、项目 axiom/opaque、构建配置、manifest 与 build log 的 blob 均未改变。本次两个新 SHA 的 check-runs、commit statuses 和 Actions runs 均为 0；API 的 pending/0 statuses 不代表有构建在运行。构建 source `e3495042c151d35b82750f12004e5fcb70042022` 与公理报告 source `d5ffb0e985fcbd60b388929d2a685437e8088e70` 重查仍各返回 `422: No commit found`。`AXIOMS.md` 新增 M15 作者再审文字，但未更新来源/覆盖凭据。没有运行 Lean、Lake 或 `/verify`；P0-3 保持开放。
 
-当前应报告为“含不可满足 WitnessBackground 前提的条件式骨架；独立局部代数构造另行保留，声明语义和复现缺口未闭合”。仓库声明的 Strategy A 允许列明的外部算术输入；下面区分允许的输入、与结论等价的假设、以及根本没有证明字段的命题标签。数值证书的第一性原理验证不自动纳入当前 mission。
+### 2026-10-10 增量审查：截至 `bbef8d5c`
+
+- 本次检查 [`2eb2b5e2737d4a82ff679e80a0bba05a4478490a...bbef8d5ce3e90de3aaecae2be696b063a4c536b0`](https://github.com/cchx0000/selmer-cartan-motive-towers/compare/2eb2b5e2737d4a82ff679e80a0bba05a4478490a...bbef8d5ce3e90de3aaecae2be696b063a4c536b0)，新增 1 个直接相邻提交，仅改变 `lean/Definitions/Def_gerbe_provenance.lean` 与 `lean/BACKGROUND_INPUTS.md`；最新源码审查游标为 `bbef8d5ce3e90de3aaecae2be696b063a4c536b0`，树为 `7b152aeb9901768a3d036e73a01c2e0e7aa26400`。前一提交 `2eb2b5e2737d4a82ff679e80a0bba05a4478490a` 只更新本 TODO；本轮审查前 TODO blob 为 `bb9c24ee5e152126555b9a12d1474b1497fa76a1`。
+- `UnipotentExtension.kernelCentral` 已改为 `∀ t, t + kernelGen = kernelGen + t`；新增 `totalScalar`、`projGenTrivial`、`projKernel` 和 `unipotentExtensionModel`（total = ZMod 31、base = Unit、kernelGen = 1）。静态数学检查确认旧“取 t=0 强迫生成元为零”的矛盾已消除，给出的模型满足这些字段的数学关系；撤销当前 M10/M14/M15/M16 因该字段而有空背景前提的判断，保留上轮历史。[当前结构与模型](https://github.com/cchx0000/selmer-cartan-motive-towers/blob/bbef8d5ce3e90de3aaecae2be696b063a4c536b0/lean/Definitions/Def_gerbe_provenance.lean#L81-L123)
+- 修复只提供 `UnipotentExtension` 的模型源码，没有构造整个 `WitnessBackground` 或其实际算术 realization；`SMul` 未给作用律，`proj` 仍是指向无群结构 Type 的普通函数，`projKernel` 仅给 `proj t = proj 0 → ∃ n, t = n • kernelGen` 一向包含，未给逆向；中心性在 `AddCommGroup` 中自动成立。因此台账“kernel = multiples”和注释“genuine central extension / μ₃₁-module / hence WitnessBackground”须收窄，剩余语义按 P1-4 验收。
+- 已重读 M10/M14/M15/M16 的生产声明、solutions 与 `WitnessBackground`；这些文件均未改变，M15 仍投影背景的 provenance，M10 的 dg realization、M14 的算术来源、M16 的 hM/block 联系等原缺口未被本次修复。树仍含 55 个 `lean/` 源文件；论文、mission、项目 axiom/opaque、构建配置、manifest、build log 与 `AXIOMS.md` 未变。
+- 该 SHA 的 GitHub check-runs、commit statuses、Actions runs 均为 0；pending/0 statuses 不表示正在构建。构建 source `e3495042c151d35b82750f12004e5fcb70042022` 与公理报告 source `d5ffb0e985fcbd60b388929d2a685437e8088e70` 重查仍各返回 `422: No commit found`。提交说明/注释的“Lean-verified”是作者陈述，未附本次新增模型的可复核构建凭据；本次未运行 Lean、Lake 或 `/verify`，P0-3 保持开放。
+
+当前应报告为“旧 UnipotentExtension 字段矛盾已在源码层面修复的条件式骨架；独立局部代数构造另行保留，完整背景实例、声明语义和复现缺口仍须分别核验”。仓库声明的 Strategy A 允许列明的外部算术输入；下面区分允许的输入、与结论等价的假设、以及根本没有证明字段的命题标签。数值证书的第一性原理验证不自动纳入当前 mission。
 
 ## P0：先修正主目标与可信度边界
 
-### P0-0：先修复空背景前提（M10/M14/M15/M16）
+### P0-0：旧空背景缺陷已源码修复（M10/M14/M15/M16）
 
-- [ ] 修复 `Def_gerbe_provenance.lean::UnipotentExtension` 的矛盾字段，并重新核验所有依赖此背景的声明。
-  - [当前定义](https://github.com/cchx0000/selmer-cartan-motive-towers/blob/a8591d8b7ef4a012c9e37684ae99470718662bc5/lean/Definitions/Def_gerbe_provenance.lean#L68-L81) 同时要求 `kernelOrder : addOrderOf kernelGen = 31` 与 `kernelCentral : ∀ t, ∃ n : ZMod 31, t + kernelGen = t`。取 t=0，消去无用的 n 即得 kernelGen=0；零元加法阶为 1，故推出 1=31。这不是 centrality 或“投影到单位元”的表达式。
-  - `GerbeProvenance.extension : UnipotentExtension`、[背景的 `gerbeProvenanceData : GerbeProvenance`](https://github.com/cchx0000/selmer-cartan-motive-towers/blob/a8591d8b7ef4a012c9e37684ae99470718662bc5/lean/Definitions/Def_witness_background.lean#L189-L198) 因而不可实例化。直接受影响的是 M10 `thm_prime_power_comparison`、M14/主目标 `thm_31adic_witness`、M15 `thm_gerbe_provenance`、M16 `thm_motivic_specialization` 及其 solutions，还有 `WitnessBackground.kappa_ne_zero` / `marking_compat`。这些条件式对空前提成立，不能支持任务要求的 non-vacuous witness；独立的 CRT、cyclic-carrier 同构等代数引理不因此失效。
-  - 当前源码未构造或公理化一个 `WitnessBackground` 实例；这里判定的是假设包不可满足，不能据此宣称 Lean 全局不一致。`#print axioms` 无新增公理或无 `sorryAx` 也不会发现此类不相容参数。
-  - 验收：以真实投影/核/中心性关系表达所需 central extension，不能把非零 kernel 的平移写成恒等；给出经 Lean 核验的可满足性证据或适当实例，并独立追踪其算术来源。修复后重新审计 M10/M14/M15/M16 的假设、证明和论文对应；仅删掉矛盾一行仍不补齐 P1-4 的 gerbe/pullback 语义。以上推导尚未运行 Lean。
+- [x] 源码层面修复 `Def_gerbe_provenance.lean::UnipotentExtension` 的旧矛盾；本完成项不代表独立编译或完整算术背景已验证。
+  - 历史：[`a8591d8b7ef4a012c9e37684ae99470718662bc5` 的旧定义](https://github.com/cchx0000/selmer-cartan-motive-towers/blob/a8591d8b7ef4a012c9e37684ae99470718662bc5/lean/Definitions/Def_gerbe_provenance.lean#L68-L81) 要求 `kernelCentral : ∀ t, ∃ n : ZMod 31, t + kernelGen = t`，在 t=0 强迫 kernelGen=0，与 `kernelOrder=31` 矛盾。该缺陷当时经 `GerbeProvenance.extension` 传到 `WitnessBackground.gerbeProvenanceData`；不意味着 Lean 全局不一致。
+  - [当前定义与模型](https://github.com/cchx0000/selmer-cartan-motive-towers/blob/bbef8d5ce3e90de3aaecae2be696b063a4c536b0/lean/Definitions/Def_gerbe_provenance.lean#L81-L123) 已用 `t + kernelGen = kernelGen + t` 替换旧式，并提供 `unipotentExtensionModel`：ZMod 31 上的 1 具有精确加法阶 31，投影到 Unit，`projKernel` 取 n=t 后由 t·1=t 满足。旧矛盾的源码/数学验收已满足；不再据此把 M10 `thm_prime_power_comparison`、M14 `thm_31adic_witness`、M15 `thm_gerbe_provenance`、M16 `thm_motivic_specialization` 及 `WitnessBackground.kappa_ne_zero` / `marking_compat` 称为空前提结果。
+  - 模型声明的类型仅是 `UnipotentExtension`；完整 `WitnessBackground` 的实例及实际算术来源未由此给出。本次未运行 Lean；新增模型与受影响生产声明的编译/依赖证据继续按 P0-3 验收，不把作者“Lean-verified”注释当作本次复现。
+  - 原验收中的真实投影/核/中心扩张及算术来源要求继续保留在 P1-4/M15：区分 U→Ū 群扩张与 G_f→X_* gerbe 投影；为前者补群结构与同态、band 的合适作用律及核双向识别，并绑定 classifying/pullback；删除旧矛盾和给出局部模型不单独关闭该语义任务。
 
 ### P0-1：让 31-adic witness 真正表达 witness
 
@@ -104,9 +112,9 @@
   - [x] `69274136` 已为 Definitions、Theorems、Solutions 分别设置 `Glob.submodules`，修掉无聚合根模块且未枚举子模块的问题。[当前配置](https://github.com/cchx0000/selmer-cartan-motive-towers/blob/ba4b2e73209b3713a2fd351b299ca2e891b8a0c2/lakefile.lean#L27-L32)与 [Lake submodule 枚举语义](https://github.com/leanprover/lean4/blob/v4.33.1/src/lake/Lake/Config/Glob.lean#L53-L59)已静态核对。
   - 默认覆盖仍未完整：只有 Solutions 标记 `@[default_target]`，`BUILD.md` 仍只运行裸 `lake build`。当前 Solutions 的本地 import 闭包覆盖 17 Solutions 与全部 22 Definitions，但不包含任何 Theorems；独立声明的 Theorems library 不会因此自动成为默认目标。须显式构建 `lake build Definitions Theorems Solutions` 或建立等效完整入口，并保存覆盖全部 55 模块的运行证据；新增 globs 不能替代该验证。
   - [x] `ab3d666826428d2224124283f81ba252be2a396e` 已提交根 `lake-manifest.json`（blob `d03d12d415d7fe107871165ad78f98ada723ca95`），记录 Mathlib 及 8 个传递依赖的完整 revision，Mathlib 与配置固定值一致。旧“根 manifest 未留档”缺口已修复；这不单独证明该清单已在当前根配置的干净 checkout 使用。
-  - 构建日志已有作者成功报告：[日志](https://github.com/cchx0000/selmer-cartan-motive-towers/blob/ab3d666826428d2224124283f81ba252be2a396e/lean/build_logs/build_solutions_20261010.log)末尾为 `Build completed successfully (3042 jobs).` / `EXIT_CODE=0`。但配套 `source_sha.txt` 的 `e3495042c151d35b82750f12004e5fcb70042022` 无法通过本仓库 API 解析（422），manifest 根包名 `prove2me` 与当前配置不同；须提供可定位源码与所用配置/依赖的对应关系。日志未记录实际命令、版本、干净 checkout 状态或 Theorems 目标覆盖，含缓存 `Replayed` 项；不能据 3042 jobs 判定当前全部 55 个项目模块已构建，也不能据此断言构建失败。`BUILD.md` 的 `lake build 2>&1 | tee build.log` 仍须明确保留构建进程退出状态（如 Bash `pipefail` / `PIPESTATUS`）；新增 `EXIT_CODE=0` 行没有记录其采集方式。本轮 2 个提交及此前新增证明晚于该日志，而日志未更新，不能为新版本提供覆盖。补齐上述证据后再验收 P0-3，本次未运行 Lean/Lake。
-  - `lean/AXIOMS.md` 最新 blob 为 `74470f9f1727bf0a9b4077921b9b287d4ace4a59`；此前从 47 扩到 54 项，本轮仅新增 M15 作者再审说明，表仍列 54 项、页尾仍写 `Total: 47`。报告继续使用不可解析的 source `d5ffb0e985fcbd60b388929d2a685437e8088e70`（本次 422），无入库审计脚本、完整运行命令/日志和退出状态；不能视为当前源码可复现凭据。M2/M11/M12/M13/M9 的依赖分类仍是作者报告，未独立复现。[当前报告](https://github.com/cchx0000/selmer-cartan-motive-towers/blob/a8591d8b7ef4a012c9e37684ae99470718662bc5/lean/AXIOMS.md)
-  - 继续单独核对 `Def_rec_one_mot.lean` 的四个项目 axiom 与 `full_mot` / `rec_one_mot` 两个 opaque；不把作者称“opaque 无公理依赖”升级为本次验证。54 项是报告声明数，不是 54 模块覆盖证明；仍缺 16 个 Theorems 和逐项生产依赖闭包。M3 的 range / filtered interface、M4 新映射、witness/seed/SuperDGA 新字段、M16 的 witnessArithIso / marking_compat 、新 M6/M7/M8/M15 字段与引理及修订后的解答均须在最新可定位 SHA 重跑；声明了 Prop 不等于证明它，背景裸 Prop 标签也不会因未列公理依赖便自动成立。
+  - 构建日志已有作者成功报告：[日志](https://github.com/cchx0000/selmer-cartan-motive-towers/blob/ab3d666826428d2224124283f81ba252be2a396e/lean/build_logs/build_solutions_20261010.log)末尾为 `Build completed successfully (3042 jobs).` / `EXIT_CODE=0`。但配套 `source_sha.txt` 的 `e3495042c151d35b82750f12004e5fcb70042022` 无法通过本仓库 API 解析（422），manifest 根包名 `prove2me` 与当前配置不同；须提供可定位源码与所用配置/依赖的对应关系。日志未记录实际命令、版本、干净 checkout 状态或 Theorems 目标覆盖，含缓存 `Replayed` 项；不能据 3042 jobs 判定当前全部 55 个项目模块已构建，也不能据此断言构建失败。`BUILD.md` 的 `lake build 2>&1 | tee build.log` 仍须明确保留构建进程退出状态（如 Bash `pipefail` / `PIPESTATUS`）；新增 `EXIT_CODE=0` 行没有记录其采集方式。包括 `bbef8d5ce3e90de3aaecae2be696b063a4c536b0` 的新模型在内的后续源码晚于该日志，而日志未更新，不能为新版本提供覆盖。补齐上述证据后再验收 P0-3，本次未运行 Lean/Lake。
+  - `lean/AXIOMS.md` 最新 blob 为 `74470f9f1727bf0a9b4077921b9b287d4ace4a59`；此前从 47 扩到 54 项，`a8591d8b7ef4a012c9e37684ae99470718662bc5` 仅新增 M15 作者再审说明，表仍列 54 项、页尾仍写 `Total: 47`。报告继续使用不可解析的 source `d5ffb0e985fcbd60b388929d2a685437e8088e70`（本次 422），无入库审计脚本、完整运行命令/日志和退出状态；不能视为当前源码可复现凭据。M2/M11/M12/M13/M9 的依赖分类仍是作者报告，未独立复现。[当前报告](https://github.com/cchx0000/selmer-cartan-motive-towers/blob/a8591d8b7ef4a012c9e37684ae99470718662bc5/lean/AXIOMS.md)
+  - 继续单独核对 `Def_rec_one_mot.lean` 的四个项目 axiom 与 `full_mot` / `rec_one_mot` 两个 opaque；不把作者称“opaque 无公理依赖”升级为本次验证。54 项是报告声明数，不是 54 模块覆盖证明；仍缺 16 个 Theorems 和逐项生产依赖闭包。M3 的 range / filtered interface、M4 新映射、witness/seed/SuperDGA 新字段、M16 的 witnessArithIso / marking_compat 、新 M6/M7/M8/M15 字段与引理、`unipotentExtensionModel` 及修订后的解答均须在最新可定位 SHA 重跑；声明了 Prop 不等于证明它，背景裸 Prop 标签也不会因未列公理依赖便自动成立。
   - 验收：在选定构建模式下逐项覆盖全部生产声明，提交可重跑的审计入口，保留每项 `#print axioms` / 等效报告，区分 `sorryAx`、Lean 基础公理、明确允许的项目公理、参数化背景假设；不能以文本 grep 或 SmokeTest 代替完整验证。
 
 ## P1：恢复声明所指的数学结构
@@ -118,7 +126,7 @@
   - 台账已补 `FormalBackground.nonempty_FramedSector` / `nonempty_DGCategory`，`Classical` 任意类型已被具体数值模型替换，M16 §5 也已更新。`ba4b2e73` 又修正四项陈旧记录：不再列已删除的 `hb_order` / `hb_exact` 为当前字段，M10 不再称消耗 `crtLine` / `crtLineHas`，M2 不再称消耗 FormalBackground §1，M14 正确列出 `kummerEqKappa` 与 pairing 推导链。剩余“Every field / exact fields / No GOAL!”的语义断言仍须核验：`lambda31_exact2`、`classNum93` 等为未证明的 Prop 标签；反循环界限见 P0-1，`stackIsDerived` 等结论型字段不能因标 DEF 而当作已建立的结构。
   - `ClassFieldBackground.masseyExact` 目前对任意三个 exact-order 字符和 cup-vanishing 条件便给出 Massey 精确阶；未包含特选第三射线、中心 Frobenius、固定 Heisenberg lift、指定 nullhomotopy 或单位局部不变量。应限定到实际构造数据，不能仅凭注释中的文献名视为一般定理。
   - `FormalBackground.obsCocycle/liftIff/gaugeInv/natural` 旧字段仍在，但 M2 已改为独立的 curvature 代数结果，不再投影它们；不能继续把 M2 描述为原条件组装。M11 的 `shadowZero/shadowMoore` 已针对 `ClassicalMooreCone` 的数值条件，仍直接由背景提供；`stackIsDerived`、`eRecBijective/eFullBijective` 等也仍是对应结论输入，不能替代实际 functor/stack/Morita 构造。
-  - M10 已不再投影 `crtLineHas`，但 `crtRealizationIs` 及 M15 的 `gerbeIs/gerbeProvenance` 仍为背景结论；新增 `gerbeProvenanceData` 也由背景直接提供，且当前不可满足（P0-0），不能因台账标 EXT 或引用 Dwyer 而视作有效实例；`gerbeProvenance : ∀ W, ...` 还须关联具体 witness。本轮台账已记新增 kappaOrder31 / pairing 字段，但其“反循环修复”须按 P0-1 重审；M16 新增 theorem-level `hM` 及 W 子群联系也须补进 §5 消费记录，区分已证的 cyclic carrier 同构与假设的 motivic 身份。
+  - M10 已不再投影 `crtLineHas`，但 `crtRealizationIs` 及 M15 的 `gerbeIs/gerbeProvenance` 仍为背景结论；新增 `gerbeProvenanceData` 也由背景直接提供；旧 extension 矛盾已修复（P0-0），但局部 `UnipotentExtension` 模型不构成整个背景或算术实例，不能因台账标 EXT 或引用 Dwyer 而视作已实现；`gerbeProvenance : ∀ W, ...` 还须关联具体 witness。本轮台账已记新增 kappaOrder31 / pairing 字段，但其“反循环修复”须按 P0-1 重审；M16 新增 theorem-level `hM` 及 W 子群联系也须补进 §5 消费记录，区分已证的 cyclic carrier 同构与假设的 motivic 身份。
   - 验收：每个生产定理有精确依赖清单；允许的外部数值/理论输入保持显式，目标等价假设不得被当作目标已完成；论文内的构造义务有独立后续任务。
 
 ### P1-2：补齐四类模型的结构语义与生产声明约束
@@ -160,7 +168,7 @@
 - [ ] M10 `thm_prime_power_comparison`：`1b39daa3804fb820c58d026b44fc460db5c8acd6` 已给完整有限 CRT `crtProductEquiv`、保点性、分量等于实际 cast 的 `crtProductEquiv_apply`，并把具体 p-power reduction 复合律接入生产结论。旧“仅二元 CRT / RingHom 非空、无复合和分量图”缺口已修复。[当前 CRT](https://github.com/cchx0000/selmer-cartan-motive-towers/blob/4cb1359ac8f4aa9da7d1867800dafdd5c297c4f1/lean/Definitions/Def_crt_product.lean#L63-L198)
   - `MoorePresentation` 仍只含 B 及其阶，无 integral C/differential/商识别；新增 LIMITATION 已如实承认。S 仍未使用，dg realization 仍独立投影 `crtRealizationIs`，未关联 ν/Nν、根块或 CRT/reduction。验收继续要求真实 primitive filtered lines、兼容 universal Moore presentations 与 support-functorial dg realization 的绑定，以及论文 L13000–13076 的 realization/reduction 交换方块、support/relabelling、coarsening M(f)/defect 与坐标保持；不能用纯系数 cast 的交换关系代替 dg square，一般 odd prime-power 层不能被 squarefree 限制替代。
 - [x] M16 已用 `pointed_cyclic_carrier` 表示加法群、精确阶 31 的生成元及全体生成性，构造经过 `ZMod 31` 的真实 pointed carrier 同构；`hSpan` / 任意三元谓词的直接投影已移除。仅此 carrier-level 代数构造是已完成子项，不等同于 operation-level provenance。
-- [ ] M15 `thm_gerbe_provenance`：先修 P0-0 的空背景前提。新增 classifying map、31-coordinate profile、三个 ZMod 31 值的等式/非零与 extension 记录是接口进展，撤销“完全无 provenance 数据”；但 `ClassifyingMap.map` 与 coords 无条件关联，`PullbackIdentity` 无真正 pullback 操作，extension.proj 既无群同态/核识别也未与 band 连接。P 只由 `bg.gerbeProvenanceData` 投影，除 base_eq 外各部分彼此未绑定，且无 P 与 G/W/κ/root operation 的关系；旧 `provenanceFor` 谓词仍然保留。不能把 order-31 元素等同于代数 μ₃₁-gerbe，须恢复论文 L15832–15873 的具体 classifying/central-extension/pullback 方块及来源识别。[定义](https://github.com/cchx0000/selmer-cartan-motive-towers/blob/a8591d8b7ef4a012c9e37684ae99470718662bc5/lean/Definitions/Def_gerbe_provenance.lean#L19-L117)、[生产解答](https://github.com/cchx0000/selmer-cartan-motive-towers/blob/a8591d8b7ef4a012c9e37684ae99470718662bc5/lean/Solutions/Sol_thm_gerbe_provenance.lean#L22-L29)
+- [ ] M15 `thm_gerbe_provenance`：P0-0 的旧字段矛盾已源码修复。新增 classifying map、31-coordinate profile、三个 ZMod 31 值的等式/非零与 extension 记录是接口进展，撤销“完全无 provenance 数据”；本轮又补生成元投影、单向核条件和 `unipotentExtensionModel`，不能继续说完全没有投影/核关系。但 `ClassifyingMap.map` 与 coords 无条件关联，`PullbackIdentity` 无真正 pullback 操作；extension.base 无群结构，proj 未声明为群同态且未要求满射，`SMul (ZMod 31) total` 只有运算、无作用/模公理，`projKernel` 只把零纤维包含在标量倍数集合中，缺逆向，不能声称核恰为生成元的循环子群；`AddCommGroup` 已自动给所有元素中心性，未表达一般非交换 unipotent central extension。P 只由 `bg.gerbeProvenanceData` 投影，除 base_eq 外各部分彼此未绑定，且无 P 与 G/W/κ/root operation 的关系；旧 `provenanceFor` 谓词仍然保留。验收：区分论文 L15805–15820 的 U→Ū 群概形中心扩张与 L15852–15864 的 G_f→X_* gerbe 投影；为前者补群/同态与核双向识别、band 的合适作用律，并恢复 L15832–15873 的 classifying/pullback 方块及来源识别，不强加几何基底 X_* 本身为群；允许列明外部算术输入，但不能把 order-31 元素或 Unit-base 局部模型等同于所需代数 μ₃₁-gerbe。[定义](https://github.com/cchx0000/selmer-cartan-motive-towers/blob/bbef8d5ce3e90de3aaecae2be696b063a4c536b0/lean/Definitions/Def_gerbe_provenance.lean#L19-L159)、[生产解答](https://github.com/cchx0000/selmer-cartan-motive-towers/blob/bbef8d5ce3e90de3aaecae2be696b063a4c536b0/lean/Solutions/Sol_thm_gerbe_provenance.lean#L22-L29)
 - [ ] M16 `thm_motivic_specialization`：W/M 已不再是未使用 binder。`witnessArithIso` 从 W.terminalClass 的精确阶 31，给其 zmultiples 子群到 Lar 的保点 AddEquiv；`marking_compat` 也证明抽象三线标记相容，应计入完成子项。但 M 的联系完全经新增 `hM : M.carrier ≃ bg.LMot.carrier` 假设，结论 ρ_M 只是其反向复合的裸 Equiv，未给 M.carrier 的加法/标记，更无指定 I_* block、其 Moore pair 或同一 marked ledger；还把整个 M.carrier 当作 31 元 line。应先识别实际 block 子对象，再建立保点加法同构及与原 M 的兼容性，而非将目标身份假设为任意类型双射。W 侧代数联系也不替代 P0-1 的算术 realization 链。按论文 L16066–16107 验收，保持 carrier span 与 M15 的 operation-level provenance 分开。[当前构造与结论](https://github.com/cchx0000/selmer-cartan-motive-towers/blob/4cb1359ac8f4aa9da7d1867800dafdd5c297c4f1/lean/Solutions/Sol_thm_motivic_specialization.lean#L20-L121)
 
 ### P1-5：接回草稿并修正文档统计
@@ -168,7 +176,7 @@
 - [x] 源码层面已把全部 16 个 `sol_*` 接入对应 Theorems：每项都新增正确 import 并调用对应解答，去注释/规范化空白后的参数与结论一致；旧 `by sorry` 已从生产声明移除。该完成项只描述源码接线，不代表语义验收或编译通过。
 - [x] `8a1d6783` 已更正 README 中 M14 重复计数与 SmokeTest 统计：16 个实质解答含主目标，第17个文件仅为烟雾测试。
 - [x] `50d92fcdf8a425996905b2ad98c782798a58eada` 已将 `lean/README.md` 的 Definitions 统计改为 21，并补列 `confluent_package` / `role_separation` / `jet_ledger`；已与实际文件数核对。
-- [ ] 完成最新声明、模块和构建模式的文档同步：旧接线、Definitions 统计及 README 的接回草稿待办已修复；作者构建日志与 manifest 按 P0-3 保留来源/覆盖限制。当前 README 仍写 21 Definitions，新增 gerbe 模块后应为 22；还须同步 AXIOMS 页尾 47→54 及新源码覆盖、BACKGROUND_INPUTS 的 M16/W/hM 消费项，并明确 gerbeProvenanceData 的不相容前提及对 M10/M14/M15/M16 的影响；限定 M3“完整生成元链”、M4“Γᵐ/coarsening/已证 deletion naturality”、M5“排除纯 torsion/非零 integral differential”、M2“已推出 cocycle/lifting”以及 M6 的“paper (iv)/Rees profile”、M7 的“Hom/degree/closed”、M8 的“Reedy/history”与 M15 的“已替代任意谓词/isMu31”注释到类型实际表达的范围。README 中旧 M5 integral d c 与 d² 的“tension”也应随本轮修复更新。
+- [ ] 完成最新声明、模块和构建模式的文档同步：旧接线、Definitions 统计及 README 的接回草稿待办已修复；作者构建日志与 manifest 按 P0-3 保留来源/覆盖限制。当前 README 仍写 21 Definitions，新增 gerbe 模块后应为 22；还须同步 AXIOMS 页尾 47→54 及新源码覆盖、BACKGROUND_INPUTS 的 M16/W/hM 消费项，并按 P0-0 的修复状态更新 gerbeProvenanceData 说明，收窄本轮新增“genuine central extension / μ₃₁-module / kernel = multiples / hence WitnessBackground / Lean-verified”的表述，分别交代局部模型、完整背景、算术来源与构建证据；限定 M3“完整生成元链”、M4“Γᵐ/coarsening/已证 deletion naturality”、M5“排除纯 torsion/非零 integral differential”、M2“已推出 cocycle/lifting”以及 M6 的“paper (iv)/Rees profile”、M7 的“Hom/degree/closed”、M8 的“Reedy/history”与 M15 的“已替代任意谓词/isMu31”注释到类型实际表达的范围。README 中旧 M5 integral d c 与 d² 的“tension”也应随本轮修复更新。
 - [x] `1b39daa3804fb820c58d026b44fc460db5c8acd6` 已将 README 的“全部已证明”明确收窄为给定 Strategy A 背景的 sorry-free conditionals，并删除旧接回草稿待办；该措辞修复已完成。
 - [ ] 继续逐项区分条件式/弱化声明的源码完成、编译验证、依赖公理和论文语义差距；不能因 README 加 caveat、消除文本 sorry 或接回生产模块而自动关闭各语义/复现任务。
   - 验收：统计从真实声明和依赖闭包生成，逐项显示“文本完成 / 编译验证 / 依赖公理 / 与论文差距”；`MISSION_DESCRIPTION.md`、`INVENTORY.md` 与代码状态不相互矛盾。
@@ -200,7 +208,7 @@
 | `Def_confluent_package.lean` | `direction_lattice`、`dirBasis`、`coeffModulus`、`coeff_ring`、`supportDelete`、`permActDir`、`gammaMult`、`coarsen`、`extendSupport` 及已给出的作用律 |
 | `Def_role_separation.lean` | `ControlEdge`、`RoleSeparation`、`canonicalRoleSeparation` |
 | `Def_jet_ledger.lean` | `ReedyDecomp`、`jet_tower`、`jet_tower.ledger`、`jet_tower.ledger_restrict` |
-| `Def_gerbe_provenance.lean` | `ClassifyingMap`、`PullbackIdentity`、`UnipotentExtension`（当前不可满足）、`GerbeProvenance`、`isMu31`、`pullback_eq_chern` |
+| `Def_gerbe_provenance.lean` | `ClassifyingMap`、`PullbackIdentity`、`UnipotentExtension`、`unipotentExtensionModel`（局部模型源码，未独立编译）、`GerbeProvenance`、`isMu31`、`pullback_eq_chern` |
 
 下表每行声明 `x` 对应 Theorems 生产声明 `lean/Theorems/Thm_SelmerCartanMotiveTowers_x.lean`，以及独立解答 `lean/Solutions/Sol_x.lean::sol_x`（`8a1d6783` 起采用唯一名称）。
 
@@ -215,13 +223,13 @@
 | M7 / Thm 19.9 | `thm_role_separated_objectification` | 分离及保零/保运算的非零 endomap；尚非 dg Hom 或 M6-compatible target | P1-2 |
 | M8 / Thm 25.14 | `thm_finite_motivic_recursion_closure` | 加法 splitting/删除交换/共同 apex；零 Moore pair 与标记/history 语义仍缺 | P1-2 |
 | M9 / Thm 26.7 | `thm_successor_stage_functor` | 给定 obstruction/Moore lift/closure 后的函数组装 | P1-3 |
-| M10 / Thm 26.12 | `thm_prime_power_comparison` | 完整有限 CRT 与 reduction 律；当前背景不可满足，dg 绑定仍缺 | P0-0、P1-1、P1-4 |
+| M10 / Thm 26.12 | `thm_prime_power_comparison` | 完整有限 CRT 与 reduction 律；旧 extension 矛盾已修，dg 绑定仍缺 | P1-1、P1-4 |
 | M11 / Thm 27.5 | `thm_classical_low_sector_comparison` | 数值 cone/ZMod reductions；shadow 函子与实际 cone 识别仍缺 | P1-3 |
 | M12 / Prop 13.5 | `prop_stack_globalization` | `stackIsDerived` 直接投影 | P1-3 |
 | M13 / Thm 30.2 | `thm_marked_morita_independence` | 已给定双射及 intertwining 性质投影 | P1-3 |
-| M14 / Thm 37.1 / 主目标 | `thm_31adic_witness` | 当前背景不可满足；pairing/阶/carry 来源及 W1/W2 仍缺 | P0-0、P0-1 |
-| M15 / Thm 38.1 | `thm_gerbe_provenance` | 新增 provenance 记录但 extension 字段矛盾；仍为背景投影 | P0-0、P1-4 |
-| M16 / Thm 38.5 | `thm_motivic_specialization` | 独立 W 子群同构保留；当前背景不可满足，M 的 hM/block 待接 | P0-0、P1-4 |
+| M14 / Thm 37.1 / 主目标 | `thm_31adic_witness` | 旧 extension 矛盾已修；pairing/阶/carry 来源及 W1/W2 仍缺 | P0-1 |
+| M15 / Thm 38.1 | `thm_gerbe_provenance` | 旧 extension 矛盾已修并有局部模型源码；真实 extension/pullback 及背景投影缺口仍在 | P1-4 |
+| M16 / Thm 38.5 | `thm_motivic_specialization` | 独立 W 子群同构保留；旧 extension 矛盾已修，M 的 hM/block 待接 | P1-4 |
 
 另有 `lean/Solutions/SmokeTest.lean`，只计作烟雾测试，不计作论文里程碑。
 

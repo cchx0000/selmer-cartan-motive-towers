@@ -488,7 +488,9 @@ Classification: Lean base axioms only.
 4. Coverage note: the per-item audit source SHA
    `d5ffb0e985fcbd60b388929d2a685437e8088e70` is not resolvable via the
    repository API (verifier: 422), and later source changes (M16
-   `witnessArithIso`/`hM`, M6 `omegaClass`/`reesCoeff`, M7 `ControlEdge`,
+   `witnessArithIso`/`blockSubobjectInterface` (2026-10-10: the old bare
+   `hM : M.carrier ≃ bg.LMot.carrier` was replaced by a structured
+   `blockSubobjectInterface` hypothesis), M6 `omegaClass`/`reesCoeff` and
    M8 `ReedyDecomp`, P0-0 `UnipotentExtension` fields, M15 re-revision)
    are not yet covered by a per-item `#print axioms` rerun; see P0-3.
    Two staged exceptions are recorded precisely, not as whole-module
@@ -500,7 +502,7 @@ Classification: Lean base axioms only.
      `#print axioms` audit (Lean base axioms only; §3 entries and
      summary-table rows 34a–34d). This does not extend to the rest of
      the M3 generator-chain dependencies (range / filtered-interface
-     fields and the remaining `Def_moore_two_term` declarations), which
+     fields and the remaining `Def_moore_cohomology_line` declarations), which
      remain unaudited per-item at a resolvable source.
    - M2 (`e3c1a70a`): `SuperDGA.leibniz_of_decomp` has an author
      `#print axioms` audit ([propext] only; §3 entry, row 18a). That

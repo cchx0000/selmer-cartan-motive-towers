@@ -15,13 +15,19 @@ repeated-input secondary generator `κ̄` (paper L2235–2260;
 `P1C-thm:formal-pq2-order`, `P1C-thm:pq2-crt-confluence`,
 `P1C-thm:filtered-q2-line`).
 
-REVISION NOTE (2026-10-10, verifier P1-4 M3): the proof now explicitly
-invokes the Moore-complex → cohomology chain:
-- `mooreDiff_range`: the differential's image is the boundaries subgroup;
-- `moore_cohomology`: the quotient `ℤ ⧸ mooreBoundaries` is identified with
-  `moore_line` (the class `[B_{2,1}]` corresponds to `mooreGen`);
-- `PrimitiveFilteredInterface`: the `q²`-component of `conf_line` is the
-  primitivity identification of `W_q/q²W_q` with `ZMod (q^2)`, `[κ̃] ↦ 1`.
+REVISION NOTE (2026-10-10, verifier P1-4 M3): the proof declares
+`hrange := mooreDiff_range p q`, `hcoh := moore_cohomology p q`, and
+`hkappa := confGen_kappa_tilde p q hI`, BUT these three local `have`s are
+not consumed by the subsequent derivation — the actual proof uses only
+the CRT `RingEquiv` (`ZMod.chineseRemainder`) and the proved
+`qPrimaryRed_kappa_tilde`. The generator identifications
+(`1 = [B_{2,1}]` via `hcoh`, `(1,1).2 = [κ̃]` via `hkappa`) appear only
+in comments, not in proof steps; the named Props
+(`mooreGen_is_cohomology_class`, `PrimitiveFilteredInterface`) thread no
+actual quotient/class argument into the construction. The complete
+generator chain `[1] → mooreGen → confGen` is therefore NOT closed —
+the current result is the CRT equivalence on the `ZMod` model plus the
+proved `q`-primary reduction law.
 -/
 theorem sol_thm_formal_filtered_alignment
     (p q : ℕ) (hp : p.Prime) (hq : q.Prime) (hpq : p ≠ q) :

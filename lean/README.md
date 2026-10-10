@@ -11,7 +11,7 @@ below for the coverage caveats (genuine proofs vs. background assemblies).
 
 ## Layout
 
-- `Definitions/` — 21 definition modules:
+- `Definitions/` — 22 definition modules:
   - 8 foundational: `finite_ordered_support`, `typed_coordinates`, `source_package`,
     `full_mot`, `rec_one_mot`, `motivic_moore_reedy`, `selmer_cartan_tower`, `adic_witness`
   - 4 arithmetic background packages (Strategy A, explicitly labeled hypotheses):
@@ -19,6 +19,8 @@ below for the coverage caveats (genuine proofs vs. background assemblies).
   - 6 P1-3/P1-4 concrete-structure modules: `channel_index`, `moore_cohomology_line`,
     `pointed_cyclic_carrier`, `dga_obstruction`, `crt_product`, `classical_shadow_cone`
   - 3 P1-2 deep-structure modules: `confluent_package`, `role_separation`, `jet_ledger`
+  - 1 P1-4 gerbe-provenance module: `gerbe_provenance` (classifying map, pullback
+    identity, unipotent extension with a local `ZMod 31` model)
 - `Theorems/` — 16 production theorem statements (`Thm_SelmerCartanMotiveTowers_*.lean`).
   Each now imports its `Solutions/` module and discharges the statement by
   applying the corresponding `sol_*` proof (P1-5 rewiring complete; no `by sorry` remains).
@@ -47,18 +49,30 @@ package instance registered instead).
   (Massey cocycle assembly; concrete Moore line ↔ confluence line via CRT,
   with q-primary reduction compatibility).
 - M2 (Thm 9.4) now defines a `SuperDGA` from scratch and proves the Bianchi
-  identity, deriving cocycle/lifting/naturality (PD filtration and filler
-  torsor remain uncovered).
+  identity, giving the Bianchi-cocycle rearrangement, the curvature expansion,
+  and curvature naturality (the "gauge" clause is the gauge-action definition
+  itself, `rfl`; PD filtration and filler torsor remain uncovered).
 - M5 (Thm 12.2) has a real cohomology layer (`addOrderOf [b] = N` excludes
-  the boundary model); the integral `d c = N b` vs `d² = 0` tension and the
-  geometric antecedent are documented limitations.
+  the boundary model). The old `N • b = 0` / `d c = 0` forcing and the
+  `N² • b_mot = 0` tension are repaired (2026-10-10: `isGenuine` no longer
+  applies `classOf` to the non-closed antecedent). Remaining limitations:
+  no faithful integral complex / cohomology interface, and the geometric
+  antecedent is still satisfiable by a trivial `Unit` model.
 - M11 (Thm 27.5) has a concrete target-side `ClassicalMooreCone` with proved
   reduction laws; the source category stays as background.
 - M16 (Thm 38.5) constructs real pointed isomorphisms between three concrete
   order-31 carriers (carrier-level only).
-- M9/M12/M13/M15 have no Mathlib foundation (derived AG, motivic homotopy,
+- M9/M12/M13 have no Mathlib foundation (derived AG, motivic homotopy,
   derived Morita); see `P1_INFEASIBLE.md`. They remain as explicitly labeled
   background assumptions.
+- M15 (Thm 38.1) now carries the `GerbeProvenance` structure plus a local
+  `ZMod 31` model of the unipotent extension as satisfiability evidence for
+  the repaired P0-0 fields (P0-0 fix, 2026-10-10). The model only covers the
+  `UnipotentExtension` layer: real group/homomorphism structure, two-sided
+  kernel identification (only kernel ⊆ `ZMod 31`-multiples is stated), band
+  action laws, a real pullback operation, and the arithmetic realization
+  remain background; the bare `provenanceFor` predicate is still projected
+  in the production conclusion.
 - The rest are direct assemblies of background-package fields — true and
   provable, but literally weaker than the paper's intent. This is the known
   trade-off of the axiomatic skeleton; see `BACKGROUND_INPUTS.md` for the

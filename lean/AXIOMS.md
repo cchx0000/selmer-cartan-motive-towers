@@ -410,7 +410,27 @@ Classification: Lean base axioms only.
 | 53 | `sol_thm_gerbe_provenance` (M15) | Lean base triple |
 | 54 | `sol_thm_motivic_specialization` (M16) | Lean base triple |
 
-**Total: 47 declarations. `sorryAx`: 0.**
+**Total: 54 declarations. `sorryAx`: 0.**
+
+### Changes from the 47-item audit (47 → 54)
+
+1. Added 7 P1-4 M10 CRT declarations (2026-10-10): `ppowerRed_comp`,
+   `crtModulus_eq_prod_coe`, `crtPairwiseCoprime`, `crtProductEquiv`,
+   `crtProductEquiv_one`, `evalAtCoe`, `crtProductEquiv_apply` — all Lean
+   base axioms only, 0 `sorryAx`.
+2. `sol_thm_gerbe_provenance` (M15) re-audited with the concrete
+   `GerbeProvenance` conjunct (2026-10-10): [propext, Classical.choice,
+   Quot.sound], 0 `sorryAx`. The new structures `ClassifyingMap`,
+   `PullbackIdentity`, `UnipotentExtension`, `GerbeProvenance` are
+   definitions (no axioms); `unipotentExtensionModel` is a definition too.
+3. Coverage note: the per-item audit source SHA
+   `d5ffb0e985fcbd60b388929d2a685437e8088e70` is not resolvable via the
+   repository API (verifier: 422), and later source changes (M16
+   `witnessArithIso`/`hM`, M6 `omegaClass`/`reesCoeff`, M7 `ControlEdge`,
+   M8 `ReedyDecomp`, P0-0 `UnipotentExtension` fields, M15 re-revision) are
+   not yet covered by a per-item `#print axioms` rerun; see P0-3. The
+   54-item table records the declarations as listed at audit time, not a
+   claim that every current module has been rerun.
 
 ### Changes from the previous audit (28 → 47)
 

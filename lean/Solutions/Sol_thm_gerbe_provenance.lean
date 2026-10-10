@@ -12,13 +12,16 @@ LLSWW form): the gerbe `bg.gerbe`, its `μ_{31}`-gerbe property
 `bg.gerbeIs`, and the universal provenance clause `bg.gerbeProvenance`
 for every 31-adic witness.
 
-REVISION NOTE (P1-4 M15, 2026-10-10): The conclusion now also provides the
-concrete operation-level provenance `bg.gerbeProvenanceData :
+REVISION NOTE (P1-4 M15, 2026-10-10, narrowed): The conclusion now also
+provides the concrete operation-level provenance `bg.gerbeProvenanceData :
 GerbeProvenance` — the classifying map with its `x^{(30)}, λ_*` coordinate
 profile, the pointed pullback identity `ρ̄^* ω_{31}^{univ} = κ_5^{root} =
 c_1^{(31)}(Q_5)`, and the unipotent central extension with order-31 kernel.
-This replaces the bare `provenanceFor` predicate with checkable structure;
-the full algebraic-stack construction remains background (CITED). -/
+This SITS ALONGSIDE, rather than replaces, the bare `provenanceFor`
+predicate: the conclusion still projects `bg.provenanceFor G W` as a
+conjunct. The `GerbeProvenance` data is projected from
+`bg.gerbeProvenanceData` (a background field), and the full
+algebraic-stack construction remains background (CITED). -/
 theorem sol_thm_gerbe_provenance (W : adic_witness) (bg : WitnessBackground) :
     ∃ G : bg.Gerbe, bg.isMu31Gerbe G ∧ bg.provenanceFor G W ∧
       ∃ P : GerbeProvenance, P = bg.gerbeProvenanceData ∧

@@ -11,12 +11,20 @@ namespace SelmerCartanMotiveTowers
 function of `I` as a Boolean function on `ℕ`. This models the paper's
 `Ω_I^{rec}` (higher latching polynomial class) at the Boolean skeleton
 level. Paper `P2M-thm:channel-complete-realization` (iv): for `|I| ≥ 3`,
-`[ρ(Ω_I)]` has exact additive order `N`. -/
+`[ρ(Ω_I)]` has exact additive order `N`.
+
+Narrowed per external-verifier P1-2 (2026-10-10): what is proved is the
+additive order of a carrier element `ρ (omega I)` in
+`(channel_index S → ZMod N) × ℤ` — no latching polynomial, no
+cycles/boundaries, and no obstruction-cohomology class are defined, so
+paper (iv) as a cohomology statement is not established. -/
 def omegaClass (I : Finset ℕ) : ℕ → Bool := fun p => decide (p ∈ I)
 
-/-- The Rees multiplication profile `(1, N, N²)` from the cyclotomic
-transfer powers `T_N` (paper (iii)). These are the coefficients of the
-raw flatness law; as natural numbers they are `1`, `N`, `N^2`. -/
+/-- The Rees multiplication profile `(1, N, N²)`: the bare numeric
+triple. Narrowed per external-verifier P1-2 (2026-10-10): no cyclotomic
+transfer, multiplication, or Rees laws are proved for this triple, and it
+is not consumed by the production conclusion — it is a named coefficient
+triple only, not the paper's Rees transfer law (paper (iii)). -/
 def reesCoeff (N : ℕ) : Fin 3 → ℕ
   | ⟨0, _⟩ => 1
   | ⟨1, _⟩ => N

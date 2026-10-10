@@ -5,14 +5,21 @@ namespace SelmerCartanMotiveTowers
 /-- Solution for Theorem 9.4 (`P1C-thm:universal-higher-obstruction-recursion`),
 P1-3 revision.
 
-The four clauses are proved from the DGA Bianchi identity:
+The clauses proved are:
 - (i) `SuperDGA.bianchi_cocycle`: Bianchi rearranged as `dF = F·X - X·F`.
 - (ii) `SuperDGA.curvature_expand`: `F(X+Y) = F(X) + dY + XY + YX + Y²`.
-- (iii) Gauge action is by definition `u.g * X * u.g_inv`.
+- (iii) Gauge action is by definition `u.g * X * u.g_inv` (the "proof" is
+  `rfl` — this clause restates the definition, not a derived lifting
+  property).
 - (iv) `SuperDGA.naturality`: DGA homs preserve curvature.
 
-The proof consumes no deep arithmetic (pure dg-algebra). The PD filtration
-refinement is not formalized (see `Def_dga_obstruction.lean`). -/
+The proof consumes no deep arithmetic (pure dg-algebra). The paper's
+obstruction four items (dΩ = 0 cocycle, lift iff, gauge invariance,
+obstruction-class naturality) are NOT established: the DGA side has no
+PD filtration, marked jet, level projection, or cohomology/filler
+torsor, so nothing here proves the original obstruction recursion.
+The PD filtration refinement is not formalized (see
+`Def_dga_obstruction.lean`). -/
 theorem sol_thm_universal_higher_obstruction_recursion :
     (∀ (S : SuperDGA) (X : S.A), S.isOdd X →
       S.d (SuperDGA.curvature S X) =

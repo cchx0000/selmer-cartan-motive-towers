@@ -253,8 +253,9 @@ PD algebra on a module. The category `Conf(m)` of multiplicity profiles
 (L3694) is also not formalized. What we provide above — the
 multiplicity-indexed scalar action `gammaMult`, the support coarsening
 `coarsen` with composition law, and the cross-support `extendSupport`
-with deletion naturality — is the functorial action package that the
-paper shows acts through `Γ^m`.
--/
+— is the functorial action package that the paper shows acts through
+`Γ^m`. Compatibility of `extendSupport` with `gammaMult` and
+`supportDelete` (naturality) is future work, as stated in the NOTE
+above; it is NOT proved here. -/
 
 end SelmerCartanMotiveTowers

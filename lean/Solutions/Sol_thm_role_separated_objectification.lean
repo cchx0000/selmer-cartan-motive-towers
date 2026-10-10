@@ -36,14 +36,19 @@ the separation property `∀ i j, RS.d i ≠ RS.e j` in the conclusion (not just
 as structure fields), so the non-degeneracy is visible at the statement
 level and matches M6's target properties.
 
-REVISION NOTE (M7 Hom structure, 2026-10-10): `ControlEdge` now carries a
-Hom structure (`hom : Role → Role` with `hom_zero`, `hom_add`,
-`hom_nonzero : ∃ x, hom x ≠ 0`, plus `degree_zero`/`closed` markers),
-addressing the verifier's "no Hom, zero morphism, or degree" criticism.
-The witness uses `hom = id` (additive by `rfl`; nonzero via
-`Sum.inr 0 ≠ 0`), documented as the objectwise evaluation of the Boolean
-correspondence `U_{q_i}`. The `Role` type `Fin card ⊕ Fin card` carries
-formal `Zero`/`Add` instances (model artifacts for stating additivity).
+REVISION NOTE (M7 Hom structure, 2026-10-10, narrowed): `ControlEdge`
+now carries a Hom-structure-shaped field set (`hom : Role → Role` with
+`hom_zero`, `hom_add`, `hom_nonzero : ∃ x, hom x ≠ 0`, plus
+`degree_zero`/`closed` markers). This addresses the verifier's "no Hom,
+zero morphism, or degree" criticism only at the field-shape level:
+`hom` is a self-map of the WHOLE `Role` type, not a per-source/target
+Hom-complex element; `degree_zero`/`closed` are `True`-typed (no grading
+or differential exists); additivity is stated against a formal `Add`
+instance (left-projection in the canonical model). There is still no dg
+control morphism, no additive Karoubi summands, no cutoff, no higher
+cells, and no Morita compatibility. The witness uses `hom = id`
+(additive by `rfl`; nonzero via `Sum.inr 0 ≠ 0`), documented as the
+objectwise evaluation of the Boolean correspondence `U_{q_i}`.
 The additive Karoubi envelope and Morita equivalence remain background. -/
 theorem sol_thm_role_separated_objectification
     (S : finite_ordered_support) (h2 : 2 ≤ S.primes.card)

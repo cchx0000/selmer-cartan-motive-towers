@@ -1,5 +1,5 @@
 import Mathlib.Algebra.Ring.Basic
-import Mathlib.Data.ZMod.Basic
+import Mathlib.Algebra.Group.Subgroup.Basic
 import Mathlib.Tactic.Abel
 
 namespace SelmerCartanMotiveTowers
@@ -52,6 +52,12 @@ This file formalizes the **parity-graded** DGA core. The four clauses are:
 
 ## LIMITATIONS (P1-3)
 
+- **Grading vs. full super-structure**: the ℤ/2-grading is structural
+  (`evenPart`/`oddPart` subgroups, four parity multiplication laws, `d`
+  flipping parity, `isOdd` characterized by `isOdd_eq`), but `isOdd` still
+  only marks *homogeneous* odd elements; mixed even+odd elements are
+  classified as not-odd. A full treatment would thread homogeneous
+  decompositions through every statement.
 - **PD filtration**: Not formalized. The paper's PD-degree counting
   ("higher terms have higher weight") is represented by the algebraic
   form of the identities; a future refinement may add an ℕ-weight grading.
@@ -63,8 +69,15 @@ This file formalizes the **parity-graded** DGA core. The four clauses are:
 -/
 
 /-- A parity-graded differential graded algebra ("super-DGA").
-    The `isOdd` predicate marks the odd-degree elements; the differential is
-    odd (`d` flips parity) and satisfies `d² = 0` and the graded Leibniz rule. -/
+
+    The grading is **structural**, not a bare predicate: `evenPart`/`oddPart`
+    are additive subgroups giving an even/odd decomposition of `A`, with the
+    four parity multiplication laws and `d` flipping parity. `isOdd` marks
+    the *homogeneous* odd elements and is tied to the grading by `isOdd_eq`,
+    so it is no longer an arbitrary predicate.
+
+    Note on the sign: in characteristic 2 the `(-1 : A)` in `leibniz` equals
+    `1`; the grading laws themselves are characteristic-free. -/
 structure SuperDGA where
   A : Type
   [ring : Ring A]
@@ -74,6 +87,27 @@ structure SuperDGA where
   d_add : ∀ a b, d (a + b) = d a + d b
   d_squared : ∀ a, d (d a) = 0
   leibniz : ∀ a b, d (a * b) = d a * b + (if isOdd a then (-1 : A) else 1) * (a * d b)
+  /-- 偶/奇分解 (even/odd decomposition): the even part is an additive
+      subgroup, closed under multiplication and containing `1`. -/
+  evenPart : AddSubgroup A
+  one_even : (1 : A) ∈ evenPart
+  even_mul : ∀ a b, a ∈ evenPart → b ∈ evenPart → a * b ∈ evenPart
+  /-- The odd part is an additive subgroup. -/
+  oddPart : AddSubgroup A
+  /-- 乘法次数 (multiplication respects parity): the four parity laws,
+      stated for the subgroups so they are zero-safe. -/
+  mul_even_odd : ∀ a b, a ∈ evenPart → b ∈ oddPart → a * b ∈ oddPart
+  mul_odd_even : ∀ a b, a ∈ oddPart → b ∈ evenPart → a * b ∈ oddPart
+  mul_odd_odd : ∀ a b, a ∈ oddPart → b ∈ oddPart → a * b ∈ evenPart
+  /-- Every element decomposes as even + odd. -/
+  decomp : ∀ a : A, ∃ e ∈ evenPart, ∃ o ∈ oddPart, e + o = a
+  /-- The decomposition is disjoint: only `0` is both even and odd. -/
+  disj : ∀ a : A, a ∈ evenPart → a ∈ oddPart → a = 0
+  /-- d 翻转次数 (`d` flips parity). -/
+  d_of_even : ∀ a : A, a ∈ evenPart → d a ∈ oddPart
+  d_of_odd : ∀ a : A, a ∈ oddPart → d a ∈ evenPart
+  /-- `isOdd` is the homogeneous-odd predicate, determined by the grading. -/
+  isOdd_eq : ∀ a : A, isOdd a ↔ (a ∈ oddPart ∧ a ∉ evenPart)
 
 namespace SuperDGA
 
@@ -81,6 +115,43 @@ variable (S : SuperDGA)
 
 instance : Ring S.A := S.ring
 instance : DecidablePred S.isOdd := S.decPred
+
+/-- `0` is even. -/
+theorem isOdd_zero : ¬ S.isOdd 0 := by
+  rw [S.isOdd_eq]
+  rintro ⟨_, hne⟩
+  exact hne (zero_mem S.evenPart)
+
+/-- `1` is even. -/
+theorem isOdd_one : ¬ S.isOdd 1 := by
+  rw [S.isOdd_eq]
+  rintro ⟨_, hne⟩
+  exact hne S.one_even
+
+/-- 乘法次数: odd · odd is even (zero-safe via the subgroup law). -/
+theorem mul_odd_odd_not_odd (a b : S.A) (ha : S.isOdd a) (hb : S.isOdd b) :
+    ¬ S.isOdd (a * b) := by
+  rw [S.isOdd_eq] at ha hb ⊢
+  rintro ⟨_, hne⟩
+  exact hne (S.mul_odd_odd a b ha.1 hb.1)
+
+/-- 乘法次数: even · odd is odd-or-zero. -/
+theorem mul_even_odd_cases (a b : S.A) (ha : ¬ S.isOdd a) (hb : S.isOdd b)
+    (he : a ∈ S.evenPart) :
+    S.isOdd (a * b) ∨ a * b = 0 := by
+  by_cases h0 : a * b = 0
+  · exact Or.inr h0
+  · left
+    rw [S.isOdd_eq]
+    refine ⟨S.mul_even_odd a b he ((S.isOdd_eq b).mp hb).1, ?_⟩
+    intro hmem
+    exact h0 (S.disj (a * b) hmem (S.mul_even_odd a b he ((S.isOdd_eq b).mp hb).1))
+
+/-- d 翻转次数: `d` sends odd elements to even ones. -/
+theorem d_flips_odd (a : S.A) (ha : S.isOdd a) : ¬ S.isOdd (S.d a) := by
+  rw [S.isOdd_eq] at ha ⊢
+  rintro ⟨_, hne⟩
+  exact hne (S.d_of_odd a ha.1)
 
 /-- Curvature of an element: `F(X) = dX + X²`.
     For the Bianchi identity we need `X` odd (see `bianchi`). -/

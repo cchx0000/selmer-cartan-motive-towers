@@ -29,7 +29,7 @@ Consumed by: M1 (`thm_ray_class_primitive`) — all four lemma/theorem fields.
 | `Cochain`, `AddCommGroup`, `nonempty_Cochain`, `d`, `hd2` | DEF | Cochain complex setup (`d² = 0`) |
 | `Cohomology`, `AddCommGroup`, `classOf`, `classOf_ker` | DEF | Cohomology as quotient by boundaries (P0-2) |
 | `isGenuine`, `isGenuine_iff` | DEF | Characterized (P0-2): Moore relation + nonzero N-torsion class; the paper's geometric "root coordinate" is formalized as its cohomological shadow (limitation noted in file) |
-| `b_mot`, `hb_closed`, `hb_order`, `hb_exact` | EXT | Root Moore class of exact order `N`; cited Totaro `CH^*(Bμ_N) = Z[ξ]/(Nξ)` via `P2M-prop:appendix-root-moore-complex` |
+| `b_mot`, `hb_closed` | EXT | Root Moore cycle; cited Totaro `CH^*(Bμ_N) = Z[ξ]/(Nξ)` via `P2M-prop:appendix-root-moore-complex`. (P0-2 deep: cochain-level `hb_order`/`hb_exact` deleted — N-torsion lives only in cohomology) |
 | `hb_class_order` | EXT | `addOrderOf [b_mot] = N` in cohomology; same Totaro citation, cohomology-level (P0-2; excludes the boundary model) |
 | `c_mot`, `hc_boundary`, `hc_genuine` | EXT | Root antecedent; cited Hoyois / Khan–Ravi / Choudhury–Deshmukh–Hogadi |
 
@@ -55,7 +55,7 @@ Consumed by: M5 (`thm_motivic_seed`) — all EXT fields.
 | `CRTLine`, `nonempty_CRTLine`, `crtHasMoorePresentation`, `crtLine`, `crtLineHas` | LEM | Paper's CRT product construction (elementary CRT) |
 | `DgRealization`, `nonempty_DgRealization`, `crtIsSupportFunctorialDg`, `crtRealization`, `crtRealizationIs` | LEM | Paper's support-functorial dg realization |
 
-Consumed by: M10 (`thm_prime_power_comparison`) — `crtLine`, `crtLineHas`, `crtRealization`, `crtRealizationIs`.
+Consumed by: M10 (`thm_prime_power_comparison`) — `crtRealization`, `crtRealizationIs` only. (P1-4: M10 now uses concrete `Def_crt_product` definitions; `crtLine`/`crtLineHas` are no longer projected.)
 
 ### §3 — 31-adic witness data (M14/goal; P0-1 revised)
 
@@ -99,7 +99,7 @@ Consumed by: M15 (`thm_gerbe_provenance`).
 
 Consumed by: M16 (`thm_motivic_specialization`) — constructs `Lsrc ≃+ Lar` and `Lsrc ≃+ LMot`.
 
-**Note on M14's §3 usage**: M14 (`thm_31adic_witness`) routes `QAdicLine`, `qiKummer`, `carryNormalized`, `ObstructionGroup`/`kappa`/`kappa_ne_zero`, `TrivDatum` into the witness. The fields `lambda31_exact2`, `classNum93`, `kummerEqKappa`, `llsWW`, `globalNonExtension` are recorded background labels not projected into the current proof term — they document the paper's arithmetic context.
+**Note on M14's §3 usage**: M14 (`thm_31adic_witness`) routes `QAdicLine`, `qiKummer`, `carryNormalized`, `ObstructionGroup`/`kappa`, `kummerClass`/`kummerEqKappa` (used by the proved `kappa_ne_zero` lemma), `poitouTatePairing`/`pairingDetectsNonzero`/`kummerPairingNonzero`, `TrivDatum` into the witness. The fields `lambda31_exact2`, `classNum93`, `llsWW`, `globalNonExtension` are recorded background labels not projected into the current proof term — they document the paper's arithmetic context.
 
 ## FormalBackground (M2, M11, M12, M13)
 
@@ -117,8 +117,9 @@ predicates); this package supplies the paper's specific setups.
 | §3 `DGCategory`, `nonempty_DGCategory`, `moduliStack`, `isDerivedStack`, `stackIsDerived` | DEF | Moduli of pseudo-perfect modules; the proposition has no proof in the paper (essentially definitional) |
 | §4 `C`, `C'`, `eRec`, `eFull`, `eRecBijective`, `eFullBijective`, `eIntertwineProj`, `eIntertwineFull`, `eIntertwineOne` | EXT | Toën derived Morita theory (cited); representing data + consequences |
 
-Consumed by: M2 (§1 fields), M11 (`shadow`, `shadowZero`, `shadowMoore`),
+Consumed by: M11 (`shadow`, `shadowZero`, `shadowMoore`),
 M12 (`stackIsDerived`), M13 (§4 fields).
+(P1-3: M2 now uses independent `SuperDGA` definitions; FormalBackground §1 fields are no longer consumed.)
 
 ## Cross-cutting notes
 

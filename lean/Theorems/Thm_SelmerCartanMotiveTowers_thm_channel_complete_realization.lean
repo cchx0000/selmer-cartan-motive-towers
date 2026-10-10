@@ -38,6 +38,10 @@ source), and requires `Ring M.corrAlgebra` (not just a bare `Type`).
 A constant-`ρ` model or `Unit`-source model does not satisfy the new
 statement.
 
+REVISION NOTE 3 (2026-10-10, P1-2 M6 deep): Paper (iv) — the latching
+class `Ω_I` (`omega : Finset ℕ → Source`) has `addOrderOf (ρ (omega I)) = N`
+for `|I| ≥ 3`. The Rees profile `(1, N, N²)` is `reesCoeff`.
+
 LIMITATIONS (honest): Properties (iii) (cyclotomic transfer/Rees profile),
 (v) (genuine motivic antecedent), (vi) (Fubini), (vii) (relabelling/Koszul)
 require the full dg algebra and motivic constructions. The dg controller
@@ -50,13 +54,16 @@ theorem thm_channel_complete_realization
         (hRing : Ring M.corrAlgebra)
         (ρ : Source → M.carrier)
         (chanMap : channel_index S → M.carrier)
-        (delMap : M.carrier → M.carrier),
+        (delMap : M.carrier → M.carrier)
+        (omega : Finset ℕ → Source),
         M.support = S ∧ M.coeffOrder = N ∧
         Nontrivial Source ∧ Nontrivial M.carrier ∧ Nontrivial M.corrAlgebra ∧
         Function.Injective chanMap ∧
         (∀ c : channel_index S, @addOrderOf M.carrier hAdd.toAddMonoid (chanMap c) = N) ∧
         (∀ x, delMap (delMap x) = delMap x) ∧
-        (∃ a b : Source, ρ a ≠ ρ b) :=
+        (∃ a b : Source, ρ a ≠ ρ b) ∧
+        (∀ I : Finset ℕ, I ⊆ S.primes → 3 ≤ I.card → 0 ∉ I →
+          @addOrderOf M.carrier hAdd.toAddMonoid (ρ (omega I)) = N) :=
   SelmerCartanMotiveTowers.sol_thm_channel_complete_realization S N hNodd hNsf hN1
 
 end SelmerCartanMotiveTowers

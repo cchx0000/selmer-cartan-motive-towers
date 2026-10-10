@@ -24,9 +24,14 @@ require mathlib from git
   "https://github.com/leanprover-community/mathlib4.git" @
   "0df444a360eaa60ab8c11dca51a86af692955474"
 
-lean_lib Definitions where
+/-- All three libraries are default targets so that a bare `lake build`
+    (the procedure documented in `BUILD.md`) covers every one of the 55
+    intended modules. Previously only `Solutions` was a default target, so
+    `lake build` silently skipped all 16 `Theorems` modules (nothing imports
+    them; see external-verifier todo.md L156 build-entry coverage). -/
+@[default_target] lean_lib Definitions where
   globs := #[Glob.submodules `Definitions]
-lean_lib Theorems where
+@[default_target] lean_lib Theorems where
   globs := #[Glob.submodules `Theorems]
 @[default_target] lean_lib Solutions where
   globs := #[Glob.submodules `Solutions]

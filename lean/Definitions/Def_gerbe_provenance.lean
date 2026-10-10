@@ -64,12 +64,18 @@ structure PullbackIdentity where
   /-- The common class is nonzero (it is the obstruction). -/
   class_nonzero : pullbackClass ≠ 0
 
-/-- The `μ_{31}`-gerbe as a unipotent central extension.
+/-- The unipotent group extension `Ū → U`, recorded at kernel-generator
+level (the order-31 data relevant to the `μ_{31}`-gerbe provenance).
 
 Records the kernel-generator data of a unipotent extension: an order-31
-band generator `kernelGen` that is central. Narrowed per external-verifier
+band generator `kernelGen` that is central. Per P1-4 (M15) this expresses
+the group extension `U → Ū` separately from the gerbe projection
+`G_f → X_*`, which is a distinct geometric structure not formalized here
+(no algebraic stacks in Mathlib); the geometric `X_*` is not required to
+be a group. Narrowed per external-verifier
 P0-0 (2026-10-10): this is NOT a verified genuine central extension —
-the base `X_*` has no group structure, `proj` is not stated as a
+the formalized base (in the role of `U`) has no group structure, `proj` is
+not stated as a
 homomorphism or surjection, and `projKernel` states only the one-sided
 inclusion (kernel ⊆ `ZMod 31`-multiples of `kernelGen`), so the kernel
 is not proved to equal the cyclic subgroup it generates. The `ZMod 31`
@@ -86,9 +92,10 @@ genuinely used. `unipotentExtensionModel` below gives an author-reported
 satisfiability witness, so the OLD "empty type" verdict is withdrawn;
 independent build coverage is pending per P0-3. -/
 structure UnipotentExtension where
-  /-- The base `X_*`. -/
+  /-- The base `U` of the group extension `Ū → U`. Narrowed per P0-0:
+      formalized as a bare type with no stated group structure. -/
   base : Type
-  /-- The total space `G_{f_*}`. -/
+  /-- The total space `Ū` of the group extension. -/
   total : Type
   [totalAddComm : AddCommGroup total]
   /-- The `ZMod 31`-scalar action on the total space. Narrowed per P0-0:
@@ -96,7 +103,8 @@ structure UnipotentExtension where
       (identity, compatibility, additivity); it does not make the total
       space a verified `μ_{31}`-module. -/
   [totalScalar : SMul (ZMod 31) total]
-  /-- The projection `G_{f_*} → X_*`. -/
+  /-- The projection `Ū → U`. Narrowed per P0-0: not stated as a
+      homomorphism or surjection. -/
   proj : total → base
   /-- The kernel generator (the `μ_{31}` band generator). -/
   kernelGen : total
@@ -157,9 +165,15 @@ structure GerbeProvenance where
   classifying : ClassifyingMap
   /-- The pointed pullback identity. -/
   pullback : PullbackIdentity
-  /-- The `μ_{31}`-gerbe as a unipotent central extension. -/
+  /-- The unipotent group extension `Ū → U` with order-31 kernel
+      (the `μ_{31}`-gerbe's extension data; the gerbe projection
+      `G_f → X_*` is a separate unformalized geometric structure). -/
   extension : UnipotentExtension
-  /-- The extension's base is the classifying map's source. -/
+  /-- Unbound interface equality: the extension base `U` is identified
+      with the classifying map's source `X_*`. This is interface-level
+      equality data only, not a verified identification; in particular
+      it does not assert that the geometric `X_*` itself carries a group
+      structure. -/
   base_eq : extension.base = classifying.source
 
 /-- Carrier-level `μ_{31}` content only: the extension's kernel generator

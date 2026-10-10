@@ -16,7 +16,14 @@ which is the honest content.
 
 REVISION NOTE (P1-2 deep, 2026-10-09): Added `partA_nonempty` and
 `partB_nonempty` per verifier feedback — the original allowed
-`(∅, I)` / `(I, ∅)` which the paper excludes. -/
+`(∅, I)` / `(I, ∅)` which the paper excludes.
+
+SCOPE NOTE (2026-10-10, verifier P1-2 M6 audit): distinct bipartitions
+`(A,B) ≠ (B,A)` are distinct indices when `A ≠ B`. The production
+realization's support-reading coordinate only reads `c.supp`, so it does
+not distinguish same-support `(A,B)`/`(B,A)` — see the NOT ESTABLISHED
+list in
+`Thm_SelmerCartanMotiveTowers_thm_channel_complete_realization.lean`. -/
 structure channel_index (S : finite_ordered_support) where
   supp : Finset ℕ
   supp_sub : supp ⊆ S.primes

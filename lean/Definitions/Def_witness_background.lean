@@ -306,12 +306,14 @@ structure WitnessBackground where
   provenanceFor : Gerbe → adic_witness → Prop
   /-- The gerbe has provenance for every witness (Dwyer CITED + §3 data). -/
   gerbeProvenance : ∀ W : adic_witness, provenanceFor gerbe W
-  /-- The concrete operation-level provenance data (P1-4 M15): the
-      classifying map with its `x^{(30)}, λ_*` coordinate profile, the
-      pointed pullback identity `ρ̄^* ω = κ_5^{root} = c_1^{(31)}(Q_5)`,
-      and the unipotent central extension with order-31 kernel.
-      This is the structured form of `provenanceFor`; the full
-      algebraic-stack construction remains background (CITED). -/
+  /-- Concrete operation-level provenance data (P1-4 M15), kept as
+      unbound interface/equality data: the classifying map with its
+      `x^{(30)}, λ_*` coordinate profile, the pointed pullback identity
+      `ρ̄^* ω = κ_5^{root} = c_1^{(31)}(Q_5)`, and the unipotent group
+      extension `Ū → U` with order-31 kernel. This is the structured
+      interface form of `provenanceFor`, not a verified `μ_{31}`-gerbe
+      structure; the gerbe projection `G_f → X_*` and the full
+      algebraic-stack construction remain background (CITED). -/
   gerbeProvenanceData : GerbeProvenance
   /- §5. Carrier span (Theorem 38.5 inputs).
 

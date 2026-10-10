@@ -4,6 +4,7 @@ import Definitions.Def_channel_index
 import Mathlib.Algebra.Squarefree.Basic
 import Mathlib.Data.ZMod.Basic
 import Mathlib.Data.Finset.Card
+import Mathlib.Data.Finset.Disjoint
 
 namespace SelmerCartanMotiveTowers
 
@@ -238,6 +239,29 @@ theorem dirac_injective (S : finite_ordered_support) (N : Nat) (hN1 : 1 < N) :
   rw [Function.update_of_ne hne] at h2
   simp at h2
 
+/-- Support-parameterized deletion operator: `delSuppOp S N D` zeroes the
+auxiliary `ℤ` coordinate and keeps, in the function component, only the
+channels whose support is disjoint from the deleted support `D`.
+
+This answers the verifier's "no deleted-support parameter" criticism of
+`delMap (f, z) = (f, 0)` with a real proved operator rather than a
+placeholder. Honest scope note (verifier P1-2 M6 audit, 2026-10-10): it
+still reads only `c.supp` — it does not distinguish `(A,B)` from `(B,A)`,
+and the `corrAlgebra` ring does not act. -/
+def delSuppOp (S : finite_ordered_support) (N : ℕ) (D : Finset ℕ)
+    (p : (channel_index S → ZMod N) × ℤ) : (channel_index S → ZMod N) × ℤ :=
+  (fun c : channel_index S => if Disjoint c.supp D then p.1 c else 0, 0)
+
+/-- `delSuppOp` is idempotent for each fixed deleted support `D`. -/
+theorem delSuppOp_idem (S : finite_ordered_support) (N : ℕ)
+    (D : Finset ℕ) (x : (channel_index S → ZMod N) × ℤ) :
+    delSuppOp S N D (delSuppOp S N D x) = delSuppOp S N D x := by
+  unfold delSuppOp
+  apply Prod.ext
+  · funext c
+    by_cases h : Disjoint c.supp D <;> simp [h]
+  · rfl
+
 /-- Solution for Theorem 19.6 (`thm_channel_complete_realization`), M6.
 
 The paper constructs the dg realization with seven properties. We model:
@@ -247,20 +271,27 @@ The paper constructs the dg realization with seven properties. We model:
 - `chanMap` as Dirac delta (injective, order `N` by `dirac_order`);
 - `ρ` from channel support data (not constant); the `ℤ` component records
   `f 0`, witnessing non-constancy;
-- `delMap (f, z) = (f, 0)` (idempotent).
+- `delMap (f, z) = (f, 0)` (idempotent; deletes only the auxiliary
+  coordinate);
+- `delSupp D` (support-parameterized deletion, idempotent per `D` by
+  `delSuppOp_idem`; still reads only `c.supp`).
 
 REVISION NOTE (P1-2 deep, 2026-10-09): See theorem file.
-LIMITATIONS: See theorem file.
+LIMITATIONS: See theorem file (NOT ESTABLISHED list).
 
 REVISION NOTE 2 (2026-10-10): The `ρ` is now genuinely non-constant
 (the `ℤ` component records `f 0`), `Source` is `Nontrivial` (not just
 `Nonempty`), and `Ring M.corrAlgebra` is provided.
 
-REVISION NOTE 3 (2026-10-10, P1-2 M6 deep): Paper (iv) formalized —
+REVISION NOTE 3 (2026-10-10, P1-2 M6 deep, corrected): the last
+conjunct is an *algebraic sub-item* of paper (iv), not paper (iv) itself:
 `omega : Finset ℕ → Source` gives the latching class `Ω_I`
 (`omegaClass I` = characteristic function of `I`); for `|I| ≥ 3`,
 `I ⊆ S.primes`, `0 ∉ I`, `addOrderOf (ρ (omega I)) = N` by `omega_order`.
-The Rees profile `(1, N, N²)` is recorded as `reesCoeff`. -/
+No cycles/boundaries, no latching polynomial, and no
+obstruction-cohomology class are defined, so paper (iv) as a cohomology
+statement is not established. The Rees profile `(1, N, N²)` is recorded
+as `reesCoeff` (bare numeric triple, not consumed by the conclusion). -/
 theorem sol_thm_channel_complete_realization
     (S : finite_ordered_support) (N : Nat) (hNodd : Odd N) (hNsf : Squarefree N)
     (hN1 : 1 < N)
@@ -269,7 +300,8 @@ theorem sol_thm_channel_complete_realization
         (ρ : Source → M.carrier)
         (chanMap : channel_index S → M.carrier)
         (delMap : M.carrier → M.carrier)
-        (omega : Finset ℕ → Source),
+        (omega : Finset ℕ → Source)
+        (delSupp : Finset ℕ → M.carrier → M.carrier),
         M.support = S ∧ M.coeffOrder = N ∧
         Nontrivial Source ∧ Nontrivial M.carrier ∧ Nontrivial M.corrAlgebra ∧
         Function.Injective chanMap ∧
@@ -277,7 +309,8 @@ theorem sol_thm_channel_complete_realization
         (∀ x, delMap (delMap x) = delMap x) ∧
         (∃ a b : Source, ρ a ≠ ρ b) ∧
         (∀ I : Finset ℕ, I ⊆ S.primes → 3 ≤ I.card → 0 ∉ I →
-          @addOrderOf M.carrier hAdd.toAddMonoid (ρ (omega I)) = N) := by
+          @addOrderOf M.carrier hAdd.toAddMonoid (ρ (omega I)) = N) ∧
+        (∀ D x, delSupp D (delSupp D x) = delSupp D x) := by
   have hNT : Nontrivial (ZMod N) := by
     rw [ZMod.nontrivial_iff]; omega
   have hSrcNT : Nontrivial (ℕ → Bool) :=
@@ -297,6 +330,7 @@ theorem sol_thm_channel_complete_realization
           fun c => (Function.update (0 : channel_index S → ZMod N) c 1, 0),
           fun p => (p.1, 0),
           omegaClass,
+          delSuppOp S N,
           rfl, rfl,
           hSrcNT,
           ⟨(0, 0), (0, 1), by simp⟩,
@@ -314,6 +348,7 @@ theorem sol_thm_channel_complete_realization
             rw [e1, e2] at h2
             -- h2 : (1:ℤ) = 0, contradiction
             omega⟩,
-          fun I hI hcard h0 => omega_order S N hN1 I hI hcard h0 ρ0 rfl⟩
+          fun I hI hcard h0 => omega_order S N hN1 I hI hcard h0 ρ0 rfl,
+          fun D x => delSuppOp_idem S N D x⟩
 
 end SelmerCartanMotiveTowers

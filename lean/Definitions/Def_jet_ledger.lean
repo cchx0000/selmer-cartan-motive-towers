@@ -1,4 +1,6 @@
 import Mathlib.Algebra.Squarefree.Basic
+import Mathlib.Data.Finset.Basic
+import Mathlib.GroupTheory.OrderOfElement
 import Definitions.Def_motivic_moore_reedy
 import Definitions.Def_finite_ordered_support
 
@@ -12,13 +14,32 @@ latching object plus the exact-support cofiber:
 with the differential relation `dγ_I = Nβ_I`, independently of the jet
 level. The `saturation` field records the Boolean saturation.
 
+REVISION NOTE 4 (2026-10-10): the algebraic shadow is deepened with
+machine-checked content (previously all missing, see the verifier's
+M8 todo item):
+- `d_sq_zero`: the differential is square-zero (`d² = 0`);
+- `grade`/`d_degree`: an ℕ-grading (homological degree) on the carrier,
+  with `d` raising degree by 1 wherever it is nonzero;
+- `beta_order`: the Moore class `β` has *exact* additive order `N`
+  (paper (ii)/(iv): `ord[...] = N`), ruling out the degenerate zero
+  Moore pair that also satisfies `dγ = Nβ`;
+- `satMap`/`satMap_disjoint_union`: the Boolean saturation now comes
+  with its associated lattice map `Finset ↥S.primes → saturation`,
+  additive on disjoint Boolean unions — the algebraic content of the
+  Boolean saturation (subsets of the support's primes map into the
+  saturation carrier respecting the Boolean algebra structure).
+
 LIMITATIONS: The full combinatorial definition of the proper-face
-latching object (as a colimit over proper faces) and the Boolean
-saturation construction need Reedy-categorical machinery not formalized
-here. This structure records the *algebraic shadow* actually used in the
-paper's proof: the splitting, the differential relation, and
-level-independence. -/
-structure ReedyDecomp (carrier : Type) [AddCommGroup carrier] (N : ℕ) where
+latching object (as a colimit over proper faces) needs Reedy-categorical
+machinery not formalized here. This structure records the algebraic
+shadow actually used in the paper's proof: the splitting, the
+differential (with `d² = 0` and grading), the exact-order Moore pair,
+and the Boolean saturation map, all independent of the jet level. -/
+structure ReedyDecomp (S : finite_ordered_support) (carrier : Type) (N : ℕ) where
+  /-- The carrier's additive group structure (as a field, so that
+      `T.reedy.…` projections for a bound tower `T` need no
+      typeclass synthesis). -/
+  [carrierAdd : AddCommGroup carrier]
   /-- The proper-face latching object. -/
   latchObj : Type
   [latchAdd : AddCommGroup latchObj]
@@ -32,12 +53,28 @@ structure ReedyDecomp (carrier : Type) [AddCommGroup carrier] (N : ℕ) where
   reedy_iso : carrier ≃+ latchObj × cofiber
   /-- The differential on the carrier. -/
   d : carrier →+ carrier
+  /-- The differential is square-zero: `d² = 0` (paper (ii)). -/
+  d_sq_zero : ∀ x, d (d x) = 0
+  /-- ℕ-grading (homological degree) on the carrier. -/
+  grade : carrier → ℕ
+  /-- `d` raises degree by 1 wherever it is nonzero (paper (ii)). -/
+  d_degree : ∀ x, d x ≠ 0 → grade (d x) = grade x + 1
   /-- The γ class (`γ_I`). -/
   gamma : carrier
   /-- The β class (`β_I`). -/
   beta : carrier
   /-- `dγ_I = Nβ_I` (paper (ii)). -/
   d_gamma_eq : d gamma = N • beta
+  /-- `β` has exact additive order `N` (paper (ii)/(iv): `ord[...] = N`).
+      This rules out the degenerate zero Moore pair. -/
+  beta_order : addOrderOf beta = N
+  /-- Boolean saturation map: subsets of the support's primes land in
+      the saturation carrier (paper (ii)). -/
+  satMap : Finset ↥S.primes → saturation
+  /-- The saturation map respects the Boolean algebra: it is additive
+      on disjoint unions. -/
+  satMap_disjoint_union : ∀ T₁ T₂ : Finset ↥S.primes, Disjoint T₁ T₂ →
+    satMap (T₁ ∪ T₂) = satMap T₁ + satMap T₂
 
 /-- An infinite jet tower for Theorem 25.14 (paper §38, P1-2 deepening).
 
@@ -55,18 +92,29 @@ cross-ceiling compatibility is by construction (same tower).
 REVISION NOTE 3 (2026-10-10): Adds Reedy/face compatibility laws
 (paper (i)(ii)(iii)):
 - `delMap`/`del_succ_comm`: support deletion commutes with jet successor;
-- `reedy : ReedyDecomp carrier N`: the Moore–Reedy splitting
+- `reedy : ReedyDecomp S carrier N`: the Moore–Reedy splitting
   `M ≅ L̂ ⊕ Q` with `dγ = Nβ`, independent of jet level;
 - `apex`/`history_apex_eq`: history realizations share the same terminal
   structural apex.
 
+REVISION NOTE 4 (2026-10-10): History/ledger deepening (paper (iii)):
+- `redHist`: the *reduced insertion history* at level `n` — the
+  irredundant ledger of jet levels `3..n` as a `List (Fin (n-2))`;
+- `redHist_nodup`: reducedness — no insertion step is repeated;
+- `redHist_complete`: nondegeneracy — every jet level occurs;
+- `histBlocks`/`histBlocks_eq`: the finite family of *closed history
+  blocks* at level `n`, proved equal to the reduced-history entries
+  ("the same finite family of closed history blocks", paper (iii)).
+
 LIMITATIONS (P1-2): The bar-complex constancy (iv) and readout
 commutation (v) need spectral/bicategorical machinery, not formalized
-here. History pseudonaturality (iii, bicategorical part) is recorded as
-the finite family; the 2-cell coherences are not formalized. The
-combinatorial proper-face latching colimit and Boolean saturation
-construction are background; `ReedyDecomp` records their algebraic
-shadow. -/
+here. The exact-order-`N` content of (iv) (`ord[...] = N`) is reflected
+in `ReedyDecomp.beta_order`. History pseudonaturality (iii, the
+bicategorical 2-cell coherences: associators, unitors, reorderings,
+mixed deletion–insertion 2-cells) is not formalized; `redHist` /
+`histBlocks` record the 1-categorical ledger content (reduced
+histories and closed blocks). The combinatorial proper-face latching
+colimit is background; `ReedyDecomp` records its algebraic shadow. -/
 structure jet_tower (S : finite_ordered_support) (N : ℕ) where
   /-- The shared carrier: no new carrier at any jet level (vi). -/
   carrier : Type
@@ -104,6 +152,22 @@ structure jet_tower (S : finite_ordered_support) (N : ℕ) where
   /-- History entries have order `N`. -/
   history_order : ∀ (n : ℕ) (h : 3 ≤ n) (k : Fin (n - 2)),
     (history n h k).coeffOrder = N
+  /-- (iii) Reduced insertion history at level `n`: the irredundant
+      ledger of jet levels `3..n` (paper (iii): "reduced insertion
+      history"). -/
+  redHist : (n : ℕ) → 3 ≤ n → List (Fin (n - 2))
+  /-- Reducedness: no insertion step is repeated. -/
+  redHist_nodup : ∀ (n : ℕ) (h : 3 ≤ n), (redHist n h).Nodup
+  /-- Nondegeneracy: every jet level `3..n` occurs in the reduced
+      history (no level is dropped). -/
+  redHist_complete : ∀ (n : ℕ) (h : 3 ≤ n) (k : Fin (n - 2)),
+    k ∈ redHist n h
+  /-- (iii) The finite family of closed history blocks at level `n`
+      (paper (iii): "the same finite family of closed history blocks"). -/
+  histBlocks : (n : ℕ) → 3 ≤ n → Finset (Fin (n - 2))
+  /-- The history blocks are exactly the reduced-history entries. -/
+  histBlocks_eq : ∀ (n : ℕ) (h : 3 ≤ n),
+    histBlocks n h = (redHist n h).toFinset
   /-- (i) Support–jet closure: support deletion on the carrier.
       Deleting the primes in `T` from the support. -/
   delMap : Finset ↥S.primes → carrier → carrier
@@ -113,7 +177,7 @@ structure jet_tower (S : finite_ordered_support) (N : ℕ) where
     delMap T (latch n h x) = latch n h (delMap T x)
   /-- (ii) Reedy decomposition: the Moore–Reedy splitting `M ≅ L̂ ⊕ Q`
       with `dγ = Nβ`, independent of the jet level (paper (ii)). -/
-  reedy : ReedyDecomp carrier N
+  reedy : ReedyDecomp S carrier N
   /-- (iii) History closure: the terminal structural apex shared by all
       jet-level history realizations (paper (iii)). -/
   apex : motivic_moore_reedy
@@ -127,7 +191,7 @@ variable {S : finite_ordered_support} {N : ℕ}
 
 /-- The finite ledger for ceiling `M`: restriction of the tower to
     `3 ≤ n ≤ M`, as a `Fin (M - 2)`-indexed family (level `k.val + 3`). -/
-def ledger (T : jet_tower S N) (M : ℕ) (hM : 3 ≤ M) :
+def ledger (T : jet_tower S N) (M : ℕ) (_hM : 3 ≤ M) :
     Fin (M - 2) → motivic_moore_reedy :=
   fun k => T.atLevel (k.val + 3) (by omega)
 
@@ -137,6 +201,13 @@ theorem ledger_restrict (T : jet_tower S N) (M₁ M₂ : ℕ)
     (h1 : 3 ≤ M₁) (h2 : 3 ≤ M₂) (hle : M₁ ≤ M₂) (k : Fin (M₁ - 2)) :
     T.ledger M₁ h1 k =
       T.ledger M₂ h2 ⟨k.val, by omega⟩ := rfl
+
+/-- Nondegeneracy of the history blocks: every jet level `3..n` occurs
+    as a closed history block (paper (iii)). -/
+theorem histBlocks_full (T : jet_tower S N) (n : ℕ) (h : 3 ≤ n)
+    (k : Fin (n - 2)) : k ∈ T.histBlocks n h := by
+  rw [T.histBlocks_eq n h, List.mem_toFinset]
+  exact T.redHist_complete n h k
 
 end jet_tower
 

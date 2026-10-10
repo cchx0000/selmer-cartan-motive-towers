@@ -15,11 +15,21 @@ ceiling `M ≥ 3`. There exists a jet tower `T : jet_tower S N`
 jet levels `3..M` — satisfies:
 
 - (i) support–jet closure: every ledger entry has support `S` and
-  coefficient order `N`;
+  coefficient order `N`; support deletion commutes with the jet
+  successor (`T.del_succ_comm`);
 - (ii) Reedy latching maps `T.latch n` between jet levels, independent
-  of `n` (`T.latch_level_indep`);
+  of `n` (`T.latch_level_indep`); the Reedy decomposition has a
+  square-zero differential (`∀ x, d (d x) = 0`), an ℕ-grading with `d`
+  raising degree on nonzero values, the `dγ = Nβ` relation with `β` of
+  *exact* order `N` (ruling out the degenerate zero Moore pair), and a
+  Boolean saturation map additive on disjoint unions — all stated with
+  the tower's own `ReedyDecomp` instances in scope (`letI`), and proved
+  from the corresponding `ReedyDecomp` fields in the witness;
 - (iii) history families `T.history n h` at each level agreeing with the
-  tower (`T.history_eq`);
+  tower (`T.history_eq`); reduced insertion histories are irredundant
+  (`T.redHist_nodup`) and complete (`T.redHist_complete`), and the
+  closed history blocks are exactly the reduced-history entries
+  (`T.histBlocks_eq`);
 - (vi) no structural growth: one shared nontrivial carrier and algebra
   for all levels; cross-ceiling restriction holds by construction
   (`jet_tower.ledger_restrict`), with an explicit instance below.
@@ -40,6 +50,21 @@ REVISION NOTE 3 (2026-10-10): The conclusion now also binds the
 Reedy/face compatibility laws: `del_succ_comm` (support deletion
 commutes with jet successor, paper (i)), and `reedy.d_gamma_eq`
 (the `dγ = Nβ` relation from the Reedy decomposition, paper (ii)).
+
+REVISION NOTE 4 (2026-10-10): The conclusion now states the full
+Reedy/history content as proved laws (with the tower's `ReedyDecomp`
+instances in scope via `letI`, since bound-tower projections need no
+typeclass synthesis), so (ii) and (iii) are closed by genuine
+mathematics rather than naming alone: `d² = 0`, the grading law,
+`dγ = Nβ` with exact order `N` of `β` (ruling out the degenerate zero
+Moore pair), the Boolean saturation map law, and the
+reduced-history/block laws (`T.redHist_nodup`, `T.redHist_complete`,
+`T.histBlocks_eq`). The witness (in
+`Solutions/Sol_thm_finite_motivic_recursion_closure.lean`) provides
+these via the `ReedyDecomp` fields (`d_sq_zero`, `d_degree`,
+`d_gamma_eq`, `beta_order`, `satMap_disjoint_union`) using a nonzero
+square-zero differential, a nonzero Moore antecedent, and a real
+saturation lattice map.
 -/
 theorem thm_finite_motivic_recursion_closure
     (N : Nat) (hNodd : Odd N) (hNsf : Squarefree N)
@@ -56,7 +81,18 @@ theorem thm_finite_motivic_recursion_closure
           (k : Fin (M₁ - 2)),
           T.ledger M₁ h₁ k = T.ledger M₂ h₂ ⟨k.val, by omega⟩) ∧
         (∀ (T₀ : Finset ↥S.primes) (n : ℕ) (h : 3 ≤ n) (x : T.carrier),
-          T.delMap T₀ (T.latch n h x) = T.latch n h (T.delMap T₀ x)) :=
+          T.delMap T₀ (T.latch n h x) = T.latch n h (T.delMap T₀ x)) ∧
+        (letI := T.reedy.carrierAdd; ∀ x : T.carrier, T.reedy.d (T.reedy.d x) = 0) ∧
+        (letI := T.reedy.carrierAdd; ∀ x : T.carrier, T.reedy.d x ≠ 0 →
+          T.reedy.grade (T.reedy.d x) = T.reedy.grade x + 1) ∧
+        (letI := T.reedy.carrierAdd; T.reedy.d T.reedy.gamma = N • T.reedy.beta) ∧
+        (letI := T.reedy.carrierAdd; addOrderOf T.reedy.beta = N) ∧
+        (letI := T.reedy.carrierAdd; letI := T.reedy.satAdd;
+          ∀ T₁ T₂ : Finset ↥S.primes, Disjoint T₁ T₂ →
+            T.reedy.satMap (T₁ ∪ T₂) = T.reedy.satMap T₁ + T.reedy.satMap T₂) ∧
+        (∀ (n : ℕ) (h : 3 ≤ n), (T.redHist n h).Nodup) ∧
+        (∀ (n : ℕ) (h : 3 ≤ n) (k : Fin (n - 2)), k ∈ T.redHist n h) ∧
+        (∀ (n : ℕ) (h : 3 ≤ n), T.histBlocks n h = (T.redHist n h).toFinset) :=
   SelmerCartanMotiveTowers.sol_thm_finite_motivic_recursion_closure N hNodd hNsf S M hM
 
 end SelmerCartanMotiveTowers

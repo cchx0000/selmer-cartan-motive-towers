@@ -48,7 +48,20 @@ They forced `d c_mot = 0` via `hc_boundary`, collapsing the paper's
 integral two-term Moore model whose differential is `×N` (paper L5422–5426).
 `b_mot` is a cycle but NOT `N`-torsion as a cochain; `d(c_mot) = N • b_mot`
 is the genuine nonzero differential value. The `N`-torsion lives at
-cohomology level only: `N • [b] = [d c] = 0` with `addOrderOf [b] = N`. -/
+cohomology level only: `N • [b] = [d c] = 0` with `addOrderOf [b] = N`.
+
+REVISION NOTE 5 (2026-10-11, verifier todo: faithful complex/cohomology
+interface + geometric antecedent in the type): `MotivicBackground` now
+carries `Cycles`/`Boundaries` with
+`cyclesQuotEquiv : (Cycles ⧸ Boundaries) ≃+ Cohomology` and `quot_compat`,
+so the cohomology interface is faithful. The acceptance items are DERIVED:
+`d b_mot = 0` and `d c_mot = N • b_mot` follow from the geometric antecedent
+data (`localize_closed`, the residue–divisor identity `gysin_moore`), and
+`N • [b_mot] = 0` / `[b_mot] ≠ 0` follow from the complex interface; only the
+exact order `N` remains an EXT hypothesis (Totaro). `GeometricAntecedent`
+now records the root-stack operations in its type (`uCoord`, `rootOp` with
+`t = u^N`, `rootOp_nontrivial`, Gysin map `gysin` with `gysin rootCoord = c`),
+ruling out the degenerate `RootCoord := Unit` model. -/
 theorem thm_motivic_seed (bg : MotivicBackground) :
     ∃ (b c : bg.Cochain),
       bg.d b = 0 ∧ bg.d c = bg.N • b ∧

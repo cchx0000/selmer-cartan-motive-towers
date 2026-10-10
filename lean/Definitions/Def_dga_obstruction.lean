@@ -38,17 +38,26 @@ the curvature. The proof uses Bianchi plus PD-degree counting: the terms
 `X·F` and `F·X` have PD degree ≥ n+2, so taking the degree-(n+1) component
 of Bianchi gives `dΩ_{n+1} = 0`.
 
-This file formalizes the **parity-graded** DGA core. The four clauses are:
+This file formalizes the **parity-graded** DGA core. The clauses are:
 - (i) **Cocycle**: `bianchi_cocycle` gives `dF = F·X - X·F`; when the
   commutator vanishes (the PD-degree-counting conclusion), `dF = 0`.
 - (ii) **Lifting**: `curvature_expand` gives
   `F(X+Y) = F(X) + dY + XY + YX + Y²`; in the paper, `Y = X_{n+1}` has
   PD degree `n+1`, so the last three terms vanish in degree `n+1`.
 - (iii) **Gauge**: The gauge action by conjugation is defined
-  (`gaugeAct`); the curvature-conjugation formula is noted as future work
-  (requires careful handling of the unit axioms).
+  (`gaugeAct`), and the curvature-conjugation formula
+  `F(g·X·g⁻¹) = g·F(X)·g⁻¹` is proved (`curvature_gauge_conj`) for even
+  gauge units with `dg = 0`: the differential part via `d_gauge_conj`
+  (using the auxiliary right Leibniz rule `d_mul_right_even`), the square
+  part by telescoping with the two-sided inverse.
 - (iv) **Naturality**: DGA homomorphisms preserve curvature
   (`naturality`, proved).
+- (v) **Filtered gauge naturality**: a minimal `PDFiltration` (decreasing
+  ℕ-indexed levels with inclusions, even-multiplication compatibility, and
+  level projections `proj n`) is defined; gauge conjugation preserves each
+  level (`gaugeAct_mem_filt`) and commutes with the projections
+  (`gaugeAct_proj_comm`), the algebraic core of the paper's
+  gauge-invariance clause.
 
 ## LIMITATIONS (P1-3)
 
@@ -70,13 +79,19 @@ This file formalizes the **parity-graded** DGA core. The four clauses are:
   subgroup membership, allowing graded maps that send a nonzero odd
   element to `0`. The truncated gauge with an odd part is still future
   work.
-- **PD filtration**: Not formalized. The paper's PD-degree counting
-  ("higher terms have higher weight") is represented by the algebraic
-  form of the identities; a future refinement may add an ℕ-weight grading.
+- **PD filtration**: Partially formalized. `PDFiltration` provides the
+  level-indexed subgroups, level inclusions (`mono`), even-multiplication
+  compatibility, and the level projections `proj n` (canonical on the PD
+  monomial basis, cf. paper L2773), with filtered naturality of gauge
+  conjugation proved (`gaugeAct_mem_filt`, `gaugeAct_proj_comm`). The
+  associated graded, marked jets, and the `dΩ = 0` degree-counting
+  conclusion are still future work.
 - **Filler torsor**: The full affine `H¹`-torsor structure is not formalized.
   The key algebraic step (curvature expansion) is proved.
-- **Gauge conjugation formula**: The definition `gaugeAct` is given, but the
-  proof that `F(gXg⁻¹) = g·F(X)·g⁻¹` is deferred (technical unit axioms).
+- **Gauge conjugation formula**: Proved for the even `dg = 0` unit model
+  (`curvature_gauge_conj`, via `d_gauge_conj` and `d_mul_right_even`). The
+  paper's truncated gauge (`g = 1 +` positive PD degree, possibly with an
+  odd part) is still future work.
 - **Full ℤ-grading**: We use parity (ℤ/2) only; the ℤ-grading is a refinement.
 -/
 
@@ -274,6 +289,75 @@ structure GaugeUnit where
 def gaugeAct (u : S.GaugeUnit) (X : S.A) : S.A :=
   u.g * X * u.g_inv
 
+/-- `d 0 = 0`, from additivity of `d`. -/
+theorem d_zero : S.d 0 = 0 := by
+  have h := S.d_add 0 0
+  rw [add_zero] at h
+  exact add_eq_right.mp h.symm
+
+/-- Right Leibniz rule for an even second factor with vanishing differential:
+    if `b` is even and `d b = 0`, then `d (a * b) = (d a) * b` for *every* `a`.
+
+    Proof by even/odd decomposition of `a` (`S.decomp`): on the even part this
+    is `leibniz_even`; on the odd part it is `leibniz_odd` (the Koszul sign
+    term `(-1) * (o * d b)` vanishes since `d b = 0`), with the zero case
+    handled by disjointness (`S.disj`). This is the interface lemma needed to
+    push `d` through the right-hand gauge factor `g⁻¹`. -/
+theorem d_mul_right_even (a b : S.A) (hb : b ∈ S.evenPart) (hdb : S.d b = 0) :
+    S.d (a * b) = S.d a * b := by
+  classical
+  obtain ⟨e, he, o, ho, rfl⟩ := S.decomp a
+  have he0 : e * S.d b = 0 := by rw [hdb, mul_zero]
+  rw [add_mul, S.d_add, S.d_add, add_mul, S.leibniz_even e b he, he0, add_zero]
+  by_cases hoe : o ∈ S.evenPart
+  · have ho0 : o = 0 := S.disj o hoe ho
+    subst ho0
+    simp [S.d_zero]
+  · have hoo : S.isOdd o := (S.isOdd_eq o).mpr ⟨ho, hoe⟩
+    have hsign : (-1 : S.A) * (o * S.d b) = 0 := by rw [hdb, mul_zero, mul_zero]
+    rw [S.leibniz_odd o b hoo, hsign, add_zero]
+
+/-- Gauge conjugation commutes with `d`: for a gauge unit `u`,
+    `d (g·a·g⁻¹) = g·(d a)·g⁻¹`.
+
+    The left factor is even, so `leibniz_even` applies directly; the right
+    factor is even with vanishing differential, handled by
+    `d_mul_right_even`. -/
+theorem d_gauge_conj (u : S.GaugeUnit) (a : S.A) :
+    S.d (u.g * a * u.g_inv) = u.g * (S.d a) * u.g_inv := by
+  have h1 : S.d (u.g * a) = u.g * S.d a := by
+    rw [S.leibniz_even u.g a u.hg_even, u.dg_eq, zero_mul, zero_add]
+  rw [S.d_mul_right_even (u.g * a) u.g_inv u.hg_inv_even u.dg_inv_eq, h1]
+
+/-- **Curvature-conjugation formula** (Theorem 9.4 (iii), proved): for a gauge
+    unit `u` (even, `dg = 0`), `F(g·X·g⁻¹) = g·F(X)·g⁻¹`.
+
+    Proof: `F = d + (·)²`. The differential part conjugates by
+    `d_gauge_conj`; the square telescopes,
+    `(g·X·g⁻¹)² = g·X·(g⁻¹·g)·X·g⁻¹ = g·X²·g⁻¹`, using the two-sided inverse.
+    Additivity/multiplicativity (`d_add`, `add_mul`, `mul_add`) recombines
+    the two parts. This is genuine algebra, not a definitional unfolding. -/
+theorem curvature_gauge_conj (u : S.GaugeUnit) (X : S.A) :
+    SuperDGA.curvature S (S.gaugeAct u X) =
+      u.g * (SuperDGA.curvature S X) * u.g_inv := by
+  have hconj : S.d (S.gaugeAct u X) = u.g * S.d X * u.g_inv :=
+    S.d_gauge_conj u X
+  have hsq : (S.gaugeAct u X) * (S.gaugeAct u X) =
+      u.g * (X * X) * u.g_inv := by
+    show (u.g * X * u.g_inv) * (u.g * X * u.g_inv) = _
+    calc (u.g * X * u.g_inv) * (u.g * X * u.g_inv)
+        = u.g * X * (u.g_inv * (u.g * X)) * u.g_inv := by
+          simp only [mul_assoc]
+      _ = u.g * X * ((u.g_inv * u.g) * X) * u.g_inv := by
+          rw [← mul_assoc u.g_inv u.g X]
+      _ = u.g * X * X * u.g_inv := by
+          rw [u.inv_mul, one_mul]
+      _ = u.g * (X * X) * u.g_inv := by
+          simp only [mul_assoc]
+  show S.d (S.gaugeAct u X) + (S.gaugeAct u X) * (S.gaugeAct u X)
+    = u.g * (S.d X + X * X) * u.g_inv
+  rw [hconj, hsq, ← add_mul, ← mul_add]
+
 end SuperDGA
 
 /-!
@@ -306,6 +390,91 @@ theorem naturality (F : DGAHom S T) (X : S.A) :
     F.toFun (SuperDGA.curvature S X) = SuperDGA.curvature T (F.toFun X) := by
   unfold SuperDGA.curvature
   rw [F.map_add, F.map_d, F.map_mul]
+
+end SuperDGA
+
+/-!
+## PD filtration and filtered gauge naturality
+-/
+
+namespace SuperDGA
+
+variable (S : SuperDGA)
+
+/-- A PD filtration on a super-DGA: a decreasing ℕ-indexed family of additive
+    subgroups, compatible with even multiplication, equipped with level
+    projections.
+
+    Intended semantics (paper §9, Theorem 9.4): `Filt n` holds the elements
+    of PD weight ≥ n; `proj n` extracts the PD-degree-`n` component
+    (canonical on the PD monomial basis, cf. paper L2773: "The PD monomial
+    basis makes the coefficient projection canonical"). The even-linearity of
+    `proj` says degree-0 scalars pass through the projection.
+
+    This is the first filtration layer: levels, inclusions, and projections,
+    with filtered naturality of gauge conjugation proved below. The
+    associated graded, marked jets, and the `dΩ = 0` degree-counting
+    conclusion are future work. -/
+structure PDFiltration (S : SuperDGA) where
+  Filt : ℕ → AddSubgroup S.A
+  /-- 包含 (inclusion): the filtration is decreasing. -/
+  mono : ∀ n m : ℕ, n ≤ m → Filt m ≤ Filt n
+  /-- Filtration compatibility: left multiplication by an even element
+      preserves each level. -/
+  even_mul_left : ∀ (n : ℕ) (a b : S.A), a ∈ S.evenPart → b ∈ Filt n →
+    a * b ∈ Filt n
+  /-- Filtration compatibility: right multiplication by an even element
+      preserves each level. -/
+  even_mul_right : ∀ (n : ℕ) (a b : S.A), a ∈ Filt n → b ∈ S.evenPart →
+    a * b ∈ Filt n
+  /-- 级次投影 (level projection): extracts the PD-degree-`n` component. -/
+  proj : ℕ → S.A → S.A
+  proj_add : ∀ (n : ℕ) (a b : S.A), proj n (a + b) = proj n a + proj n b
+  /-- The projection lands in its level. -/
+  proj_mem : ∀ (n : ℕ) (a : S.A), a ∈ Filt n → proj n a ∈ Filt n
+  /-- The projection kills strictly higher levels. -/
+  proj_kill : ∀ (n : ℕ) (a : S.A), a ∈ Filt (n + 1) → proj n a = 0
+  /-- The projection is left even-linear (degree-0 scalars pass through). -/
+  proj_even_mul_left : ∀ (n : ℕ) (g a : S.A), g ∈ S.evenPart →
+    proj n (g * a) = g * proj n a
+  /-- The projection is right even-linear. -/
+  proj_even_mul_right : ∀ (n : ℕ) (a g : S.A), g ∈ S.evenPart →
+    proj n (a * g) = proj n a * g
+
+/-- Filtered naturality of gauge conjugation (level version): conjugation by
+    a gauge unit preserves each filtration level.
+
+    This is the algebraic core of the paper's gauge-invariance clause
+    (Theorem 9.4 (iii)): the gauge unit is degree-0 (even), so conjugating
+    cannot move an element out of its PD level. -/
+theorem gaugeAct_mem_filt (P : S.PDFiltration) (u : S.GaugeUnit) (n : ℕ)
+    (X : S.A) (hX : X ∈ P.Filt n) : S.gaugeAct u X ∈ P.Filt n := by
+  have h1 : u.g * X ∈ P.Filt n := P.even_mul_left n u.g X u.hg_even hX
+  exact P.even_mul_right n (u.g * X) u.g_inv h1 u.hg_inv_even
+
+/-- Filtered naturality of gauge conjugation (projection version): the level
+    projection commutes with gauge conjugation.
+
+    This is the form used in the paper's (iii): the degree-`n` component of
+    the conjugated element is the conjugate of the degree-`n` component, so
+    obstruction components are identified (not changed) under gauge
+    transformation. -/
+theorem gaugeAct_proj_comm (P : S.PDFiltration) (u : S.GaugeUnit) (n : ℕ)
+    (X : S.A) : P.proj n (S.gaugeAct u X) = S.gaugeAct u (P.proj n X) := by
+  show P.proj n ((u.g * X) * u.g_inv) = (u.g * (P.proj n X)) * u.g_inv
+  rw [P.proj_even_mul_right n (u.g * X) u.g_inv u.hg_inv_even,
+    P.proj_even_mul_left n u.g X u.hg_even]
+
+/-- Vanishing of the projected conjugate on higher levels: if `X` already
+    lies in level `n + 1`, the degree-`n` component of its gauge conjugate is
+    zero. This is the algebraic shadow of the paper's "since the first
+    possible curvature term has degree `n + 1`, conjugation by `g` cannot
+    change that homogeneous component" (proof of (iii)). -/
+theorem proj_gaugeAct_eq_zero_of_mem_succ (P : S.PDFiltration) (u : S.GaugeUnit)
+    (n : ℕ) (X : S.A) (hX : X ∈ P.Filt (n + 1)) :
+    P.proj n (S.gaugeAct u X) = 0 := by
+  rw [S.gaugeAct_proj_comm P u n X, P.proj_kill n X hX]
+  simp [SuperDGA.gaugeAct]
 
 end SuperDGA
 

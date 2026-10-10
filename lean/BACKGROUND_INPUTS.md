@@ -29,10 +29,13 @@ Consumed by: M1 (`thm_ray_class_primitive`) — all four lemma/theorem fields.
 | `Cochain`, `AddCommGroup`, `nonempty_Cochain`, `d`, `hd2` | DEF | Cochain complex setup (`d² = 0`) |
 | `Cohomology`, `AddCommGroup`, `classOf`, `classOf_ker` | DEF | Cohomology as quotient by boundaries (P0-2) |
 | `isGenuine`, `isGenuine_iff` | DEF | Characterized (P0-2, revised 2026-10-10): Moore relation `d x = N • b_mot` + `addOrderOf [b_mot] = N` + geometric antecedent present. `classOf` is NEVER applied to the non-closed antecedent `x` (old `N • classOf x = 0` entailed `N² • b = 0`, incompatible with integral Moore) |
-| `GeometricAntecedent`, `geometricAntecedent` | EXT | Invariant root coordinate data (paper L5422–5426, `∂[t] = N[D_N]`): `rootCoord`, `localize`, `localizesTo : localize rootCoord = b_mot`. Cited Hoyois / Khan–Ravi (equivariant six-functor). Added 2026-10-10 (verifier P0-2): `isGenuine` is tied to this data |
-| `b_mot`, `hb_closed` | EXT | Root Moore cycle; cited Totaro `CH^*(Bμ_N) = Z[ξ]/(Nξ)` via `P2M-prop:appendix-root-moore-complex`. (P0-2 deep: cochain-level `hb_order`/`hb_exact` deleted — N-torsion lives only in cohomology) |
+| `GeometricAntecedent`, `geometricAntecedent` | EXT | Invariant root coordinate data (paper L5422–5426, `∂[t] = N[D_N]`): `rootCoord`, `localize`, `localizesTo : localize rootCoord = b_mot`. Cited Hoyois / Khan–Ravi (equivariant six-functor). Added 2026-10-10 (verifier P0-2): `isGenuine` is tied to this data. Strengthened 2026-10-11 (verifier P0-2): `rootOp`/`uCoord` with `root_pow : rootOp^[N] uCoord = rootCoord` (`t = u^N`) and `rootOp_nontrivial` (kills the `RootCoord := Unit` degenerate model), Gysin map `gysin` with `gysin_rootCoord : gysin rootCoord = c` and residue–divisor identity `gysin_moore : d (gysin r) = N • localize r` (EXT) |
+| `b_mot` | EXT | Root Moore cycle; cited Totaro `CH^*(Bμ_N) = Z[ξ]/(Nξ)` via `P2M-prop:appendix-root-moore-complex`. (P0-2 deep: cochain-level `hb_order`/`hb_exact` deleted — N-torsion lives only in cohomology) |
+| `hb_closed` | LEM | DERIVED 2026-10-11 (was EXT field): `d b_mot = 0` proved from `localize_closed` at the invariant root coordinate, not assumed |
 | `hb_class_order` | EXT | `addOrderOf [b_mot] = N` in cohomology; same Totaro citation, cohomology-level (P0-2; excludes the boundary model) |
-| `c_mot`, `hc_boundary`, `hc_genuine` | EXT | Root antecedent; cited Hoyois / Khan–Ravi / Choudhury–Deshmukh–Hogadi |
+| `c_mot`, `hc_genuine` | EXT | Root antecedent; cited Hoyois / Khan–Ravi / Choudhury–Deshmukh–Hogadi |
+| `hc_boundary` | LEM | DERIVED 2026-10-11 (was EXT field): `d c_mot = N • b_mot` proved from `gysin_moore` at the root coordinate |
+| `Cycles`, `Boundaries`, `cyclesQuotEquiv`, `quot_compat`, `classOfCyc` | DEF | Faithful integral 2-term interface added 2026-10-11 (verifier P0-2): `Cycles = ker d`, `Boundaries = range d`, `cyclesQuotEquiv : (↥Cycles ⧸ comap Boundaries) ≃+ Cohomology`, `classOfCyc` = `classOf` on cycles factoring through the quotient |
 
 Consumed by: M5 (`thm_motivic_seed`) — all EXT fields.
 

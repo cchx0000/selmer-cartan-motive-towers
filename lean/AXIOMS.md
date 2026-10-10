@@ -489,11 +489,29 @@ Classification: Lean base axioms only.
    `d5ffb0e985fcbd60b388929d2a685437e8088e70` is not resolvable via the
    repository API (verifier: 422), and later source changes (M16
    `witnessArithIso`/`hM`, M6 `omegaClass`/`reesCoeff`, M7 `ControlEdge`,
-   M8 `ReedyDecomp`, P0-0 `UnipotentExtension` fields, M15 re-revision, M3
-   round-2 generator chain `e122cfaf`) are not yet covered by a per-item
-   `#print axioms` rerun; see P0-3. The 59-item table records the
-   declarations as listed at audit time, not a claim that every current
-   module has been rerun.
+   M8 `ReedyDecomp`, P0-0 `UnipotentExtension` fields, M15 re-revision)
+   are not yet covered by a per-item `#print axioms` rerun; see P0-3.
+   Two staged exceptions are recorded precisely, not as whole-module
+   coverage claims:
+   - M3 round-2 (`e122cfaf`): the four named declarations
+     `moore_cohomology_apply_mk`, `moore_cohomology_of_diff`,
+     `moore_cohomology_of_diff_apply_mk`,
+     `mooreGen_is_cohomology_class_proof` each have an author
+     `#print axioms` audit (Lean base axioms only; §3 entries and
+     summary-table rows 34a–34d). This does not extend to the rest of
+     the M3 generator-chain dependencies (range / filtered-interface
+     fields and the remaining `Def_moore_two_term` declarations), which
+     remain unaudited per-item at a resolvable source.
+   - M2 (`e3c1a70a`): `SuperDGA.leibniz_of_decomp` has an author
+     `#print axioms` audit ([propext] only; §3 entry, row 18a). That
+     single named output does not substitute for the revised
+     `SuperDGA`/`GaugeUnit`/`DGAHom` fields or the production M2
+     solution's dependency closure under the revised definitions —
+     the row-40 audit of `sol_thm_universal_higher_obstruction_recursion`
+     predates the Leibniz-interface fix and has not been rerun per-item
+     since.
+   The 59-item table records the declarations as listed at audit time,
+   not a claim that every current module has been rerun.
 5. Added 1 M2 declaration (2026-10-10, Leibniz fix):
    `SuperDGA.leibniz_of_decomp` — [propext] only, 0 `sorryAx`; see §3
    entry and summary-table row 18a. The old single `leibniz` field

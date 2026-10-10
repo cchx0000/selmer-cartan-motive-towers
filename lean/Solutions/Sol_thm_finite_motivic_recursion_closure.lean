@@ -9,17 +9,22 @@ namespace SelmerCartanMotiveTowers
 /-- Solution for Theorem 25.14 (`thm_finite_motivic_recursion_closure`), M8.
 
 We construct an explicit `jet_tower`: at every jet level `n ≥ 3`, the
-Moore–Reedy object with support `S`, order `N`, carrier `Fin 3`
-(nontrivial) and algebra `Bool` (nontrivial). All levels share the same
-carrier and algebra — this is paper (vi), no structural growth.
+Moore–Reedy object with support `S`, order `N`, carrier
+`ZMod 3 × ZMod 3` (nontrivial) and algebra `Bool` (nontrivial).
+All levels share the same carrier and algebra — this is paper (vi),
+no structural growth.
 
 - (i) Support–jet closure: each `atLevel n` has support `S`, order `N`.
 - (ii) Reedy latching: `latch n := id` — the jet successor preserves the
   shared carrier (no new structure is created). The `latch_level_indep`
-  law records paper (ii): the proper-face latching object is
-  "independently of the jet level".
+  law records paper (ii) only at the level of the formal `jet_tower`
+  interface: the identity latch is a *degenerate modeling choice*, not a
+  proof of the paper's substantive Reedy latching clause.
 - (iii) History: at level `n`, the `Fin (n-2)`-family is *computed* from
-  `atLevel` (not an independent constant), agreeing by `rfl`.
+  `atLevel` (not an independent constant), agreeing by `rfl`. Note that
+  `atLevel` itself is level-constant (`fun _ _ => base`), so the history
+  carries no level-dependent content either — again a degenerate model
+  satisfying the formal laws.
 - (vi) Cross-ceiling no-growth: `jet_tower.ledger_restrict` shows the
   `M₁`-ledger is literally the restriction of the `M₂`-ledger.
 
@@ -33,11 +38,17 @@ families, and machine-checked cross-ceiling restriction. The carrier is
 shared by construction, not by a post-hoc equality.
 
 REVISION NOTE 3 (2026-10-10): Adds Reedy/face compatibility (paper
-(i)(ii)(iii)):
+(i)(ii)(iii)) at the formal-interface level:
 - `delMap`/`del_succ_comm`: support deletion commutes with latch;
 - `reedy : ReedyDecomp`: the `M ≅ L̂ ⊕ Q` splitting with `dγ = Nβ`
   (the `d_gamma_eq` proof is a field of the `ReedyDecomp` structure);
 - `apex`/`history_apex_eq`: shared terminal apex.
+HONESTY NOTE: the `ReedyDecomp` witness is the *degenerate*
+zero-differential one (`d := 0`, `gamma := 0`, `beta := 0`), so
+`d_gamma_eq` holds trivially (`0 = N • 0`); `delMap := id` likewise.
+These satisfy the formal `jet_tower` laws but do not establish the
+paper's substantive Reedy/history content — the Moore pair is not a
+genuine differential computation.
 The carrier is now `ZMod 3 × ZMod 3` (with `AddCommGroup`) to support the
 Reedy decomposition; the splitting is the identity.
 Note: The `d_gamma_eq` relation is contained in `T.reedy` (as a structure

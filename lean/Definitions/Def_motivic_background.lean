@@ -52,11 +52,16 @@ paper):
 FIELDS:
 - `b_mot`, `c_mot`: the root Moore pair, with `d(b_mot) = 0`,
   `d(c_mot) = N • b_mot` (conclusion of `P2M-prop:appendix-root-moore-complex`).
-  NOTE: `b_mot` is NOT `N`-torsion as a cochain — the integral Moore model
-  has differential `×N`, so `d(c_mot) = N • b_mot` is the genuine (nonzero)
-  value of the differential. The `N`-torsion lives at cohomology level:
-  `hb_class_order` records the paper's `ord[b_mot] = N` for the CLASS
-  `[b_mot]` (Totaro's `CH^*(Bμ_N) = Z[ξ]/(Nξ)` computation).
+  INTENDED-MODEL NOTE: in the paper's integral Moore model the differential
+  is `×N`, so `d(c_mot) = N • b_mot` is the genuine (nonzero) value of the
+  differential and `b_mot` is NOT `N`-torsion as a cochain; the `N`-torsion
+  lives at cohomology level (`hb_class_order` records the paper's
+  `ord[b_mot] = N` for the CLASS `[b_mot]`, Totaro's `CH^*(Bμ_N) = Z[ξ]/(Nξ)`
+  computation). LIMITATION: the structure as formalized does NOT enforce
+  this — it admits degenerate models with `N • b_mot = 0` (pure-torsion
+  cochain) or `d = 0` (e.g. `Cochain := ZMod N`, `d := 0`, `b_mot := 1`
+  satisfy all fields). The non-torsion/nonzero claims are properties of the
+  intended model, not of the type.
 - `Cohomology`, `classOf`: the cohomology layer (cycles modulo boundaries);
   `hb_class_order` records the paper's `ord[b_mot] = N` at the level of
   cohomology classes (Totaro's computation), not just cochains.
@@ -82,15 +87,18 @@ structure MotivicBackground where
   /-- The canonical projection; its kernel is exactly the boundaries. -/
   classOf : Cochain →+ Cohomology
   classOf_ker : ∀ x, classOf x = 0 ↔ ∃ y, x = d y
-  /-- The root Moore class: a cycle. NOTE (P0-2 fix, 2026-10-09): `b_mot`
-  is NOT `N`-torsion as a cochain. The paper's integral two-term Moore model
-  has differential `×N` (paper L5422–5426), so `d(c_mot) = N • b_mot` is the
-  genuine nonzero value of the differential — the old cochain-level fields
-  `hb_order : N • b_mot = 0` and `hb_exact` FORCED `d c_mot = 0`, collapsing
-  the model. They are deleted. The `N`-torsion is a cohomological phenomenon:
-  `N • [b_mot] = [d c_mot] = 0` (since `d c_mot` is a boundary), and
-  `hb_class_order` records the EXACT order `N` of the class `[b_mot]`
-  (Totaro's `CH^*(Bμ_N)` computation). -/
+  /-- The root Moore class: a cycle. NOTE (P0-2 fix, 2026-10-09): the old
+  cochain-level fields `hb_order : N • b_mot = 0` and `hb_exact` are deleted:
+  jointly they FORCED `d c_mot = 0`, collapsing the paper's intended integral
+  two-term Moore model (differential `×N`, paper L5422–5426), in which
+  `d(c_mot) = N • b_mot` is the genuine nonzero value of the differential
+  and `b_mot` is NOT `N`-torsion as a cochain. The `N`-torsion is a
+  cohomological phenomenon in the intended model: `N • [b_mot] = [d c_mot] = 0`
+  (since `d c_mot` is a boundary), and `hb_class_order` records the EXACT
+  order `N` of the class `[b_mot]` (Totaro's `CH^*(Bμ_N)` computation).
+  LIMITATION: the current type does not rule out degenerate models
+  (pure-torsion cochain, zero differential); the non-torsion/nonzero claims
+  describe the intended model, not every inhabitant of the structure. -/
   b_mot : Cochain
   hb_closed : d b_mot = 0
   /-- The paper's `ord[b_mot] = N`, at cohomology level (Totaro's

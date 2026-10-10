@@ -26,8 +26,8 @@ LIMITATION (PD hull): the full divided-power algebra `Γ^m(D_S)` is not
 constructed (Mathlib's `DividedPowers` covers DP structures on ideals,
 not the free PD algebra). What we formalize is the *functorial action
 package* — deletion, relabelling, direction-linear maps — which the
-paper shows acts through `Γ^m` (L2374, L2427). The `gammaModule`
-carrier below is the direction lattice equipped with this action
+paper shows acts through `Γ^m` (L2374, L2427). The `gammaMult`
+scalar action below is the direction lattice equipped with this action
 package; the divided-power multiplication itself remains background.
 -/
 
@@ -136,12 +136,16 @@ Res, W^{PD}_{N_ν;S,m})`. "Support deletion, relabelling, and
 direction-linear maps act through `Γ^m`" (L2374, L2427).
 
 We formalize the multiplicity-`m` scalar action on the direction
-lattice: `Γᵐ` acts by scalar multiplication. This is the action-level
-shadow of the divided-power algebra; the divided-power multiplication
-itself remains background (see LIMITATION above).
+lattice as a *model* of the paper's `Γᵐ`-action: the real divided-power
+action is NOT formalized — `gammaMult S m v = m • v` is scalar
+multiplication only. This is the action-level shadow of the
+divided-power algebra; the divided-power multiplication itself remains
+background (see LIMITATION above).
 -/
 
-/-- Multiplicity-`m` action: `Γᵐ` acts on `D_S` by scalar multiplication.
+/-- Multiplicity-`m` scalar action: the scalar-multiplication *model* of the
+paper's `Γᵐ`-action on `D_S` (`gammaMult S m v = m • v`). The genuine
+divided-power action is not formalized; see LIMITATION (PD hull) above.
 Paper: direction-linear maps act through `Γ^m`. -/
 noncomputable def gammaMult (S : finite_ordered_support) (m : ℕ) :
     direction_lattice S →+ direction_lattice S where
@@ -171,6 +175,9 @@ deletes the coordinates in `T` (dually to `supportDelete`, which keeps
 resonance divisor `Res(f)` (with `Res(g∘f) = Res(f) + Res(g)`, L3783)
 are recorded as background; what we formalize is the coarsening action
 on the carrier with its composition law.
+LIMITATION: this is the *coordinate-deletion model* of coarsening only;
+the scalar `M(f)` / torsion-defect / resonance-divisor content of the
+paper's coarsening is not formalized.
 -/
 
 /-- Confluence coarsening: delete the coordinates in `T`.
@@ -257,8 +264,8 @@ PD algebra on a module. The category `Conf(m)` of multiplicity profiles
 (L3694) is also not formalized. What we provide above — the
 multiplicity-indexed scalar action `gammaMult`, the support coarsening
 `coarsen` with composition law, and the cross-support `extendSupport`
-with deletion naturality — is the functorial action package that the
-paper shows acts through `Γ^m`.
+(whose deletion naturality is future work, see NOTE above) — is the
+functorial action package that the paper shows acts through `Γ^m`.
 -/
 
 end SelmerCartanMotiveTowers

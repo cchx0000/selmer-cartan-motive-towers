@@ -245,6 +245,33 @@ Classification: Lean base axioms only.
 ```
 Classification: Lean base axioms only.
 
+#### `moore_cohomology_apply_mk` (2026-10-10, verifier P1-4 M3 round 2)
+```
+'SelmerCartanMotiveTowers.moore_cohomology_apply_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+```
+Classification: Lean base axioms only. Proved by `rfl`: the explicit
+`trans` construction computes definitionally (`mk x ↦ mk x ↦ Int.cast x`).
+
+#### `moore_cohomology_of_diff` (2026-10-10, verifier P1-4 M3 round 2)
+```
+'SelmerCartanMotiveTowers.moore_cohomology_of_diff' depends on axioms: [propext, Classical.choice, Quot.sound]
+```
+Classification: Lean base axioms only. Range-factored identification
+`ℤ ⧸ range (mooreDiff p q) ≃+ moore_line p q`, built from `mooreDiff_range`.
+
+#### `moore_cohomology_of_diff_apply_mk` (2026-10-10, verifier P1-4 M3 round 2)
+```
+'SelmerCartanMotiveTowers.moore_cohomology_of_diff_apply_mk' depends on axioms: [propext, Classical.choice, Quot.sound]
+```
+Classification: Lean base axioms only.
+
+#### `mooreGen_is_cohomology_class_proof` (2026-10-10, verifier P1-4 M3 round 2)
+```
+'SelmerCartanMotiveTowers.mooreGen_is_cohomology_class_proof' depends on axioms: [propext, Classical.choice, Quot.sound]
+```
+Classification: Lean base axioms only. Proves the former named-`Prop`
+`mooreGen_is_cohomology_class`: `[B_{2,1}] = [1] ↦ mooreGen`.
+
 #### `qPrimaryRed`
 ```
 'SelmerCartanMotiveTowers.qPrimaryRed' depends on axioms: [propext, Quot.sound]
@@ -392,6 +419,7 @@ Classification: Lean base axioms only.
 | 19–29 | `crtModulus`, `crtLine_order`, `ppowerRed`, `MoorePresentation`, `ppowerRed_comp`, `crtModulus_eq_prod_coe`, `crtPairwiseCoprime`, `crtProductEquiv`, `crtProductEquiv_one`, `evalAtCoe`, `crtProductEquiv_apply` | Lean base axioms |
 | 30–33 | `ClassicalMooreCone` (none), `reduce_refl`, `reduce_trans`, `line_order` | none / Lean base |
 | 34–35 | `moore_cohomology`, `qPrimaryRed` | Lean base axioms |
+| 34a–34d | `moore_cohomology_apply_mk`, `moore_cohomology_of_diff`, `moore_cohomology_of_diff_apply_mk`, `mooreGen_is_cohomology_class_proof` (2026-10-10, P1-4 M3 round 2) | Lean base axioms |
 | 36–38 | `pointed_cyclic_carrier`, `nat_card_eq`, `canonicalIso` | Lean base triple |
 | 39 | `sol_thm_ray_class_primitive` (M1) | Lean base triple |
 | 40 | `sol_thm_universal_higher_obstruction_recursion` (M2) | `propext` only |

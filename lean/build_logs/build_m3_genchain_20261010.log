@@ -1,0 +1,60 @@
+# Build log — P1-4 M3 round 2 (generator-chain closure), 2026-10-10 ~19:55 CST
+
+Command (explicit, per P0-3):
+  cd ~/prove2me_workspace && lake build
+
+Toolchain / dependencies:
+  Lean 4.33.1 (commit 819816b2e0a3bf405af45ae5c7af2491d8f5bee6, Release)
+  Mathlib 0df444a360ea (per lake-manifest.json; matches mission default env)
+
+Result: Build completed successfully (3047 jobs), EXIT 0.
+Only linter warnings (unused simp-arg/variable hints, pre-existing); no errors, no sorry.
+
+What was built (this run's changes, on top of origin/main 386ceb01):
+- `Def_moore_cohomology_line.lean`:
+  * `moore_cohomology` redefined as an explicit `trans`
+    (`quotientAddEquivOfEq` + `quotientKerEquivOfRightInverse`), replacing the
+    tactic-block construction whose `Eq.mpr` transport blocked computation;
+    the map is induced by `Int.cast`.
+  * NEW proved `moore_cohomology_apply_mk`: class of `x : ℤ` maps to
+    `(x : ZMod (p*q^2))` (proved by `rfl` — definitional computation).
+  * NEW `moore_cohomology_of_diff` (range-factored identification via
+    `mooreDiff_range`) + proved `moore_cohomology_of_diff_apply_mk`.
+  * `mooreGen_is_cohomology_class` repointed at the range-factored
+    identification; NEW proved `mooreGen_is_cohomology_class_proof`:
+    `[B_{2,1}] = [1] ↦ mooreGen` is now a theorem, not a named Prop.
+  * `qPrimaryRed_kappa_tilde` rewritten: the `I` parameter is now genuinely
+    consumed — the `q²`-component routes through `I.kappa_class` via
+    `confGen_kappa_tilde` and `I.prim_gen`.
+- `Sol_thm_formal_filtered_alignment.lean`: the three generator facts now
+  enter the derivation as proof steps — `he1` rewrites `e0 (mooreGen)` via
+  the proved `[1]→mooreGen` correspondence before CRT pointedness; `hred`
+  consumes the `κ̃`-interface through the rewritten
+  `qPrimaryRed_kappa_tilde`. The `[1] → mooreGen → confGen → κ̄` chain is
+  closed in proof steps, not comments.
+- `AXIOMS.md`: 4 new declarations added with `#print axioms` output
+  (all Lean base axioms: propext, Classical.choice, Quot.sound — unchanged
+  from before).
+
+Source credentials (exact, per P0-3):
+  base commit (origin/main at build time):
+    386ceb01afefeefc2fa5c6cf026c02b665cff731
+  changed-file blob SHAs in this work tree:
+    lean/Definitions/Def_moore_cohomology_line.lean
+      83a430443f8698b3f799e1b0383f7f162af77976
+    lean/Solutions/Sol_thm_formal_filtered_alignment.lean
+      00f480bf6b2fce0b52512c636e466a59f58d6c7d
+    lean/AXIOMS.md
+      4683713dd6c3be6e3c8e43649bbae40345576595
+  NOTE: built from the local work tree (base commit content + the three
+  files above), not from a clean checkout of a single commit SHA. The push
+  commit for this work will record the exact tree.
+
+Module-level verification also run individually before the full build:
+  lake env lean Definitions/Def_moore_cohomology_line.lean  → EXIT 0
+  lake build Solutions.Sol_thm_formal_filtered_alignment
+           Theorems.Thm_SelmerCartanMotiveTowers_thm_formal_filtered_alignment
+    → Build completed successfully
+  grep -rn "sorry" on both changed Lean files → no hits
+  #print axioms on all 7 touched declarations → [propext, Classical.choice,
+  Quot.sound] throughout (no new axioms)

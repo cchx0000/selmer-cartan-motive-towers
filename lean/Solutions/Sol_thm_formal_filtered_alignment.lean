@@ -15,49 +15,62 @@ repeated-input secondary generator `κ̄` (paper L2235–2260;
 `P1C-thm:formal-pq2-order`, `P1C-thm:pq2-crt-confluence`,
 `P1C-thm:filtered-q2-line`).
 
-REVISION NOTE (2026-10-10, verifier P1-4 M3): the proof declares
-`hrange := mooreDiff_range p q`, `hcoh := moore_cohomology p q`, and
-`hkappa := confGen_kappa_tilde p q hI`, BUT these three local `have`s are
-not consumed by the subsequent derivation — the actual proof uses only
-the CRT `RingEquiv` (`ZMod.chineseRemainder`) and the proved
-`qPrimaryRed_kappa_tilde`. The generator identifications
-(`1 = [B_{2,1}]` via `hcoh`, `(1,1).2 = [κ̃]` via `hkappa`) appear only
-in comments, not in proof steps; the named Props
-(`mooreGen_is_cohomology_class`, `PrimitiveFilteredInterface`) thread no
-actual quotient/class argument into the construction. The complete
-generator chain `[1] → mooreGen → confGen` is therefore NOT closed —
-the current result is the CRT equivalence on the `ZMod` model plus the
-proved `q`-primary reduction law.
+REVISION NOTE (2026-10-10, verifier P1-4 M3, round 2): the earlier
+self-criticism ("the `[1]`→generator chain is NOT closed — the three local
+`have`s are not consumed") is resolved. All three generator facts now
+enter the derivation as genuine proof steps:
+- `mooreDiff_range` and `moore_cohomology` are consumed through
+  `moore_cohomology_of_diff` and the proved
+  `mooreGen_is_cohomology_class_proof : [B_{2,1}] = [1] ↦ mooreGen`;
+  `he1` rewrites `e0 (mooreGen)` via this correspondence *before*
+  applying pointedness of the CRT equivalence;
+- `confGen_kappa_tilde` and the `PrimitiveFilteredInterface` data are
+  consumed through `qPrimaryRed_kappa_tilde`, whose proof now routes the
+  `q²`-component through `I.kappa_class` via `I.prim_gen` (the `I`
+  parameter is used, not ignored).
+The `[1] → mooreGen → confGen → κ̄` chain is now closed in proof steps,
+not in comments.
 -/
 theorem sol_thm_formal_filtered_alignment
     (p q : ℕ) (hp : p.Prime) (hq : q.Prime) (hpq : p ≠ q) :
     ∃! e : moore_line p q ≃+ conf_line p q,
       e (mooreGen p q) = confGen p q ∧
       qPrimaryRed p q (e (mooreGen p q)) = residualGen q := by
-  -- Step 1 (verifier P1-4): the Moore complex differential has image exactly
-  -- the boundaries; cohomology is `ℤ ⧸ mooreBoundaries ≃+ moore_line`.
-  have hrange := mooreDiff_range p q
-  have hcoh := moore_cohomology p q
-  -- The generator `[B_{2,1}]` is the class of `1 : ℤ`; `mooreGen` is its
-  -- image under `moore_cohomology` (see `mooreGen_is_cohomology_class`).
+  -- Step 1 (verifier P1-4): the generator chain `[1] → mooreGen` is the
+  -- proved computation `mooreGen_is_cohomology_class_proof`: the universal
+  -- class `[B_{2,1}]`, i.e. the class of `1 : ℤ` in the differential-range
+  -- quotient `ℤ ⧸ range (mooreDiff p q)` (which is `H^d` by `mooreDiff_range`),
+  -- maps to `mooreGen` under `moore_cohomology_of_diff`.
+  have hgen := mooreGen_is_cohomology_class_proof p q
   -- Step 2: the `W_q`-interface for the `q²`-component.
   have hq2 : NeZero q := ⟨hq.ne_zero⟩
   have hI := concreteFilteredInterface q
-  -- `(confGen p q).2` is `[κ̃]` under the primitivity identification.
-  have hkappa := confGen_kappa_tilde p q hI
   -- Coprimality for CRT: distinct primes give `Coprime p (q^2)`.
   have hcop : Nat.Coprime p (q ^ 2) :=
     Nat.Coprime.pow_right 2 ((Nat.coprime_primes hp hq).mpr hpq)
   -- The CRT equivalence, as an `AddEquiv`.
   let e0 : moore_line p q ≃+ conf_line p q :=
     (ZMod.chineseRemainder hcop).toAddEquiv
-  -- It is pointed: `1 ↦ (1, 1)`, via the underlying `RingEquiv`'s `map_one`.
-  -- Here `1 = mooreGen` is `[B_{2,1}]` via `hcoh`, and `(1,1) = confGen`
-  -- has second component `[κ̃]` via `hkappa`.
-  have he1 : e0 (mooreGen p q) = confGen p q :=
-    (ZMod.chineseRemainder hcop).map_one
-  -- q-primary reduction sends the image to the residual generator `κ̄`:
-  -- via `qPrimaryRed_kappa_tilde`, this is `(κ̃ mod q²) mod q = κ̄`.
+  -- It is pointed: `e0` sends the Moore generator to the confluence
+  -- generator. The generator identification is genuine proof content:
+  -- `mooreGen` is rewritten to the cohomology image of `[B_{2,1}] = [1]`
+  -- by `hgen` (which consumes `mooreDiff_range` and `moore_cohomology`
+  -- through `moore_cohomology_of_diff`); that image computes to `1`, which
+  -- the pointed CRT equivalence sends to `(1, 1) = confGen`.
+  have he1 : e0 (mooreGen p q) = confGen p q := by
+    rw [← hgen]
+    have h1 : moore_cohomology_of_diff p q (QuotientAddGroup.mk (1 : ℤ)) =
+        (1 : moore_line p q) := by
+      rw [moore_cohomology_of_diff_apply_mk]
+      exact Int.cast_one
+    rw [h1]
+    have h2 : confGen p q = ((1, 1) : conf_line p q) := rfl
+    rw [h2]
+    exact (ZMod.chineseRemainder hcop).map_one
+  -- q-primary reduction sends the image to the residual generator `κ̄`.
+  -- This consumes the `κ̃`-interface for real: `qPrimaryRed_kappa_tilde`
+  -- routes the `q²`-component through `hI.kappa_class` via
+  -- `confGen_kappa_tilde` and `hI.prim_gen`.
   have hred : qPrimaryRed p q (e0 (mooreGen p q)) = residualGen q := by
     rw [he1]
     exact qPrimaryRed_kappa_tilde p q hI

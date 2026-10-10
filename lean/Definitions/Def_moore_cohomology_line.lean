@@ -134,29 +134,88 @@ def qPrimaryRed (p q : ℕ) : conf_line p q →+* ZMod q :=
     `qPrimaryRed (confGen) = residualGen` because the `q²`-component of
     `confGen` is `[κ̃]` (via `confGen_kappa_tilde`) and reduction mod `q`
     sends `[κ̃ mod q²]` to `κ̄ = (1 : ZMod q)` (paper
-    `P1C-thm:filtered-q2-line`: `(κ̃ mod q²) mod q = κ̄ ≠ 0`). -/
+    `P1C-thm:filtered-q2-line`: `(κ̃ mod q²) mod q = κ̄ ≠ 0`).
+
+    (Verifier P1-4 M3: the `I` parameter is now genuinely consumed — the
+    proof routes the `q²`-component through `I.kappa_class` via
+    `confGen_kappa_tilde` and the primitivity identification `I.prim_gen`,
+    instead of computing `(1,1)` directly.) -/
 theorem qPrimaryRed_kappa_tilde (p q : ℕ) [NeZero q]
     (I : PrimitiveFilteredInterface q) :
     qPrimaryRed p q (confGen p q) = residualGen q := by
-  -- Unfold to the concrete computation: `(1 : ZMod (q^2)) ↦ (1 : ZMod q)`.
-  show qPrimaryRed p q (1, 1) = 1
-  simp [qPrimaryRed, confGen]
+  -- Route the `q²`-component through the paper's `κ̃`: it is `[κ̃]`,
+  -- identified with `1` by the primitivity data.
+  have hκ : (confGen p q).2 = I.primIso I.kappa_class := confGen_kappa_tilde p q I
+  rw [I.prim_gen] at hκ
+  -- `qPrimaryRed` projects to the second component (`RingHom.coe_snd`), then
+  -- casts `ZMod (q^2) → ZMod q`; the cast sends `1 ↦ 1 = residualGen q`.
+  have hcomp : ∀ z : conf_line p q,
+      qPrimaryRed p q z =
+        ZMod.castHom (show q ∣ q ^ 2 from ⟨q, by ring⟩) (ZMod q) (z.2) := by
+    intro z
+    simp only [qPrimaryRed, RingHom.comp_apply, RingHom.coe_snd]
+  rw [hcomp, hκ, map_one]
+  rfl
 
 /-- The cohomology of the Moore complex is the Moore line:
-    `ℤ ⧸ (p*q^2)ℤ ≃+ ZMod (p*q^2)` (paper `P1C-thm:formal-pq2-order`). -/
+    `ℤ ⧸ (p*q^2)ℤ ≃+ ZMod (p*q^2)` (paper `P1C-thm:formal-pq2-order`).
+
+    Stated as an explicit `trans` (rather than via
+    `Int.quotientZMultiplesNatEquivZMod`, whose unfolded proof terms break
+    rewriting at `implicit` transparency): the identification is induced by
+    `Int.cast`, so the class of `x : ℤ` maps to `(x : ZMod (p*q^2))`. -/
 def moore_cohomology (p q : ℕ) :
-    (ℤ ⧸ mooreBoundaries p q) ≃+ moore_line p q := by
-  have h : ((p * q ^ 2 : ℕ) : ℤ).natAbs = p * q ^ 2 := Int.natAbs_natCast _
-  show (ℤ ⧸ AddSubgroup.zmultiples ((p * q ^ 2 : ℕ) : ℤ)) ≃+ ZMod (p * q ^ 2)
-  rw [← h]
-  exact Int.quotientZMultiplesEquivZMod _
+    (ℤ ⧸ mooreBoundaries p q) ≃+ moore_line p q :=
+  (QuotientAddGroup.quotientAddEquivOfEq (ZMod.ker_intCastAddHom (p * q ^ 2))).symm.trans
+    (QuotientAddGroup.quotientKerEquivOfRightInverse
+      (Int.castAddHom (ZMod (p * q ^ 2))) ZMod.cast
+      (fun a => ZMod.intCast_zmod_cast a))
+
+/-- The cohomology identification is induced by `Int.cast`: the class of
+    `x : ℤ` maps to `(x : ZMod (p*q^2))` (paper `P1C-thm:formal-pq2-order`). -/
+theorem moore_cohomology_apply_mk (p q : ℕ) (x : ℤ) :
+    moore_cohomology p q (QuotientAddGroup.mk x) = (x : ZMod (p * q ^ 2)) :=
+  -- Unfolding the explicit `trans` construction, the map computes
+  -- definitionally: `mk x ↦ mk x ↦ Int.cast x`.
+  rfl
+
+/-- The cohomology identification factored through the differential range:
+    `ℤ ⧸ range (mooreDiff p q) ≃+ moore_line p q`, via `mooreDiff_range`
+    (paper `P1C-eq:pq2-moore-attachment`: the boundaries are the image of
+    the Moore differential, so this quotient is `H^d` of the Moore complex). -/
+def moore_cohomology_of_diff (p q : ℕ) :
+    (ℤ ⧸ AddMonoidHom.range (mooreDiff p q)) ≃+ moore_line p q :=
+  (QuotientAddGroup.quotientAddEquivOfEq (mooreDiff_range p q)).trans
+    (moore_cohomology p q)
+
+/-- The range-factored identification is still induced by `Int.cast`. -/
+theorem moore_cohomology_of_diff_apply_mk (p q : ℕ) (x : ℤ) :
+    moore_cohomology_of_diff p q (QuotientAddGroup.mk x) =
+      (x : ZMod (p * q ^ 2)) := by
+  unfold moore_cohomology_of_diff
+  rw [AddEquiv.trans_apply, QuotientAddGroup.quotientAddEquivOfEq_mk]
+  exact moore_cohomology_apply_mk p q x
 
 
 /-- Marker for the generator correspondence `[B_{2,1}] ↦ mooreGen` via
-    `moore_cohomology`: the class `QuotientAddGroup.mk (1 : ℤ)` maps to
-    `mooreGen` because the Mathlib iso is induced by `Int.cast`.
-    (Verifier P1-4 M3: the `[1]`-to-generator chain is now explicit.) -/
+    the range-factored cohomology identification: the universal generator
+    class `[B_{2,1}]`, i.e. the class of `1 : ℤ` in the differential-range
+    quotient `ℤ ⧸ range (mooreDiff p q)` (which is `H^d` by `mooreDiff_range`),
+    maps to `mooreGen` (paper `P1C-thm:formal-pq2-order`).
+
+    (Verifier P1-4 M3: this was a named `Prop` with no proof; it is now
+    proved as `mooreGen_is_cohomology_class_proof` below.) -/
 def mooreGen_is_cohomology_class (p q : ℕ) : Prop :=
-  moore_cohomology p q (QuotientAddGroup.mk (1 : ℤ)) = mooreGen p q
+  moore_cohomology_of_diff p q (QuotientAddGroup.mk (1 : ℤ)) = mooreGen p q
+
+/-- Proved (verifier P1-4 M3): the universal class `[B_{2,1}] = [1]` maps to
+    the Moore generator `mooreGen` under the range-factored cohomology
+    identification — the `[1]`→generator chain is now a theorem, consumed by
+    `sol_thm_formal_filtered_alignment`, not a named `Prop`. -/
+theorem mooreGen_is_cohomology_class_proof (p q : ℕ) :
+    mooreGen_is_cohomology_class p q := by
+  unfold mooreGen_is_cohomology_class mooreGen
+  rw [moore_cohomology_of_diff_apply_mk]
+  exact Int.cast_one
 
 end SelmerCartanMotiveTowers

@@ -106,14 +106,30 @@ REVISION NOTE 4 (2026-10-10): History/ledger deepening (paper (iii)):
   blocks* at level `n`, proved equal to the reduced-history entries
   ("the same finite family of closed history blocks", paper (iii)).
 
-LIMITATIONS (P1-2): The bar-complex constancy (iv) and readout
-commutation (v) need spectral/bicategorical machinery, not formalized
-here. The exact-order-`N` content of (iv) (`ord[...] = N`) is reflected
-in `ReedyDecomp.beta_order`. History pseudonaturality (iii, the
-bicategorical 2-cell coherences: associators, unitors, reorderings,
-mixed deletion–insertion 2-cells) is not formalized; `redHist` /
-`histBlocks` record the 1-categorical ledger content (reduced
-histories and closed blocks). The combinatorial proper-face latching
+REVISION NOTE 5 (2026-10-11): Readout/history deepening (paper (v)/(iii)):
+- `readout`/`readout_support`/`readout_order`/`readout_latch_comm`: a
+  readout map `carrier → motivic_moore_reedy` whose support and
+  coefficient order are `S`/`N` and which commutes with (is invariant
+  under) every jet successor — the machine-checked weak form of the
+  readout closure (paper (v)): readout objects are independent of jet
+  level and commute with jet successors;
+- `jet_tower.history_restrict`: cross-level history compatibility —
+  the `m`-level history restricted to levels `3..n` is the `n`-level
+  history (reduced history transport across levels, paper (iii));
+- `jet_tower.readout_mixed_comm`: a mixed diagram (support deletion +
+  jet successor + readout) commuting strictly, an instance of the
+  mixed-diagram closure in Theorem 25.14's conclusion.
+
+LIMITATIONS (P1-2): The bar-complex constancy (iv) needs spectral
+machinery, not formalized here. The full Hall/root–Bass/CRT-hybrid/
+Karoubi readout content of (v) also needs spectral machinery;
+`readout`/`readout_latch_comm` record only the jet-level invariance
+and support/order content (a weak but machine-checked form of (v)).
+History pseudonaturality (iii, the bicategorical 2-cell coherences:
+associators, unitors, reorderings, mixed deletion–insertion 2-cells)
+is not formalized; `redHist` / `histBlocks` / `history_restrict`
+record the 1-categorical ledger content (reduced histories, closed
+blocks, cross-level transport). The combinatorial proper-face latching
 colimit is background; `ReedyDecomp` records its algebraic shadow. -/
 structure jet_tower (S : finite_ordered_support) (N : ℕ) where
   /-- The shared carrier: no new carrier at any jet level (vi). -/
@@ -184,6 +200,26 @@ structure jet_tower (S : finite_ordered_support) (N : ℕ) where
   /-- (iii) Every history's terminal entry is the apex. -/
   history_apex_eq : ∀ (n : ℕ) (h : 3 ≤ n),
     history n h ⟨n - 3, by omega⟩ = apex
+  /-- (v) Readout: the downstream readout of a jet-level state.
+      Paper (v) ("Readout closure"): the Hall/root–Bass realization,
+      highest-face detector, CRT-hybrid quotient and cellular Karoubi
+      splitting commute with every jet successor, and their underlying
+      objects are independent of jet level. This field records the
+      readout map at the formal-interface level; the laws below are
+      the machine-checked weak form (jet-level invariance and
+      support/order content). -/
+  readout : carrier → motivic_moore_reedy
+  /-- (v) The readout has support `S` (independent of jet level). -/
+  readout_support : ∀ (x : carrier), (readout x).support = S
+  /-- (v) The readout has coefficient order `N` (independent of jet
+      level). -/
+  readout_order : ∀ (x : carrier), (readout x).coeffOrder = N
+  /-- (v) Readout commutes with the jet successor: the readout is
+      independent of jet level. LIMITATION: this is the weak form of
+      the readout closure; the full Hall/face/CRT/Karoubi content
+      needs spectral machinery (see the structure docstring). -/
+  readout_latch_comm : ∀ (n : ℕ) (h : 3 ≤ n) (x : carrier),
+    readout (latch n h x) = readout x
 
 namespace jet_tower
 
@@ -208,6 +244,22 @@ theorem histBlocks_full (T : jet_tower S N) (n : ℕ) (h : 3 ≤ n)
     (k : Fin (n - 2)) : k ∈ T.histBlocks n h := by
   rw [T.histBlocks_eq n h, List.mem_toFinset]
   exact T.redHist_complete n h k
+
+/-- Cross-level history compatibility (paper (iii)): the `m`-level
+    history restricted to jet levels `3..n` (for `n ≤ m`) is the
+    `n`-level history — reduced history transport across levels. -/
+theorem history_restrict (T : jet_tower S N) (n m : ℕ)
+    (hn : 3 ≤ n) (hm : 3 ≤ m) (hle : n ≤ m) (k : Fin (n - 2)) :
+    T.history m hm ⟨k.val, by omega⟩ = T.history n hn k := by
+  rw [T.history_eq, T.history_eq]
+
+/-- Mixed diagram commutation (paper (v) + (i)): readout commutes with
+    the support-deletion/jet-successor composite — an instance of the
+    strict mixed-diagram closure in Theorem 25.14's conclusion. -/
+theorem readout_mixed_comm (T : jet_tower S N) (T₀ : Finset ↥S.primes)
+    (n : ℕ) (h : 3 ≤ n) (x : T.carrier) :
+    T.readout (T.delMap T₀ (T.latch n h x)) = T.readout (T.delMap T₀ x) := by
+  rw [T.del_succ_comm, T.readout_latch_comm]
 
 end jet_tower
 

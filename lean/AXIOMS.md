@@ -520,6 +520,37 @@ Classification: Lean base axioms only.
    (`if isOdd a`) was replaced by `leibniz_even` / `leibniz_odd`
    (structure fields, not tabled); `GaugeUnit` / `DGAHom` parity fields
    were also revised (subgroup membership).
+6. 2026-10-11 watchdog round (M4/M7/M8 revisions, this commit): author
+   `#print axioms` audits, all Lean base triple (`propext`,
+   `Classical.choice`, `Quot.sound`), 0 `sorryAx`:
+   - `thm_finite_confluent_interface` / `sol_thm_finite_confluent_interface`
+     (M4, row 42) — rerun after binding `extendSupport_delete` (deletion
+     naturality) and the new `supportInclusion_trans` /
+     `extendSupport_id` / `extendSupport_comp` / `extendSupport_gammaMult`
+     lemmas into the production interface.
+   - `thm_role_separated_objectification` /
+     `sol_thm_role_separated_objectification` (M7, row 45) — rerun after
+     the wholesale model replacement: the old `ControlEdge` (bare
+     endomap, `hom = id` admissible; degenerate `d`/`e` allowed) is
+     retired and replaced by per-`(src, tgt)` `HomElem` elements with
+     real `degree_zero` data, `closed` as a true `homDiff = 0` equation,
+     `U` (Boolean idempotent correspondence), `proj` (`(i,j)`-summand
+     projection), and `edgeWitnessed` (`m.eval = proj_{ij} ∘ U_i`).
+     The historical "M7 `ControlEdge` not rerun" note is superseded by
+     this replacement, not silently dropped; `canonicalRoleSeparation`
+     (the new witness constructor) is also audited: base triple,
+     0 `sorryAx`.
+   - `thm_finite_motivic_recursion_closure` /
+     `sol_thm_finite_motivic_recursion_closure` (M8, row 46) — rerun
+     after adding the weak readout closure (`readout`/
+     `readout_support`/`readout_order`/`readout_latch_comm`),
+     `history_restrict`, and `readout_mixed_comm` to the production
+     conclusion (on top of the `1be37020` M8 revision).
+   Coverage boundaries from the 2026-10-10 rounds remain as in note 4:
+   M16's `blockSubobjectInterface` revision has an author audit
+   (`sol_thm_motivic_specialization`, base triple, 2026-10-10); the M6
+   `delSupp` deletion revision and M11's new predicates are not yet
+   covered by a per-item `#print axioms` rerun.
 
 ### Changes from the previous audit (28 → 47)
 

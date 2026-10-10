@@ -32,7 +32,14 @@ jet levels `3..M` — satisfies:
   (`T.histBlocks_eq`);
 - (vi) no structural growth: one shared nontrivial carrier and algebra
   for all levels; cross-ceiling restriction holds by construction
-  (`jet_tower.ledger_restrict`), with an explicit instance below.
+  (`jet_tower.ledger_restrict`), with an explicit instance below;
+- (v) readout closure (weak, machine-checked form): the readout has
+  support `S` and coefficient order `N` and commutes with every jet
+  successor (`T.readout_latch_comm`), so readout objects are
+  independent of jet level;
+- (iii) cross-level history compatibility: the `m`-level history
+  restricted to levels `3..n` is the `n`-level history
+  (`jet_tower.history_restrict`, from `T.history_eq`).
 
 In particular `M` occurs in the conclusion (via `Fin (M-2)`), the jet
 levels are `3 ≤ n ≤ M` (not an unstructured `Fin M`), and "jet preserves
@@ -43,8 +50,10 @@ REVISION NOTE (P1-2 deepening, 2026-10-09): The previous proof used a
 constant `fun _ => T` ledger over `Fin M`. The new statement uses
 `jet_tower` with real latching maps, history families, and
 machine-checked cross-ceiling restriction. Bar-complex constancy (iv),
-readout commutation (v), and bicategorical history 2-cells (iii) remain
-as documented limitations.
+the full Hall/face/CRT/Karoubi readout content (v), and bicategorical
+history 2-cells (iii) remain as documented limitations; (v) is
+partially closed by the weak readout laws (jet-level invariance,
+support/order content).
 
 REVISION NOTE 3 (2026-10-10): The conclusion now also binds the
 Reedy/face compatibility laws: `del_succ_comm` (support deletion
@@ -65,6 +74,18 @@ these via the `ReedyDecomp` fields (`d_sq_zero`, `d_degree`,
 `d_gamma_eq`, `beta_order`, `satMap_disjoint_union`) using a nonzero
 square-zero differential, a nonzero Moore antecedent, and a real
 saturation lattice map.
+
+REVISION NOTE 5 (2026-10-11): The conclusion now also binds the weak
+readout closure (paper (v)) and cross-level history compatibility
+(paper (iii)) as proved laws: the readout has support `S` and order
+`N` (`T.readout_support`, `T.readout_order`) and commutes with every
+jet successor (`T.readout_latch_comm`) — i.e. readout objects are
+independent of jet level; and the `m`-level history restricted to
+levels `3..n` is the `n`-level history (`jet_tower.history_restrict`,
+proved from `T.history_eq`). The witness provides these by `rfl` from
+the constant readout `fun _ => base`; the full Hall/face/CRT/Karoubi
+readout content of (v) and the bicategorical history 2-cells of (iii)
+remain documented limitations.
 -/
 theorem thm_finite_motivic_recursion_closure
     (N : Nat) (hNodd : Odd N) (hNsf : Squarefree N)
@@ -92,7 +113,13 @@ theorem thm_finite_motivic_recursion_closure
             T.reedy.satMap (T₁ ∪ T₂) = T.reedy.satMap T₁ + T.reedy.satMap T₂) ∧
         (∀ (n : ℕ) (h : 3 ≤ n), (T.redHist n h).Nodup) ∧
         (∀ (n : ℕ) (h : 3 ≤ n) (k : Fin (n - 2)), k ∈ T.redHist n h) ∧
-        (∀ (n : ℕ) (h : 3 ≤ n), T.histBlocks n h = (T.redHist n h).toFinset) :=
+        (∀ (n : ℕ) (h : 3 ≤ n), T.histBlocks n h = (T.redHist n h).toFinset) ∧
+        (∀ (x : T.carrier), (T.readout x).support = S) ∧
+        (∀ (x : T.carrier), (T.readout x).coeffOrder = N) ∧
+        (∀ (n : ℕ) (h : 3 ≤ n) (x : T.carrier),
+          T.readout (T.latch n h x) = T.readout x) ∧
+        (∀ (n m : ℕ) (hn : 3 ≤ n) (hm : 3 ≤ m) (hle : n ≤ m) (k : Fin (n - 2)),
+          T.history m hm ⟨k.val, by omega⟩ = T.history n hn k) :=
   SelmerCartanMotiveTowers.sol_thm_finite_motivic_recursion_closure N hNodd hNsf S M hM
 
 end SelmerCartanMotiveTowers

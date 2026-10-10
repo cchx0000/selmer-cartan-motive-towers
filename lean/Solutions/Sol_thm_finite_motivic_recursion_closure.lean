@@ -138,18 +138,34 @@ The conclusion now states all of these laws (with the tower's
 `ReedyDecomp` instances in scope via `letI`), so (ii) and (iii) are
 closed by the proved fields, not by naming alone.
 
-HONESTY NOTE: `latch n := id` and `delMap := id` remain degenerate
-modeling choices satisfying the formal commutation laws; the history
-`atLevel` is level-constant, so `redHist`/`histBlocks` record the full
-level family but carry no level-varying content. The proper-face
-latching colimit, the bicategorical history 2-cells (iii), the
-bar-complex constancy (iv) and readout commutation (v) still need
-spectral/bicategorical machinery; the exact-order-`N` content of (iv)
-is reflected in `beta_order`.
+REVISION NOTE 5 (2026-10-11): Readout/history deepening (paper (v)/(iii)),
+addressing the remaining 1-categorical readout/history gaps:
+- `readout := fun _ => base` with `readout_support`/`readout_order`
+  (`rfl`: the readout has support `S` and order `N`) and
+  `readout_latch_comm` (`rfl`: the readout commutes with every jet
+  successor) — the machine-checked weak form of the readout closure
+  (v); the production conclusion now binds these laws;
+- the cross-level history compatibility `history_restrict` (from the
+  `Def_jet_ledger.lean` namespace, proved from `history_eq`) is now
+  bound in the production conclusion; the mixed diagram
+  `readout_mixed_comm` commutes strictly.
 
-LIMITATIONS: Bar-complex constancy (iv), readout commutation (v), and
-the bicategorical history 2-cells (iii) need spectral/bicategorical
-machinery; recorded in `Def_jet_ledger.lean`, not formalized here.
+HONESTY NOTE: `latch n := id`, `delMap := id` and `readout := fun _ => base`
+remain degenerate modeling choices satisfying the formal commutation
+laws; the history `atLevel` is level-constant, so `redHist`/`histBlocks`
+record the full level family but carry no level-varying content. The
+proper-face latching colimit, the bicategorical history 2-cells (iii),
+the bar-complex constancy (iv) and the full Hall/face/CRT/Karoubi
+readout content (v) still need spectral/bicategorical machinery; the
+exact-order-`N` content of (iv) is reflected in `beta_order`, and (v)
+is recorded only in its weak jet-invariance form.
+
+LIMITATIONS: Bar-complex constancy (iv), the full Hall/face/CRT/Karoubi
+readout content (v), and the bicategorical history 2-cells (iii) need
+spectral/bicategorical machinery; recorded in `Def_jet_ledger.lean`,
+not formalized here. What (v) contributes in machine-checked form is
+the weak readout closure: jet-level invariance of the readout and its
+support/order content.
 -/
 theorem sol_thm_finite_motivic_recursion_closure
     (N : Nat) (hNodd : Odd N) (hNsf : Squarefree N)
@@ -177,7 +193,13 @@ theorem sol_thm_finite_motivic_recursion_closure
             T.reedy.satMap (T₁ ∪ T₂) = T.reedy.satMap T₁ + T.reedy.satMap T₂) ∧
         (∀ (n : ℕ) (h : 3 ≤ n), (T.redHist n h).Nodup) ∧
         (∀ (n : ℕ) (h : 3 ≤ n) (k : Fin (n - 2)), k ∈ T.redHist n h) ∧
-        (∀ (n : ℕ) (h : 3 ≤ n), T.histBlocks n h = (T.redHist n h).toFinset) := by
+        (∀ (n : ℕ) (h : 3 ≤ n), T.histBlocks n h = (T.redHist n h).toFinset) ∧
+        (∀ (x : T.carrier), (T.readout x).support = S) ∧
+        (∀ (x : T.carrier), (T.readout x).coeffOrder = N) ∧
+        (∀ (n : ℕ) (h : 3 ≤ n) (x : T.carrier),
+          T.readout (T.latch n h x) = T.readout x) ∧
+        (∀ (n m : ℕ) (hn : 3 ≤ n) (hm : 3 ≤ m) (hle : n ≤ m) (k : Fin (n - 2)),
+          T.history m hm ⟨k.val, by omega⟩ = T.history n hn k) := by
   -- Carrier: ZMod 3 × (ZMod N × ZMod N), nontrivial for every N.
   let base : motivic_moore_reedy :=
     { support := S, coeffOrder := N, coeffOrder_odd := hNodd,
@@ -233,11 +255,17 @@ theorem sol_thm_finite_motivic_recursion_closure
       del_succ_comm := fun _ _ _ _ => rfl,
       reedy := rd,
       apex := base,
-      history_apex_eq := fun n h => rfl }
+      history_apex_eq := fun n h => rfl,
+      readout := fun _ => base,
+      readout_support := fun _ => rfl,
+      readout_order := fun _ => rfl,
+      readout_latch_comm := fun _ _ _ => rfl }
   refine ⟨tower, fun k => ⟨rfl, rfl⟩, inferInstance, inferInstance, ?_, ?_, ?_, ?_,
     tower.reedy.d_sq_zero, tower.reedy.d_degree, tower.reedy.d_gamma_eq,
     tower.reedy.beta_order, tower.reedy.satMap_disjoint_union,
-    tower.redHist_nodup, tower.redHist_complete, tower.histBlocks_eq⟩
+    tower.redHist_nodup, tower.redHist_complete, tower.histBlocks_eq,
+    fun _ => rfl, fun _ => rfl, fun _ _ _ => rfl,
+    fun n m hn hm hle k => rfl⟩
   · intro n₁ n₂ h₁ h₂; rfl
   · intro n h k; rfl
   · intro M₁ M₂ h₁ h₂ hle k; rfl

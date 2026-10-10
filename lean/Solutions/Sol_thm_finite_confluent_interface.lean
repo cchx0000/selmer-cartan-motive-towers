@@ -51,7 +51,10 @@ action `gammaAct` (bound to `gammaMult S`) and the confluence coarsening
 lemmas in `Def_confluent_package.lean`; the HEq bindings ensure `gammaAct`
 and `coarsenMap` equal the concrete functions satisfying those laws.
 The cross-support `extendSupport` map is defined in
-`Def_confluent_package.lean`; its naturality is future work (see NOTE there).
+`Def_confluent_package.lean`; its coherence laws are proved there
+(`extendSupport_id`, `extendSupport_comp`, `extendSupport_gammaMult`,
+`extendSupport_delete`), and the deletion-naturality law is additionally
+bound into the interface statement below.
 -/
 theorem sol_thm_finite_confluent_interface
     (S : finite_ordered_support) (m : confluence_multiplicity)
@@ -73,6 +76,12 @@ theorem sol_thm_finite_confluent_interface
       (∀ x, permAct (Equiv.refl _) x = x) ∧
       (∀ σ τ x, permAct (σ.trans τ) x = permAct τ (permAct σ x)) ∧
       (∀ σ T x, permAct σ (del T x) = del (T.map σ.toEmbedding) (permAct σ x)) ∧
+      (∀ (S₁ : finite_ordered_support) (h : S₁.primes ⊆ S.primes)
+        (U : Finset ↥S.primes) (v : direction_lattice S₁),
+        supportDelete S U (extendSupport S₁ S h v)
+          = extendSupport S₁ S h
+              (supportDelete S₁
+                (Finset.univ.filter (fun i => supportInclusion S₁ S h i ∈ U)) v)) ∧
       Nonempty P.confluenceAlgebra ∧ Nonempty P.torsionDefect ∧
       Nonempty P.resonanceDivisor ∧ Nonempty P.pdCarrier := by
   refine ⟨{ support := S, confluenceMult := m, coeffExponent := ν,
@@ -99,6 +108,7 @@ theorem sol_thm_finite_confluent_interface
             beta_reduce
             exact congrArg (· x) (permActDir_comp S σ τ) |>.trans (AddEquiv.trans_apply _ _ _),
           fun σ T x => delete_perm_natural S σ T x,
+          fun S₁ h U v => extendSupport_delete S₁ S h U v,
           ⟨()⟩, ⟨()⟩, ⟨()⟩, ⟨()⟩⟩
 
 end SelmerCartanMotiveTowers

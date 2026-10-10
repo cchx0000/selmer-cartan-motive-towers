@@ -35,6 +35,13 @@ concrete definitions (`P.baseDatum = direction_lattice S`,
 REVISION NOTE (P1-2 M4 deep, 2026-10-10): adds `gammaAct` (multiplicity-`m`
 action, bound to `gammaMult S`) and `coarsenMap` (confluence coarsening,
 bound to `coarsen S`) with their laws.
+REVISION NOTE (M4 gap closed, 2026-10-11): binds the cross-support
+deletion-naturality law (`extendSupport_delete`, proved in
+`Def_confluent_package.lean`) into the interface: for `S₁.primes ⊆ S.primes`,
+deleting `U` after zero-extending from `S₁` equals zero-extending after
+deleting the preimage set. This closes the documented gap in the
+cross-support package maps section (paper L5147–5168: "The higher-support
+coherence ledger extends this package").
 -/
 theorem thm_finite_confluent_interface
     (S : finite_ordered_support) (m : confluence_multiplicity)
@@ -56,6 +63,12 @@ theorem thm_finite_confluent_interface
       (∀ x, permAct (Equiv.refl _) x = x) ∧
       (∀ σ τ x, permAct (σ.trans τ) x = permAct τ (permAct σ x)) ∧
       (∀ σ T x, permAct σ (del T x) = del (T.map σ.toEmbedding) (permAct σ x)) ∧
+      (∀ (S₁ : finite_ordered_support) (h : S₁.primes ⊆ S.primes)
+        (U : Finset ↥S.primes) (v : direction_lattice S₁),
+        supportDelete S U (extendSupport S₁ S h v)
+          = extendSupport S₁ S h
+              (supportDelete S₁
+                (Finset.univ.filter (fun i => supportInclusion S₁ S h i ∈ U)) v)) ∧
       Nonempty P.confluenceAlgebra ∧ Nonempty P.torsionDefect ∧
       Nonempty P.resonanceDivisor ∧ Nonempty P.pdCarrier :=
   SelmerCartanMotiveTowers.sol_thm_finite_confluent_interface S m ν

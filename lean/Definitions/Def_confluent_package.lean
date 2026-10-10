@@ -223,11 +223,14 @@ Paper L5147–5168: "The higher-support coherence ledger extends this
 package without changing its finite carrier type."
 
 For `S₁.primes ⊆ S₂.primes`, we define the zero-extension
-`D_{S₁} → D_{S₂}` via `supportInclusion`/`extendSupport`.
-LIMITATION: naturality of `extendSupport` with `supportDelete`
-(`supportDelete S₂ T (extendSupport v) = extendSupport (supportDelete S₁ T v)`)
-is not proved — the `Finsupp.embDomain` range API is unstable in this
-Mathlib version; see LIMITATIONS section below.
+`D_{S₁} → D_{S₂}` via `supportInclusion`/`extendSupport`, and prove the
+coherence laws the paper requires of the higher-support ledger:
+- `extendSupport_id` / `extendSupport_comp`: zero-extension is functorial
+  across chains of supports;
+- `extendSupport_gammaMult`: compatibility with the multiplicity-`m`
+  scalar action;
+- `extendSupport_delete`: deletion naturality — deleting `U` after
+  extending equals extending after deleting the preimage set.
 -/
 
 /-- Inclusion of supports as an embedding. -/
@@ -246,12 +249,102 @@ noncomputable def extendSupport (S₁ S₂ : finite_ordered_support)
   map_zero' := Finsupp.embDomain_zero _
   map_add' x y := Finsupp.embDomain_add _ _ _
 
-/- NOTE: Compatibility of `extendSupport` with `gammaMult` and
-`supportDelete` (naturality) is future work; the `embDomain` API for
-the required range/smul analysis is not yet stable in this Mathlib
-version. The definition above provides the cross-support map whose
-existence the paper requires (L5147–5168: "The higher-support coherence
-ledger extends this package"). -/
+/-! ### Pointwise formulas (helpers for the coherence laws) -/
+
+/-- Pointwise formula for `supportDelete`. -/
+theorem supportDelete_apply (S : finite_ordered_support) (T : Finset ↥S.primes)
+    (w : direction_lattice S) (j : ↥S.primes) :
+    supportDelete S T w j = if j ∈ T then w j else 0 := by
+  simp [supportDelete, Finsupp.filter_apply]
+
+/-- `extendSupport` unfolds to `Finsupp.embDomain` (equality of finsupps). -/
+theorem extendSupport_eq_embDomain (S₁ S₂ : finite_ordered_support)
+    (h : S₁.primes ⊆ S₂.primes) (v : direction_lattice S₁) :
+    extendSupport S₁ S₂ h v = v.embDomain (supportInclusion S₁ S₂ h) :=
+  rfl
+
+/-- Pointwise formula for `extendSupport`. -/
+theorem extendSupport_apply (S₁ S₂ : finite_ordered_support)
+    (h : S₁.primes ⊆ S₂.primes) (v : direction_lattice S₁) (j : ↥S₂.primes) :
+    extendSupport S₁ S₂ h v j = (v.embDomain (supportInclusion S₁ S₂ h)) j :=
+  rfl
+
+/-! ### Coherence laws for `extendSupport` (M4 gap closed, 2026-10-11)
+
+Paper L5147–5168: "The higher-support coherence ledger extends this
+package without changing its finite carrier type." The ledger laws are
+functoriality across support chains, compatibility with the `Γᵐ` scalar
+model, and deletion naturality. -/
+
+/-- Inclusion embeddings compose. -/
+theorem supportInclusion_trans (S₁ S₂ S₃ : finite_ordered_support)
+    (h₁₂ : S₁.primes ⊆ S₂.primes) (h₂₃ : S₂.primes ⊆ S₃.primes) :
+    (supportInclusion S₁ S₂ h₁₂).trans (supportInclusion S₂ S₃ h₂₃)
+      = supportInclusion S₁ S₃ (h₁₂.trans h₂₃) := by
+  apply Function.Embedding.ext
+  intro i
+  exact Subtype.ext rfl
+
+/-- Zero-extension is the identity on equal supports. -/
+theorem extendSupport_id (S : finite_ordered_support) (v : direction_lattice S) :
+    extendSupport S S (Finset.Subset.rfl) v = v := by
+  have he : supportInclusion S S (Finset.Subset.rfl)
+      = Function.Embedding.refl _ := by
+    apply Function.Embedding.ext
+    intro i
+    exact Subtype.ext rfl
+  have h2 : (v.embDomain (supportInclusion S S (Finset.Subset.rfl)))
+      = v.embDomain (Function.Embedding.refl _) := by rw [he]
+  have h3 : extendSupport S S (Finset.Subset.rfl) v
+      = v.embDomain (Function.Embedding.refl _) := by
+    rw [extendSupport_eq_embDomain, h2]
+  rw [h3, Finsupp.embDomain_refl]
+  rfl
+
+/-- Zero-extension is functorial across a chain of supports
+(the coherence-ledger composition law). -/
+theorem extendSupport_comp (S₁ S₂ S₃ : finite_ordered_support)
+    (h₁₂ : S₁.primes ⊆ S₂.primes) (h₂₃ : S₂.primes ⊆ S₃.primes)
+    (v : direction_lattice S₁) :
+    extendSupport S₂ S₃ h₂₃ (extendSupport S₁ S₂ h₁₂ v)
+      = extendSupport S₁ S₃ (h₁₂.trans h₂₃) v := by
+  rw [extendSupport_eq_embDomain, extendSupport_eq_embDomain,
+    ← Finsupp.embDomain_trans_apply, supportInclusion_trans,
+    extendSupport_eq_embDomain]
+
+/-- Zero-extension commutes with the multiplicity-`m` scalar action
+(the `Γᵐ`-action-level compatibility). -/
+theorem extendSupport_gammaMult (S₁ S₂ : finite_ordered_support)
+    (h : S₁.primes ⊆ S₂.primes) (m : ℕ) (v : direction_lattice S₁) :
+    extendSupport S₁ S₂ h (gammaMult S₁ m v)
+      = gammaMult S₂ m (extendSupport S₁ S₂ h v) :=
+  map_nsmul (extendSupport S₁ S₂ h) m v
+
+/-- Deletion naturality of zero-extension: deleting `U` after extending
+equals extending after deleting the preimage set. This closes the
+previously documented gap (the `embDomain` range API —
+`embDomain_apply_self` / `embDomain_of_notMem_range` — suffices). -/
+theorem extendSupport_delete (S₁ S₂ : finite_ordered_support)
+    (h : S₁.primes ⊆ S₂.primes) (U : Finset ↥S₂.primes)
+    (v : direction_lattice S₁) :
+    supportDelete S₂ U (extendSupport S₁ S₂ h v)
+      = extendSupport S₁ S₂ h
+          (supportDelete S₁
+            (Finset.univ.filter (fun i => supportInclusion S₁ S₂ h i ∈ U)) v) := by
+  ext j
+  simp only [supportDelete_apply, extendSupport_apply]
+  by_cases hj : j ∈ Set.range (supportInclusion S₁ S₂ h)
+  · obtain ⟨i, rfl⟩ := hj
+    simp only [Finsupp.embDomain_apply_self, supportDelete_apply,
+      Finset.mem_filter, Finset.mem_univ, true_and]
+  · have h1 : (v.embDomain (supportInclusion S₁ S₂ h)) j = 0 :=
+      Finsupp.embDomain_of_notMem_range _ _ _ hj
+    have h2 : ((supportDelete S₁
+        (Finset.univ.filter (fun i => supportInclusion S₁ S₂ h i ∈ U)) v).embDomain
+        (supportInclusion S₁ S₂ h)) j = 0 :=
+      Finsupp.embDomain_of_notMem_range _ _ _ hj
+    rw [h1, h2]
+    by_cases hU : j ∈ U <;> simp [hU]
 
 /-! ## LIMITATION: PD structure, torsion defect, resonance divisor
 
@@ -264,8 +357,9 @@ PD algebra on a module. The category `Conf(m)` of multiplicity profiles
 (L3694) is also not formalized. What we provide above — the
 multiplicity-indexed scalar action `gammaMult`, the support coarsening
 `coarsen` with composition law, and the cross-support `extendSupport`
-(whose deletion naturality is future work, see NOTE above) — is the
-functorial action package that the paper shows acts through `Γ^m`.
+with its proved coherence laws (`extendSupport_id`, `extendSupport_comp`,
+`extendSupport_gammaMult`, `extendSupport_delete`) — is the functorial
+action package that the paper shows acts through `Γ^m`.
 -/
 
 end SelmerCartanMotiveTowers

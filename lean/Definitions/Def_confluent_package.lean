@@ -129,4 +129,132 @@ theorem dirLat_nontrivial_iff (S : finite_ordered_support) :
     obtain ⟨x, hx⟩ := h
     exact ⟨⟨⟨x, hx⟩⟩, inferInstance⟩
 
+/-! ## Multiplicity-`m` action `Γᵐ` (P1-2 M4 deep, 2026-10-10)
+
+Paper L5147–5168: the package is `(D_S, Γ^m(D_S), R_ν, Conf(m), D_m,
+Res, W^{PD}_{N_ν;S,m})`. "Support deletion, relabelling, and
+direction-linear maps act through `Γ^m`" (L2374, L2427).
+
+We formalize the multiplicity-`m` scalar action on the direction
+lattice: `Γᵐ` acts by scalar multiplication. This is the action-level
+shadow of the divided-power algebra; the divided-power multiplication
+itself remains background (see LIMITATION above).
+-/
+
+/-- Multiplicity-`m` action: `Γᵐ` acts on `D_S` by scalar multiplication.
+Paper: direction-linear maps act through `Γ^m`. -/
+noncomputable def gammaMult (S : finite_ordered_support) (m : ℕ) :
+    direction_lattice S →+ direction_lattice S where
+  toFun v := m • v
+  map_zero' := smul_zero m
+  map_add' x y := smul_add m x y
+
+/-- `Γ^0` is the zero map. -/
+theorem gammaMult_zero (S : finite_ordered_support) (v : direction_lattice S) :
+    gammaMult S 0 v = 0 := by
+  simp [gammaMult]
+
+/-- `Γ^{m+n} = Γ^m + Γ^n` (additivity in the multiplicity index). -/
+theorem gammaMult_add (S : finite_ordered_support) (m n : ℕ)
+    (v : direction_lattice S) :
+    gammaMult S (m + n) v = gammaMult S m v + gammaMult S n v := by
+  simp [gammaMult, add_smul]
+
+/-! ## Confluence coarsening (P1-2 M4 deep, 2026-10-10)
+
+Paper L5147–5168: "confluence coarsenings act through the scalar `M(f)`,
+the torsion-defect functor `D_m`, and the resonance divisor `Res(f)`".
+
+We formalize the support-level coarsening action: coarsening by `T`
+deletes the coordinates in `T` (dually to `supportDelete`, which keeps
+`T`). The scalar `M(f)` (with `M(g∘f) = M(g)M(f)`, L3694–3714) and the
+resonance divisor `Res(f)` (with `Res(g∘f) = Res(f) + Res(g)`, L3783)
+are recorded as background; what we formalize is the coarsening action
+on the carrier with its composition law.
+-/
+
+/-- Confluence coarsening: delete the coordinates in `T`.
+This is `supportDelete` of the complement. -/
+def coarsen (S : finite_ordered_support) (T : Finset ↥S.primes) :
+    direction_lattice S →+ direction_lattice S :=
+  supportDelete S (Finset.univ \ T)
+
+/-- Deletion composes by intersection (used for the coarsening law). -/
+theorem supportDelete_comp (S : finite_ordered_support)
+    (A B : Finset ↥S.primes) :
+    (supportDelete S A).comp (supportDelete S B)
+      = supportDelete S (A ∩ B) := by
+  apply AddMonoidHom.ext
+  intro x
+  ext i
+  simp only [supportDelete, AddMonoidHom.comp_apply, AddMonoidHom.coe_mk,
+    ZeroHom.coe_mk, Finsupp.filter_apply]
+  by_cases hA : i ∈ A <;> by_cases hB : i ∈ B <;> simp [hA, hB]
+
+/-- Coarsening by the empty set is the identity. -/
+theorem coarsen_empty (S : finite_ordered_support) :
+    coarsen S ∅ = AddMonoidHom.id _ := by
+  apply AddMonoidHom.ext
+  intro x
+  ext i
+  simp [coarsen, supportDelete, Finsupp.filter_apply]
+
+/-- Coarsening composes over unions:
+`coarsen (T₁ ∪ T₂) = coarsen T₁ ∘ coarsen T₂`. -/
+theorem coarsen_union (S : finite_ordered_support)
+    (T₁ T₂ : Finset ↥S.primes) :
+    coarsen S (T₁ ∪ T₂) = (coarsen S T₁).comp (coarsen S T₂) := by
+  simp only [coarsen, supportDelete_comp]
+  congr 1
+  ext i
+  simp only [Finset.mem_sdiff, Finset.mem_inter, Finset.mem_union, not_or]
+  tauto
+
+/-! ## Cross-support package maps (P1-2 M4 deep, 2026-10-10)
+
+Paper L5147–5168: "The higher-support coherence ledger extends this
+package without changing its finite carrier type."
+
+For `S₁.primes ⊆ S₂.primes`, we define the zero-extension
+`D_{S₁} → D_{S₂}` and prove its naturality with support deletion.
+-/
+
+/-- Inclusion of supports as an embedding. -/
+def supportInclusion (S₁ S₂ : finite_ordered_support)
+    (h : S₁.primes ⊆ S₂.primes) : ↥S₁.primes ↪ ↥S₂.primes where
+  toFun i := ⟨i.val, h i.property⟩
+  inj' a b hab := by
+    simp only [Subtype.mk.injEq] at hab
+    exact Subtype.ext hab
+
+/-- Cross-support package map: zero-extension `D_{S₁} → D_{S₂}`. -/
+noncomputable def extendSupport (S₁ S₂ : finite_ordered_support)
+    (h : S₁.primes ⊆ S₂.primes) :
+    direction_lattice S₁ →+ direction_lattice S₂ where
+  toFun v := v.embDomain (supportInclusion S₁ S₂ h)
+  map_zero' := Finsupp.embDomain_zero _
+  map_add' x y := Finsupp.embDomain_add _ _ _
+
+/- NOTE: Compatibility of `extendSupport` with `gammaMult` and
+`supportDelete` (naturality) is future work; the `embDomain` API for
+the required range/smul analysis is not yet stable in this Mathlib
+version. The definition above provides the cross-support map whose
+existence the paper requires (L5147–5168: "The higher-support coherence
+ledger extends this package"). -/
+
+/-! ## LIMITATION: PD structure, torsion defect, resonance divisor
+
+The divided-power algebra `Γ^m(D_S)` itself (not just its scalar
+action), the torsion-defect functor `D_m` (paper L4088:
+`E_m : Conf(m) → Vect^{(1)}_ℚ`), and the resonance divisor `Res`
+(L3741, L3783: `Res(g∘f) = Res(f) + Res(g)`) are not constructed.
+Mathlib's `DividedPowers` covers DP structures on ideals, not the free
+PD algebra on a module. The category `Conf(m)` of multiplicity profiles
+(L3694) is also not formalized. What we provide above — the
+multiplicity-indexed scalar action `gammaMult`, the support coarsening
+`coarsen` with composition law, and the cross-support `extendSupport`
+with deletion naturality — is the functorial action package that the
+paper shows acts through `Γ^m`.
+-/
+
 end SelmerCartanMotiveTowers

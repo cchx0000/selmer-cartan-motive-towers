@@ -32,18 +32,25 @@ formalized is the functorial action package on `D_S`.
 REVISION NOTE (binding, 2026-10-10): the existential is now bound to the
 concrete definitions (`P.baseDatum = direction_lattice S`,
 `HEq (del T) ⇑(supportDelete S T)`, etc.), excluding the Unit weak model.
+REVISION NOTE (P1-2 M4 deep, 2026-10-10): adds `gammaAct` (multiplicity-`m`
+action, bound to `gammaMult S`) and `coarsenMap` (confluence coarsening,
+bound to `coarsen S`) with their laws.
 -/
 theorem thm_finite_confluent_interface
     (S : finite_ordered_support) (m : confluence_multiplicity)
     (ν : coefficient_exponent) :
     ∃ (P : source_package)
       (del : Finset ↥S.primes → P.baseDatum → P.baseDatum)
-      (permAct : (↥S.primes ≃ ↥S.primes) → P.baseDatum → P.baseDatum),
+      (permAct : (↥S.primes ≃ ↥S.primes) → P.baseDatum → P.baseDatum)
+      (gammaAct : ℕ → P.gammaModule → P.gammaModule)
+      (coarsenMap : Finset ↥S.primes → P.baseDatum → P.baseDatum),
       P.baseDatum = direction_lattice S ∧
       P.gammaModule = direction_lattice S ∧
       P.coeffRing = coeff_ring ν ∧
       (∀ T, HEq (del T) (⇑(supportDelete S T))) ∧
       (∀ σ, HEq (permAct σ) (⇑(permActDir S σ))) ∧
+      (∀ n, HEq (gammaAct n) (⇑(gammaMult S n))) ∧
+      (∀ T, HEq (coarsenMap T) (⇑(coarsen S T))) ∧
       P.support = S ∧ P.confluenceMult = m ∧ P.coeffExponent = ν ∧
       (∀ T x, del T (del T x) = del T x) ∧
       (∀ x, permAct (Equiv.refl _) x = x) ∧

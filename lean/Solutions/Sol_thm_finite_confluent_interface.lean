@@ -9,7 +9,10 @@ We provide the REAL structures:
   lattice `D_S = ⊕_{i∈S} ℤ e_i`);
 - `coeffRing := coeff_ring ν = ZMod N_ν` (the coefficient ring `R_ν`);
 - `del T := supportDelete S T` (real coordinate projection);
-- `permAct σ := permActDir S σ` (real linear action via `Finsupp.domCongr`).
+- `permAct σ := permActDir S σ` (real linear action via `Finsupp.domCongr`);
+- `gammaAct m := gammaMult S m` (multiplicity-`m` scalar action, the `Γᵐ`
+  action-level shadow);
+- `coarsenMap T := coarsen S T` (confluence coarsening by deleting `T`).
 
 The statement BINDS the existential to these concrete definitions:
 `P.baseDatum = direction_lattice S`, `HEq (del T) ⇑(supportDelete S T)`, etc.
@@ -20,6 +23,8 @@ and constant functions cannot equal the real projections.
 
 The four laws are the proved lemmas `supportDelete_idem`,
 `permActDir_id`, `permActDir_comp`, `delete_perm_natural`.
+The `Γᵐ` laws are `gammaMult_zero`, `gammaMult_add`.
+The coarsening laws are `coarsen_empty`, `coarsen_union`.
 
 For `gammaModule` we use `direction_lattice S` as the carrier of the
 action package (the divided-power multiplication itself is background;
@@ -36,18 +41,33 @@ concrete definitions via type equalities (`P.baseDatum = direction_lattice S`,
 etc.) and function equalities (`del T = ⇑(supportDelete S T)`). The previous
 statement allowed `P.baseDatum = Unit` with constant `del`/`permAct` to
 satisfy all equations; the Unit weak model is now excluded.
+
+REVISION NOTE (P1-2 M4 deep, 2026-10-10): adds the multiplicity-`m`
+action `gammaAct` (bound to `gammaMult S`) and the confluence coarsening
+`coarsenMap` (bound to `coarsen S`), addressing the verifier's
+"Γᵐ still bound to the direction lattice itself, independent of m" and
+"no confluence coarsening" feedback. The laws (`gammaMult_zero`,
+`gammaMult_add`, `coarsen_empty`, `coarsen_union`) are proved as separate
+lemmas in `Def_confluent_package.lean`; the HEq bindings ensure `gammaAct`
+and `coarsenMap` equal the concrete functions satisfying those laws.
+The cross-support `extendSupport` map is defined in
+`Def_confluent_package.lean`; its naturality is future work (see NOTE there).
 -/
 theorem sol_thm_finite_confluent_interface
     (S : finite_ordered_support) (m : confluence_multiplicity)
     (ν : coefficient_exponent) :
     ∃ (P : source_package)
       (del : Finset ↥S.primes → P.baseDatum → P.baseDatum)
-      (permAct : (↥S.primes ≃ ↥S.primes) → P.baseDatum → P.baseDatum),
+      (permAct : (↥S.primes ≃ ↥S.primes) → P.baseDatum → P.baseDatum)
+      (gammaAct : ℕ → P.gammaModule → P.gammaModule)
+      (coarsenMap : Finset ↥S.primes → P.baseDatum → P.baseDatum),
       P.baseDatum = direction_lattice S ∧
       P.gammaModule = direction_lattice S ∧
       P.coeffRing = coeff_ring ν ∧
       (∀ T, HEq (del T) (⇑(supportDelete S T))) ∧
       (∀ σ, HEq (permAct σ) (⇑(permActDir S σ))) ∧
+      (∀ n, HEq (gammaAct n) (⇑(gammaMult S n))) ∧
+      (∀ T, HEq (coarsenMap T) (⇑(coarsen S T))) ∧
       P.support = S ∧ P.confluenceMult = m ∧ P.coeffExponent = ν ∧
       (∀ T x, del T (del T x) = del T x) ∧
       (∀ x, permAct (Equiv.refl _) x = x) ∧
@@ -65,9 +85,13 @@ theorem sol_thm_finite_confluent_interface
             pdCarrier := Unit },
           fun T => supportDelete S T,
           fun σ => permActDir S σ,
+          fun n => gammaMult S n,
+          fun T => coarsen S T,
           rfl, rfl, rfl,
           fun T => HEq.rfl,
           fun σ => HEq.rfl,
+          fun n => HEq.rfl,
+          fun T => HEq.rfl,
           rfl, rfl, rfl,
           fun T x => supportDelete_idem S T x,
           fun x => by simp [permActDir_id],

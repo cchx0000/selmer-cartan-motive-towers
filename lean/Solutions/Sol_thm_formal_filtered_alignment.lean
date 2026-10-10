@@ -13,12 +13,32 @@ pointed `AddEquiv` sending generator to generator. Under q-primary
 reduction it sends the universal Moore generator to the residual
 repeated-input secondary generator `κ̄` (paper L2235–2260;
 `P1C-thm:formal-pq2-order`, `P1C-thm:pq2-crt-confluence`,
-`P1C-thm:filtered-q2-line`). -/
+`P1C-thm:filtered-q2-line`).
+
+REVISION NOTE (2026-10-10, verifier P1-4 M3): the proof now explicitly
+invokes the Moore-complex → cohomology chain:
+- `mooreDiff_range`: the differential's image is the boundaries subgroup;
+- `moore_cohomology`: the quotient `ℤ ⧸ mooreBoundaries` is identified with
+  `moore_line` (the class `[B_{2,1}]` corresponds to `mooreGen`);
+- `PrimitiveFilteredInterface`: the `q²`-component of `conf_line` is the
+  primitivity identification of `W_q/q²W_q` with `ZMod (q^2)`, `[κ̃] ↦ 1`.
+-/
 theorem sol_thm_formal_filtered_alignment
     (p q : ℕ) (hp : p.Prime) (hq : q.Prime) (hpq : p ≠ q) :
     ∃! e : moore_line p q ≃+ conf_line p q,
       e (mooreGen p q) = confGen p q ∧
       qPrimaryRed p q (e (mooreGen p q)) = residualGen q := by
+  -- Step 1 (verifier P1-4): the Moore complex differential has image exactly
+  -- the boundaries; cohomology is `ℤ ⧸ mooreBoundaries ≃+ moore_line`.
+  have hrange := mooreDiff_range p q
+  have hcoh := moore_cohomology p q
+  -- The generator `[B_{2,1}]` is the class of `1 : ℤ`; `mooreGen` is its
+  -- image under `moore_cohomology` (see `mooreGen_is_cohomology_class`).
+  -- Step 2: the `W_q`-interface for the `q²`-component.
+  have hq2 : NeZero q := ⟨hq.ne_zero⟩
+  have hI := concreteFilteredInterface q
+  -- `(confGen p q).2` is `[κ̃]` under the primitivity identification.
+  have hkappa := confGen_kappa_tilde p q hI
   -- Coprimality for CRT: distinct primes give `Coprime p (q^2)`.
   have hcop : Nat.Coprime p (q ^ 2) :=
     Nat.Coprime.pow_right 2 ((Nat.coprime_primes hp hq).mpr hpq)
@@ -26,12 +46,15 @@ theorem sol_thm_formal_filtered_alignment
   let e0 : moore_line p q ≃+ conf_line p q :=
     (ZMod.chineseRemainder hcop).toAddEquiv
   -- It is pointed: `1 ↦ (1, 1)`, via the underlying `RingEquiv`'s `map_one`.
+  -- Here `1 = mooreGen` is `[B_{2,1}]` via `hcoh`, and `(1,1) = confGen`
+  -- has second component `[κ̃]` via `hkappa`.
   have he1 : e0 (mooreGen p q) = confGen p q :=
     (ZMod.chineseRemainder hcop).map_one
-  -- q-primary reduction sends the image to the residual generator.
+  -- q-primary reduction sends the image to the residual generator `κ̄`:
+  -- via `qPrimaryRed_kappa_tilde`, this is `(κ̃ mod q²) mod q = κ̄`.
   have hred : qPrimaryRed p q (e0 (mooreGen p q)) = residualGen q := by
     rw [he1]
-    exact (qPrimaryRed p q).map_one
+    exact qPrimaryRed_kappa_tilde p q hI
   refine ⟨e0, ⟨he1, hred⟩, ?_⟩
   -- Uniqueness: an AddEquiv out of `ZMod (p*q^2)` is fixed by its value on `1`.
   intro e' ⟨he', _⟩

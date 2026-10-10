@@ -25,5 +25,8 @@ require mathlib from git
   "0df444a360eaa60ab8c11dca51a86af692955474"
 
 lean_lib Definitions where
+  globs := #[Glob.submodules `Definitions]
 lean_lib Theorems where
+  globs := #[Glob.submodules `Theorems]
 @[default_target] lean_lib Solutions where
+  globs := #[Glob.submodules `Solutions]

@@ -36,8 +36,10 @@ The 16 substantive `Solutions/` modules now declare uniquely-named theorems
 `SelmerCartanMotiveTowers.sol_<name>` (one per milestone, M1–M16, e.g.
 `sol_thm_ray_class_primitive`), so they can be jointly imported without
 collision. `Solutions/` modules still do not import `Theorems/` (independent
-per-module evaluation, the current Prove2Me mode); reconnecting the proofs
-to the `by sorry` drafts is tracked as verifier item P1-5.
+per-module evaluation, the current Prove2Me mode); the reverse direction is
+done — each `Theorems/` module now imports its `Solutions/` module and
+discharges the statement by applying `sol_*` (verifier item P1-5 complete;
+no `by sorry` remains in production statements).
 
 ## Axiom audit (verifier P0-3 acceptance)
 
